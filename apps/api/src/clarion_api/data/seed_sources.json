@@ -1,0 +1,33 @@
+{
+  "_note": "Demo seed. Each passage paraphrases an official statement as reported by the linked source. Re-check every passage against the original before any public demo. Replace with direct INEC text where available.",
+  "passages": [
+    {
+      "document_title": "INEC dismisses viral 2027 campaign timetable",
+      "publisher": "INEC, as reported by Africa Check",
+      "url": "https://africacheck.org/fact-checks/meta-programme-fact-checks/nigerias-electoral-commission-dismisses-viral-2027-general",
+      "published_on": "2026-07-29",
+      "text": "INEC said the 2027 campaign timetable graphic circulating on social media in late July 2026 is fake and was not issued by the commission."
+    },
+    {
+      "document_title": "Revised timetable for the 2027 general elections",
+      "publisher": "INEC, as reported by News Central",
+      "url": "https://newscentraltv.com/inec-dismisses-reports-of-revised-2027-campaign-timetable/",
+      "published_on": "2026-02-26",
+      "text": "INEC released the revised timetable for the 2027 general elections on 26 February 2026. The presidential and National Assembly elections are scheduled for 16 January 2027."
+    },
+    {
+      "document_title": "Only voters with PVCs may vote",
+      "publisher": "INEC, as reported by Premium Times",
+      "url": "https://www.premiumtimesng.com/news/top-news/858225-fct-elections-1-5m-voters-collect-pvcs-eligible-to-vote-in-saturdays-poll-inec.html",
+      "published_on": "2026-02-20",
+      "text": "INEC says only duly registered voters in possession of valid Permanent Voter Cards will be allowed to vote on election day."
+    },
+    {
+      "document_title": "PVC distribution resumes in registration areas",
+      "publisher": "INEC, as reported by Leadership",
+      "url": "https://leadership.ng/?p=752824",
+      "published_on": "2026-11-01",
+      "text": "INEC said distribution of Permanent Voter Cards would return to Registration Areas nationwide from 1 December 2026."
+    }
+  ]
+}

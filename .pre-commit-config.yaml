@@ -1,0 +1,46 @@
+# Fast checks on every commit. The full gate is `make verify`.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+        exclude: ^apps/web/tsconfig.*\.json$
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: \.md$
+      - id: detect-private-key
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff format (api)
+        entry: bash -c 'cd apps/api && uv run ruff format .'
+        language: system
+        files: ^apps/api/.*\.py$
+        pass_filenames: false
+      - id: ruff-check
+        name: ruff check (api)
+        entry: bash -c 'cd apps/api && uv run ruff check --fix .'
+        language: system
+        files: ^apps/api/.*\.py$
+        pass_filenames: false
+      - id: biome
+        name: biome check (web)
+        entry: bash -c 'cd apps/web && pnpm exec biome check --write .'
+        language: system
+        files: ^apps/web/.*\.(ts|tsx|js|json|css)$
+        pass_filenames: false
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.5.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [feat, fix, docs, chore, test, refactor, perf, build, ci, revert]

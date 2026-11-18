@@ -1,0 +1,51 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_USER: clarion
+          POSTGRES_PASSWORD: clarion
+          POSTGRES_DB: clarion
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U clarion" --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:8
+        ports: ["6379:6379"]
+    env:
+      CI: "true"
+      APP_ENV: test
+      DATABASE_URL: postgresql+asyncpg://clarion:clarion@localhost:5432/clarion
+      REDIS_URL: redis://localhost:6379/0
+      RUN_INTEGRATION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: install
+        run: |
+          make -C apps/api setup
+          make -C apps/web setup
+      - name: verify
+        run: ./scripts/verify.sh

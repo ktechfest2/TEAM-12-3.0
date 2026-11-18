@@ -1,0 +1,1 @@
+Take the next task from `docs/tasks/BOARD.md` following the "How to take a task" steps in the root `AGENTS.md`. Argument, if given, is the task id: $ARGUMENTS. Read the task file and the nearest `AGENTS.md` before writing code. Write the test first, implement, run `/verify`, update the board and docs, then summarise what changed and how it was verified.

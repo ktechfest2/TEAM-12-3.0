@@ -1,0 +1,1 @@
+Run `./scripts/verify.sh` from the repository root. If anything fails, fix the cause (never weaken the check), run it again, and repeat until it passes. Finish by quoting the final lines of the output.

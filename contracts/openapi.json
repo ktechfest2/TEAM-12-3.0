@@ -1,0 +1,370 @@
+{
+  "components": {
+    "schemas": {
+      "ClaimIn": {
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language",
+            "default": "en"
+          },
+          "text": {
+            "maxLength": 4000,
+            "minLength": 3,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "ClaimIn",
+        "type": "object"
+      },
+      "ClaimOut": {
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "rationale": {
+            "title": "Rationale",
+            "type": "string"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SourceOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/Verdict"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "language",
+          "created_at",
+          "verdict",
+          "rationale",
+          "confidence",
+          "source"
+        ],
+        "title": "ClaimOut",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthOut": {
+        "properties": {
+          "env": {
+            "title": "Env",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "version",
+          "env"
+        ],
+        "title": "HealthOut",
+        "type": "object"
+      },
+      "Language": {
+        "description": "ISO 639 codes. Pidgin uses pcm.",
+        "enum": [
+          "en",
+          "yo",
+          "ha",
+          "ig",
+          "pcm"
+        ],
+        "title": "Language",
+        "type": "string"
+      },
+      "SmsEncoding": {
+        "enum": [
+          "gsm7",
+          "ucs2"
+        ],
+        "title": "SmsEncoding",
+        "type": "string"
+      },
+      "SmsSizeIn": {
+        "properties": {
+          "text": {
+            "maxLength": 2000,
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "title": "SmsSizeIn",
+        "type": "object"
+      },
+      "SmsSizeOut": {
+        "properties": {
+          "encoding": {
+            "$ref": "#/components/schemas/SmsEncoding"
+          },
+          "per_segment_limit": {
+            "title": "Per Segment Limit",
+            "type": "integer"
+          },
+          "segments": {
+            "title": "Segments",
+            "type": "integer"
+          },
+          "units": {
+            "title": "Units",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "encoding",
+          "units",
+          "segments",
+          "per_segment_limit"
+        ],
+        "title": "SmsSizeOut",
+        "type": "object"
+      },
+      "SourceOut": {
+        "properties": {
+          "document_title": {
+            "title": "Document Title",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "publisher": {
+            "title": "Publisher",
+            "type": "string"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "document_title",
+          "publisher",
+          "url",
+          "text"
+        ],
+        "title": "SourceOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "Verdict": {
+        "description": "The only three answers Clarion ever gives. Never add opinion values.",
+        "enum": [
+          "confirmed",
+          "contradicted",
+          "no_official_statement"
+        ],
+        "title": "Verdict",
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "title": "Clarion API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/claims": {
+      "post": {
+        "operationId": "createClaim",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Claim",
+        "tags": [
+          "claims"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/tools/sms-size": {
+      "post": {
+        "operationId": "measureSms",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SmsSizeIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SmsSizeOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sms Size",
+        "tags": [
+          "tools"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+# Local services only. Production uses managed equivalents; see infra/README.md.
+name: clarion
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: clarion
+      POSTGRES_PASSWORD: clarion
+      POSTGRES_DB: clarion
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clarion"]
+      interval: 5s
+      retries: 10
+  redis:
+    image: redis:8
+    ports: ["6379:6379"]
+volumes:
+  pgdata:

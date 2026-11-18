@@ -1,0 +1,65 @@
+# Render blueprint. Point Render at this file (Blueprint > path infra/render.yaml).
+# Secrets are set in the dashboard (sync: false), never committed.
+envVarGroups:
+  - name: clarion-shared
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: LOG_FORMAT
+        value: json
+      - key: LLM_PROVIDER
+        value: gemini
+      - key: DATABASE_URL
+        sync: false
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        sync: false
+      - key: LLM_EMBEDDING_MODEL
+        sync: false
+      - key: SPEECH_API_KEY
+        sync: false
+      - key: STORAGE_PROVIDER
+        value: s3
+      - key: STORAGE_ENDPOINT_URL
+        sync: false
+      - key: STORAGE_ACCESS_KEY_ID
+        sync: false
+      - key: STORAGE_SECRET_ACCESS_KEY
+        sync: false
+      - key: CHANNEL_TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: CHANNEL_TELEGRAM_CHAT_ID
+        sync: false
+      - key: AUTH_JWT_SECRET
+        sync: false
+
+services:
+  - type: web
+    name: clarion-api
+    runtime: docker
+    rootDir: apps/api
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - fromGroup: clarion-shared
+      - key: REDIS_URL
+        fromService: { type: keyvalue, name: clarion-queue, property: connectionString }
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+
+  - type: worker
+    name: clarion-worker
+    runtime: docker
+    rootDir: apps/api
+    dockerfilePath: ./Dockerfile
+    dockerCommand: taskiq worker clarion_api.worker.broker:broker clarion_api.worker.tasks
+    envVars:
+      - fromGroup: clarion-shared
+      - key: REDIS_URL
+        fromService: { type: keyvalue, name: clarion-queue, property: connectionString }
+
+  - type: keyvalue
+    name: clarion-queue
+    plan: free
+    ipAllowList: []

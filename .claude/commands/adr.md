@@ -1,0 +1,1 @@
+Create a new architecture decision record in `docs/adr/` by copying `0000-template.md` to the next free number. Topic: $ARGUMENTS. Fill in context, options considered, decision and consequences. Link it from `docs/adr/README.md`.

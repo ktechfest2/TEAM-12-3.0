@@ -1,0 +1,31 @@
+# env and secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# generated media and local data
+apps/api/var/
+*.log
+
+# os and editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

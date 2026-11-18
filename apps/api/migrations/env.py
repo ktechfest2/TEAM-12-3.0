@@ -1,0 +1,39 @@
+"""Alembic environment. DATABASE_URL comes from clarion_api.config, never from alembic.ini."""
+
+import asyncio
+
+from alembic import context
+from sqlalchemy.engine import Connection
+
+from clarion_api.config import get_settings
+from clarion_api.db.session import build_engine
+from clarion_api.db.tables import Base
+
+target_metadata = Base.metadata
+
+
+def run_offline() -> None:
+    context.configure(
+        url=get_settings().database_url, target_metadata=target_metadata, literal_binds=True
+    )
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def _run(connection: Connection) -> None:
+    context.configure(connection=connection, target_metadata=target_metadata)
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+async def run_online() -> None:
+    engine = build_engine(get_settings().database_url)
+    async with engine.connect() as connection:
+        await connection.run_sync(_run)
+    await engine.dispose()
+
+
+if context.is_offline_mode():
+    run_offline()
+else:
+    asyncio.run(run_online())
