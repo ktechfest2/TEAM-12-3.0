@@ -24,4 +24,3 @@ Anyone who scans the QR code sees the claim, verdict, official source, approver,
 api/routes/, apps/web/src/pages/public-correction-page.tsx
 
 ## Questions
-

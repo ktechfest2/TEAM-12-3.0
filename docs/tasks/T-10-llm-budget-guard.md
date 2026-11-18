@@ -23,4 +23,3 @@ Model calls stop before spend passes `LLM_MONTHLY_BUDGET_USD`.
 adapters/llm/
 
 ## Questions
-

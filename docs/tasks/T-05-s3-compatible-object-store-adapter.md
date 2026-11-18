@@ -24,4 +24,3 @@ ADR 0002; `adapters/storage/`.
 adapters/storage/, pyproject.toml, docs/CREDITS.md
 
 ## Questions
-

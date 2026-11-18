@@ -24,4 +24,3 @@ TECHNICAL_ARCHITECTURE 5.5.
 api/routes/, apps/web/src/features/board/
 
 ## Questions
-

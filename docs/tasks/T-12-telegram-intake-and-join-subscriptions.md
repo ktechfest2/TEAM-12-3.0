@@ -24,4 +24,3 @@ People send a claim or JOIN YORUBA to the bot and get answers and future correct
 api/routes/telegram.py, adapters/channels/telegram.py
 
 ## Questions
-

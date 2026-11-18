@@ -24,4 +24,3 @@ The same broadcast reaches test numbers and test accounts on more channels.
 adapters/channels/
 
 ## Questions
-

@@ -25,4 +25,3 @@ TECHNICAL_ARCHITECTURE sections 4 and 6; `repositories/base.py`, `repositories/m
 apps/api/src/clarion_api/repositories/sql.py, api/container.py, config.py, tests/integration/
 
 ## Questions
-

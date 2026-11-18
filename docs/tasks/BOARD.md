@@ -28,4 +28,3 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 - [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09)
 
 ## Blocked or questions
-

@@ -25,4 +25,3 @@ Web `features/` structure; ADR 0003.
 apps/web/src/features/review/, pages/review-queue-page.tsx
 
 ## Questions
-

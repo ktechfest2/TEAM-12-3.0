@@ -24,4 +24,3 @@ docs/product/.
 docs/product/, apps/api/scripts/
 
 ## Questions
-

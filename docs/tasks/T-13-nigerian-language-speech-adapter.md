@@ -24,4 +24,3 @@ ADR 0002; `adapters/speech/`.
 adapters/speech/, docs/adr/, docs/CREDITS.md
 
 ## Questions
-

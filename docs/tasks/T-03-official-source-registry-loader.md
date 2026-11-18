@@ -24,4 +24,3 @@ ADR 0003; `data/seed_sources.json`.
 apps/api/scripts/, data/, Makefile
 
 ## Questions
-

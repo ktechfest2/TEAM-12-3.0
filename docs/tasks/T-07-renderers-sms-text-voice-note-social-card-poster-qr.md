@@ -25,4 +25,3 @@ TECHNICAL_ARCHITECTURE 5.4; `services/rendering/sms.py`.
 services/rendering/, adapters/storage/
 
 ## Questions
-

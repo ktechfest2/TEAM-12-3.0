@@ -26,4 +26,3 @@ TECHNICAL_ARCHITECTURE 5.2 to 5.5; `domain/rules.py`; `services/broadcasting.py`
 api/routes/messages.py, services/, worker/tasks.py, repositories/
 
 ## Questions
-
