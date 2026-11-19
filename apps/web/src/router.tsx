@@ -1,18 +1,43 @@
 import { createBrowserRouter } from "react-router";
-import { AppLayout } from "./components/app-layout";
+import { DashboardLayout } from "./components/dashboard-layout";
+import { PublicLayout } from "./components/public-layout";
 import { BroadcastBoardPage } from "./pages/broadcast-board-page";
+import { ClaimsTablePage } from "./pages/claims-table-page";
+import { DashboardOverviewPage } from "./pages/dashboard-overview-page";
+import { EvidenceLibraryPage } from "./pages/evidence-library-page";
+import { FactCheckDetailPage } from "./pages/fact-check-detail-page";
+import { FactCheckListingPage } from "./pages/fact-check-listing-page";
+import { Homepage } from "./pages/homepage";
+import { InformationDetailPage } from "./pages/information-detail-page";
+import { InformationHubPage } from "./pages/information-hub-page";
 import { PublicCorrectionPage } from "./pages/public-correction-page";
-import { ReviewQueuePage } from "./pages/review-queue-page";
 import { SubmitClaimPage } from "./pages/submit-claim-page";
+import { VerificationPage } from "./pages/verification-page";
 
 export const router = createBrowserRouter([
   {
-    element: <AppLayout />,
+    element: <PublicLayout />,
     children: [
-      { index: true, element: <SubmitClaimPage /> },
-      { path: "review", element: <ReviewQueuePage /> },
-      { path: "board", element: <BroadcastBoardPage /> },
+      { index: true, element: <Homepage /> },
+      { path: "check", element: <SubmitClaimPage /> },
+      { path: "information", element: <InformationHubPage /> },
+      { path: "information/:slug", element: <InformationDetailPage /> },
+      { path: "fact-checks", element: <FactCheckListingPage /> },
+      { path: "fact-checks/:slug", element: <FactCheckDetailPage /> },
       { path: "c/:messageId", element: <PublicCorrectionPage /> },
+    ],
+  },
+  {
+    path: "dashboard",
+    element: <DashboardLayout />,
+    children: [
+      { index: true, element: <DashboardOverviewPage /> },
+      { path: "claims", element: <ClaimsTablePage /> },
+      { path: "review", element: <ClaimsTablePage /> },
+      { path: "verification", element: <VerificationPage /> },
+      { path: "verification/:messageId", element: <VerificationPage /> },
+      { path: "evidence", element: <EvidenceLibraryPage /> },
+      { path: "board", element: <BroadcastBoardPage /> },
     ],
   },
 ]);

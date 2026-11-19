@@ -215,7 +215,7 @@ export function ReviewDetail({ messageId }: Props) {
               {broadcast.isSuccess ? (
                 <p>
                   Sending started.{" "}
-                  <Link to="/board" className="underline">
+                  <Link to="/dashboard/board" className="underline">
                     Watch the broadcast board
                   </Link>
                 </p>
