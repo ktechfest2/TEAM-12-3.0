@@ -12,6 +12,8 @@ from typing import Any
 from clarion_api.domain.models import MasterMessage
 
 HASH_ALGORITHM = "sha256"
+# Stored in the audit trail when a message is the first one sealed.
+NO_PREVIOUS_HASH = "none"
 
 
 def canonical_payload(message: MasterMessage, previous_hash: str | None) -> dict[str, Any]:
@@ -32,9 +34,14 @@ def canonical_payload(message: MasterMessage, previous_hash: str | None) -> dict
     }
 
 
-def compute_hash(message: MasterMessage, previous_hash: str | None = None) -> str:
+def canonical_json(message: MasterMessage, previous_hash: str | None = None) -> str:
+    """The exact text that is hashed. Published so anyone can recompute the hash."""
     payload = canonical_payload(message, previous_hash)
-    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+
+
+def compute_hash(message: MasterMessage, previous_hash: str | None = None) -> str:
+    encoded = canonical_json(message, previous_hash)
     digest = hashlib.new(HASH_ALGORITHM, encoded.encode("utf-8")).hexdigest()
     return f"{HASH_ALGORITHM}:{digest}"
 
