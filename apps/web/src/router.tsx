@@ -13,6 +13,7 @@ import { InformationDetailPage } from "./pages/information-detail-page";
 import { InformationHubPage } from "./pages/information-hub-page";
 import { PublicCorrectionPage } from "./pages/public-correction-page";
 import { SubmitClaimPage } from "./pages/submit-claim-page";
+import { SubscribePage } from "./pages/subscribe-page";
 import { VerificationPage } from "./pages/verification-page";
 
 export const router = createBrowserRouter([
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Homepage /> },
       { path: "check", element: <SubmitClaimPage /> },
       { path: "guide", element: <GuidePage /> },
+      { path: "subscribe", element: <SubscribePage /> },
       { path: "information", element: <InformationHubPage /> },
       { path: "information/:slug", element: <InformationDetailPage /> },
       { path: "fact-checks", element: <FactCheckListingPage /> },

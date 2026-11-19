@@ -8,6 +8,7 @@ const navigation = [
   { to: "/information", label: "Election information" },
   { to: "/fact-checks", label: "Fact-checks" },
   { to: "/guide", label: "How it works" },
+  { to: "/subscribe", label: "Text alerts" },
 ] as const;
 
 export function PublicLayout() {
@@ -113,6 +114,9 @@ export function PublicLayout() {
             </NavLink>
             <NavLink to="/fact-checks" className="hover:text-brand">
               Fact-checks
+            </NavLink>
+            <NavLink to="/subscribe" className="hover:text-brand">
+              Get text alerts
             </NavLink>
             <NavLink to="/guide" className="hover:text-brand">
               How Clarion works
