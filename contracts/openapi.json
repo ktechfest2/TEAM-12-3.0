@@ -1,6 +1,39 @@
 {
   "components": {
     "schemas": {
+      "BroadcastIn": {
+        "properties": {
+          "languages": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Language"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Languages"
+          }
+        },
+        "title": "BroadcastIn",
+        "type": "object"
+      },
+      "ChannelKind": {
+        "enum": [
+          "telegram",
+          "web_feed",
+          "sms",
+          "whatsapp",
+          "x",
+          "instagram",
+          "console"
+        ],
+        "title": "ChannelKind",
+        "type": "string"
+      },
       "ClaimIn": {
         "properties": {
           "language": {
@@ -74,6 +107,91 @@
         "title": "ClaimOut",
         "type": "object"
       },
+      "DeliveryOut": {
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/ChannelKind"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "external_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "External Id"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "sent_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sent At"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeliveryStatus"
+          }
+        },
+        "required": [
+          "id",
+          "message_id",
+          "channel",
+          "language",
+          "status",
+          "external_id",
+          "error",
+          "sent_at",
+          "created_at"
+        ],
+        "title": "DeliveryOut",
+        "type": "object"
+      },
+      "DeliveryStatus": {
+        "enum": [
+          "queued",
+          "sent",
+          "failed",
+          "retracted"
+        ],
+        "title": "DeliveryStatus",
+        "type": "string"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -120,6 +238,287 @@
           "pcm"
         ],
         "title": "Language",
+        "type": "string"
+      },
+      "LocalisationApprovalIn": {
+        "properties": {
+          "approved_by": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Approved By",
+            "type": "string"
+          }
+        },
+        "required": [
+          "approved_by"
+        ],
+        "title": "LocalisationApprovalIn",
+        "type": "object"
+      },
+      "LocalisationIn": {
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "language"
+        ],
+        "title": "LocalisationIn",
+        "type": "object"
+      },
+      "LocalisationOut": {
+        "properties": {
+          "approved_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved By"
+          },
+          "is_approved": {
+            "title": "Is Approved",
+            "type": "boolean"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "language",
+          "text",
+          "approved_by",
+          "is_approved"
+        ],
+        "title": "LocalisationOut",
+        "type": "object"
+      },
+      "MessageCreateIn": {
+        "properties": {
+          "claim_id": {
+            "format": "uuid",
+            "title": "Claim Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id"
+        ],
+        "title": "MessageCreateIn",
+        "type": "object"
+      },
+      "MessageOut": {
+        "properties": {
+          "claim_id": {
+            "format": "uuid",
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "integrity_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Integrity Hash"
+          },
+          "localisations": {
+            "items": {
+              "$ref": "#/components/schemas/LocalisationOut"
+            },
+            "title": "Localisations",
+            "type": "array"
+          },
+          "review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReviewOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SourceOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/Verdict"
+          }
+        },
+        "required": [
+          "id",
+          "claim_id",
+          "verdict",
+          "summary",
+          "confidence",
+          "source",
+          "review",
+          "localisations",
+          "integrity_hash",
+          "created_at"
+        ],
+        "title": "MessageOut",
+        "type": "object"
+      },
+      "RetractIn": {
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          },
+          "reviewer_id": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Reviewer Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reviewer_id",
+          "reason"
+        ],
+        "title": "RetractIn",
+        "type": "object"
+      },
+      "ReviewIn": {
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "reviewer_id": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReviewStatus"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "minLength": 3,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          }
+        },
+        "required": [
+          "reviewer_id",
+          "status"
+        ],
+        "title": "ReviewIn",
+        "type": "object"
+      },
+      "ReviewOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "reviewer_id": {
+            "title": "Reviewer Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReviewStatus"
+          }
+        },
+        "required": [
+          "reviewer_id",
+          "status",
+          "note",
+          "created_at"
+        ],
+        "title": "ReviewOut",
+        "type": "object"
+      },
+      "ReviewStatus": {
+        "enum": [
+          "pending",
+          "approved",
+          "rejected",
+          "escalated"
+        ],
+        "title": "ReviewStatus",
         "type": "string"
       },
       "SmsEncoding": {
@@ -322,6 +721,508 @@
         "summary": "Health",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/messages": {
+      "get": {
+        "operationId": "listMessages",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/MessageOut"
+                  },
+                  "title": "Response Listmessages",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Messages",
+        "tags": [
+          "messages"
+        ]
+      },
+      "post": {
+        "operationId": "createMessage",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Message",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}": {
+      "get": {
+        "operationId": "getMessage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Message",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/broadcast": {
+      "post": {
+        "operationId": "broadcastMessage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BroadcastIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryOut"
+                  },
+                  "title": "Response Broadcastmessage",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Broadcast Message",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/deliveries": {
+      "get": {
+        "operationId": "listDeliveries",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryOut"
+                  },
+                  "title": "Response Listdeliveries",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Deliveries",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/localisations": {
+      "put": {
+        "operationId": "setLocalisation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalisationIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Set Localisation",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/localisations/{language}/approval": {
+      "post": {
+        "operationId": "approveLocalisation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "language",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Language"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalisationApprovalIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Approve Localisation",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/retraction": {
+      "post": {
+        "operationId": "retractMessage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetractIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryOut"
+                  },
+                  "title": "Response Retractmessage",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Retract Message",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/reviews": {
+      "post": {
+        "operationId": "addReview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Add Review",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/seal": {
+      "post": {
+        "operationId": "sealMessage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Seal Message",
+        "tags": [
+          "messages"
         ]
       }
     },

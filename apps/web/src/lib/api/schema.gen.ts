@@ -38,6 +38,160 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/messages": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Messages */
+    get: operations["listMessages"];
+    put?: never;
+    /** Create Message */
+    post: operations["createMessage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get Message */
+    get: operations["getMessage"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/broadcast": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Broadcast Message */
+    post: operations["broadcastMessage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/deliveries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List Deliveries */
+    get: operations["listDeliveries"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/localisations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Set Localisation */
+    put: operations["setLocalisation"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/localisations/{language}/approval": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Approve Localisation */
+    post: operations["approveLocalisation"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/retraction": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Retract Message */
+    post: operations["retractMessage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/reviews": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Add Review */
+    post: operations["addReview"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/messages/{message_id}/seal": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Seal Message */
+    post: operations["sealMessage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/tools/sms-size": {
     parameters: {
       query?: never;
@@ -59,6 +213,16 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** BroadcastIn */
+    BroadcastIn: {
+      /** Languages */
+      languages?: components["schemas"]["Language"][] | null;
+    };
+    /**
+     * ChannelKind
+     * @enum {string}
+     */
+    ChannelKind: "telegram" | "web_feed" | "sms" | "whatsapp" | "x" | "instagram" | "console";
     /** ClaimIn */
     ClaimIn: {
       /** @default en */
@@ -88,6 +252,38 @@ export interface components {
       text: string;
       verdict: components["schemas"]["Verdict"];
     };
+    /** DeliveryOut */
+    DeliveryOut: {
+      channel: components["schemas"]["ChannelKind"];
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Error */
+      error: string | null;
+      /** External Id */
+      external_id: string | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      language: components["schemas"]["Language"];
+      /**
+       * Message Id
+       * Format: uuid
+       */
+      message_id: string;
+      /** Sent At */
+      sent_at: string | null;
+      status: components["schemas"]["DeliveryStatus"];
+    };
+    /**
+     * DeliveryStatus
+     * @enum {string}
+     */
+    DeliveryStatus: "queued" | "sent" | "failed" | "retracted";
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
@@ -108,6 +304,99 @@ export interface components {
      * @enum {string}
      */
     Language: "en" | "yo" | "ha" | "ig" | "pcm";
+    /** LocalisationApprovalIn */
+    LocalisationApprovalIn: {
+      /** Approved By */
+      approved_by: string;
+    };
+    /** LocalisationIn */
+    LocalisationIn: {
+      language: components["schemas"]["Language"];
+      /** Text */
+      text?: string | null;
+    };
+    /** LocalisationOut */
+    LocalisationOut: {
+      /** Approved By */
+      approved_by: string | null;
+      /** Is Approved */
+      is_approved: boolean;
+      language: components["schemas"]["Language"];
+      /** Text */
+      text: string;
+    };
+    /** MessageCreateIn */
+    MessageCreateIn: {
+      /**
+       * Claim Id
+       * Format: uuid
+       */
+      claim_id: string;
+    };
+    /** MessageOut */
+    MessageOut: {
+      /**
+       * Claim Id
+       * Format: uuid
+       */
+      claim_id: string;
+      /** Confidence */
+      confidence: number;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Integrity Hash */
+      integrity_hash: string | null;
+      /** Localisations */
+      localisations: components["schemas"]["LocalisationOut"][];
+      review: components["schemas"]["ReviewOut"] | null;
+      source: components["schemas"]["SourceOut"] | null;
+      /** Summary */
+      summary: string;
+      verdict: components["schemas"]["Verdict"];
+    };
+    /** RetractIn */
+    RetractIn: {
+      /** Reason */
+      reason: string;
+      /** Reviewer Id */
+      reviewer_id: string;
+    };
+    /** ReviewIn */
+    ReviewIn: {
+      /** Note */
+      note?: string | null;
+      /** Reviewer Id */
+      reviewer_id: string;
+      status: components["schemas"]["ReviewStatus"];
+      /** Summary */
+      summary?: string | null;
+    };
+    /** ReviewOut */
+    ReviewOut: {
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string;
+      /** Note */
+      note: string | null;
+      /** Reviewer Id */
+      reviewer_id: string;
+      status: components["schemas"]["ReviewStatus"];
+    };
+    /**
+     * ReviewStatus
+     * @enum {string}
+     */
+    ReviewStatus: "pending" | "approved" | "rejected" | "escalated";
     /**
      * SmsEncoding
      * @enum {string}
@@ -221,6 +510,339 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["HealthOut"];
+        };
+      };
+    };
+  };
+  listMessages: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  createMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MessageCreateIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  getMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  broadcastMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["BroadcastIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeliveryOut"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  listDeliveries: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeliveryOut"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  setLocalisation: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LocalisationIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  approveLocalisation: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+        language: components["schemas"]["Language"];
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LocalisationApprovalIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  retractMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RetractIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeliveryOut"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  addReview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReviewIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  sealMessage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
         };
       };
     };

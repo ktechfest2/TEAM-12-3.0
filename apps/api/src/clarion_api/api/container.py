@@ -16,9 +16,24 @@ from clarion_api.adapters.storage import ObjectStore, build_object_store
 from clarion_api.config import Settings
 from clarion_api.db.session import build_engine, build_sessionmaker
 from clarion_api.domain.models import SourcePassage
-from clarion_api.repositories.base import ClaimRepository, SourceRepository
-from clarion_api.repositories.memory import MemoryClaimRepository, MemorySourceRepository
-from clarion_api.repositories.sql import SqlClaimRepository, SqlSourceRepository
+from clarion_api.repositories.base import (
+    ClaimRepository,
+    DeliveryRepository,
+    MessageRepository,
+    SourceRepository,
+)
+from clarion_api.repositories.memory import (
+    MemoryClaimRepository,
+    MemoryDeliveryRepository,
+    MemoryMessageRepository,
+    MemorySourceRepository,
+)
+from clarion_api.repositories.sql import (
+    SqlClaimRepository,
+    SqlDeliveryRepository,
+    SqlMessageRepository,
+    SqlSourceRepository,
+)
 
 
 @dataclass
@@ -31,6 +46,8 @@ class Container:
     channels: list[Channel]
     sources: SourceRepository = field(default_factory=MemorySourceRepository)
     claims: ClaimRepository = field(default_factory=MemoryClaimRepository)
+    messages: MessageRepository = field(default_factory=MemoryMessageRepository)
+    deliveries: DeliveryRepository = field(default_factory=MemoryDeliveryRepository)
     engine: AsyncEngine | None = None
 
     async def aclose(self) -> None:
@@ -54,6 +71,8 @@ def build_container(settings: Settings) -> Container:
         sessions = build_sessionmaker(container.engine)
         container.sources = SqlSourceRepository(sessions)
         container.claims = SqlClaimRepository(sessions)
+        container.messages = SqlMessageRepository(sessions)
+        container.deliveries = SqlDeliveryRepository(sessions)
     return container
 
 
