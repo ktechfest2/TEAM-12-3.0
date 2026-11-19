@@ -6,7 +6,7 @@ Only this module maps database rows to domain models and back.
 from collections.abc import Sequence
 from uuid import UUID
 
-from sqlalchemy import delete, select
+from sqlalchemy import Select, delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from clarion_api.db.tables import (
@@ -16,6 +16,7 @@ from clarion_api.db.tables import (
     MessageRow,
     ReviewRow,
     SourcePassageRow,
+    SubscriberRow,
 )
 from clarion_api.domain.enums import ChannelKind, DeliveryStatus, Language, ReviewStatus, Verdict
 from clarion_api.domain.models import (
@@ -25,6 +26,7 @@ from clarion_api.domain.models import (
     MasterMessage,
     Review,
     SourcePassage,
+    Subscriber,
 )
 from clarion_api.repositories.base import MIN_SIMILARITY
 
@@ -292,3 +294,63 @@ class SqlDeliveryRepository:
         stmt = select(DeliveryRow).order_by(DeliveryRow.created_at.desc()).limit(limit)
         async with self._sessions() as session:
             return [_delivery_from_row(r) for r in (await session.scalars(stmt)).all()]
+
+
+def _subscriber_from_row(row: SubscriberRow) -> Subscriber:
+    return Subscriber(
+        id=row.id,
+        created_at=row.created_at,
+        channel=ChannelKind(row.channel),
+        address_hash=row.address_hash,
+        language=Language(row.language),
+        state=row.state,
+        consented_at=row.consented_at,
+    )
+
+
+class SqlSubscriberRepository:
+    def __init__(self, sessions: SessionFactory) -> None:
+        self._sessions = sessions
+
+    @staticmethod
+    def _lookup(channel: ChannelKind, address_hash: str) -> Select[SubscriberRow]:
+        return select(SubscriberRow).where(
+            SubscriberRow.channel == channel.value, SubscriberRow.address_hash == address_hash
+        )
+
+    async def upsert(self, subscriber: Subscriber) -> Subscriber:
+        async with self._sessions.begin() as session:
+            row = await session.scalar(self._lookup(subscriber.channel, subscriber.address_hash))
+            if row is None:
+                row = SubscriberRow(
+                    id=subscriber.id,
+                    created_at=subscriber.created_at,
+                    channel=subscriber.channel.value,
+                    address_hash=subscriber.address_hash,
+                    language=subscriber.language.value,
+                    state=subscriber.state,
+                    consented_at=subscriber.consented_at,
+                )
+                session.add(row)
+            else:
+                row.language = subscriber.language.value
+                row.state = subscriber.state
+            await session.flush()
+            return _subscriber_from_row(row)
+
+    async def get(self, channel: ChannelKind, address_hash: str) -> Subscriber | None:
+        async with self._sessions() as session:
+            row = await session.scalar(self._lookup(channel, address_hash))
+            return _subscriber_from_row(row) if row else None
+
+    async def remove(self, channel: ChannelKind, address_hash: str) -> bool:
+        async with self._sessions.begin() as session:
+            row = await session.scalar(self._lookup(channel, address_hash))
+            if row is None:
+                return False
+            await session.delete(row)
+            return True
+
+    async def count(self) -> int:
+        async with self._sessions() as session:
+            return int(await session.scalar(select(func.count()).select_from(SubscriberRow)) or 0)

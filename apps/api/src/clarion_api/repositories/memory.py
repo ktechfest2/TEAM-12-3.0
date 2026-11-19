@@ -2,7 +2,8 @@ import math
 from collections.abc import Sequence
 from uuid import UUID
 
-from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage
+from clarion_api.domain.enums import ChannelKind
+from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage, Subscriber
 from clarion_api.repositories.base import MIN_SIMILARITY
 
 
@@ -83,3 +84,27 @@ class MemoryDeliveryRepository:
 
     async def list_recent(self, *, limit: int) -> list[Delivery]:
         return sorted(self._items.values(), key=lambda d: d.created_at, reverse=True)[:limit]
+
+
+class MemorySubscriberRepository:
+    def __init__(self) -> None:
+        self._items: dict[tuple[ChannelKind, str], Subscriber] = {}
+
+    async def upsert(self, subscriber: Subscriber) -> Subscriber:
+        key = (subscriber.channel, subscriber.address_hash)
+        existing = self._items.get(key)
+        if existing is not None:
+            subscriber = existing.model_copy(
+                update={"language": subscriber.language, "state": subscriber.state}
+            )
+        self._items[key] = subscriber
+        return subscriber
+
+    async def get(self, channel: ChannelKind, address_hash: str) -> Subscriber | None:
+        return self._items.get((channel, address_hash))
+
+    async def remove(self, channel: ChannelKind, address_hash: str) -> bool:
+        return self._items.pop((channel, address_hash), None) is not None
+
+    async def count(self) -> int:
+        return len(self._items)

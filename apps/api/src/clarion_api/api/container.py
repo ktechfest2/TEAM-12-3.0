@@ -9,7 +9,7 @@ from uuid import NAMESPACE_URL, uuid5
 import httpx
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from clarion_api.adapters.channels import Channel, build_channels
+from clarion_api.adapters.channels import Channel, Replier, build_channels, build_replier
 from clarion_api.adapters.llm import LanguageModel, build_language_model
 from clarion_api.adapters.speech import SpeechSynthesizer, build_speech
 from clarion_api.adapters.storage import ObjectStore, build_object_store
@@ -21,18 +21,21 @@ from clarion_api.repositories.base import (
     DeliveryRepository,
     MessageRepository,
     SourceRepository,
+    SubscriberRepository,
 )
 from clarion_api.repositories.memory import (
     MemoryClaimRepository,
     MemoryDeliveryRepository,
     MemoryMessageRepository,
     MemorySourceRepository,
+    MemorySubscriberRepository,
 )
 from clarion_api.repositories.sql import (
     SqlClaimRepository,
     SqlDeliveryRepository,
     SqlMessageRepository,
     SqlSourceRepository,
+    SqlSubscriberRepository,
 )
 
 
@@ -44,10 +47,12 @@ class Container:
     speech: SpeechSynthesizer
     store: ObjectStore
     channels: list[Channel]
+    replier: Replier
     sources: SourceRepository = field(default_factory=MemorySourceRepository)
     claims: ClaimRepository = field(default_factory=MemoryClaimRepository)
     messages: MessageRepository = field(default_factory=MemoryMessageRepository)
     deliveries: DeliveryRepository = field(default_factory=MemoryDeliveryRepository)
+    subscribers: SubscriberRepository = field(default_factory=MemorySubscriberRepository)
     engine: AsyncEngine | None = None
 
     async def aclose(self) -> None:
@@ -58,13 +63,15 @@ class Container:
 
 def build_container(settings: Settings) -> Container:
     http = httpx.AsyncClient()
+    channels = build_channels(settings, http)
     container = Container(
         settings=settings,
         http=http,
         llm=build_language_model(settings),
         speech=build_speech(settings),
         store=build_object_store(settings),
-        channels=build_channels(settings, http),
+        channels=channels,
+        replier=build_replier(channels),
     )
     if settings.repository_backend == "sql":
         container.engine = build_engine(settings.database_url)
@@ -73,6 +80,7 @@ def build_container(settings: Settings) -> Container:
         container.claims = SqlClaimRepository(sessions)
         container.messages = SqlMessageRepository(sessions)
         container.deliveries = SqlDeliveryRepository(sessions)
+        container.subscribers = SqlSubscriberRepository(sessions)
     return container
 
 

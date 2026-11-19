@@ -16,9 +16,15 @@ class TelegramChannel:
         self._client = client
 
     async def send_text(self, text: str) -> str:
+        return await self._post(self._chat_id, text)
+
+    async def reply(self, recipient: str, text: str) -> str:
+        return await self._post(recipient, text)
+
+    async def _post(self, chat_id: str, text: str) -> str:
         response = await self._client.post(
             f"{self._base}/sendMessage",
-            json={"chat_id": self._chat_id, "text": text, "link_preview_options": {}},
+            json={"chat_id": chat_id, "text": text, "link_preview_options": {}},
             timeout=15.0,
         )
         response.raise_for_status()

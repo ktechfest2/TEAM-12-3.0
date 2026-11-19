@@ -122,3 +122,23 @@ class TokenOut(BaseModel):
     token_type: str = "bearer"  # noqa: S105 - the OAuth token type name, not a secret
     expires_in_seconds: int
     reviewer_name: str
+
+
+class TelegramChat(BaseModel):
+    id: int
+
+
+class TelegramMessage(BaseModel):
+    chat: TelegramChat
+    text: str | None = None
+
+
+class TelegramUpdateIn(BaseModel):
+    """The part of a Telegram update Clarion reads. Other fields are ignored."""
+
+    update_id: int
+    message: TelegramMessage | None = None
+
+
+class WebhookOut(BaseModel):
+    ok: bool = True

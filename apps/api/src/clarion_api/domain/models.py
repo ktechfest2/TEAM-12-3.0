@@ -102,3 +102,13 @@ class Delivery(Entity):
     external_id: str | None = None
     error: str | None = None
     sent_at: datetime | None = None
+
+
+class Subscriber(Entity):
+    """Someone who asked for future corrections. The address is stored only as a hash."""
+
+    channel: ChannelKind
+    address_hash: str
+    language: Language
+    state: str | None = None
+    consented_at: datetime = Field(default_factory=utc_now)
