@@ -1,9 +1,28 @@
 from clarion_api.adapters.llm.base import LanguageModel
+from clarion_api.adapters.llm.budget import (
+    BudgetedLanguageModel,
+    MemoryUsageCounter,
+    RedisUsageCounter,
+    UsageCounter,
+)
 from clarion_api.adapters.llm.fake import FakeLanguageModel
 from clarion_api.config import Settings
 
 
-def build_language_model(settings: Settings) -> LanguageModel:
+def build_language_model(settings: Settings, counter: UsageCounter | None = None) -> LanguageModel:
+    """Build the configured model and always wrap it in the monthly budget guard."""
+    if counter is None:
+        offline = settings.llm_provider == "fake" or settings.is_test
+        counter = MemoryUsageCounter() if offline else RedisUsageCounter(settings.redis_url)
+    return BudgetedLanguageModel(
+        _build_provider(settings),
+        counter,
+        monthly_budget_usd=settings.llm_monthly_budget_usd,
+        usd_per_million_tokens=settings.llm_usd_per_million_tokens,
+    )
+
+
+def _build_provider(settings: Settings) -> LanguageModel:
     if settings.llm_provider == "fake" or settings.is_test:
         return FakeLanguageModel(dimensions=settings.llm_embedding_dimensions)
     if settings.llm_provider == "gemini":
@@ -22,4 +41,4 @@ def build_language_model(settings: Settings) -> LanguageModel:
     raise RuntimeError(msg)
 
 
-__all__ = ["LanguageModel", "build_language_model"]
+__all__ = ["BudgetedLanguageModel", "LanguageModel", "UsageCounter", "build_language_model"]
