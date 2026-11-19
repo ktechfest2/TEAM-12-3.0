@@ -75,6 +75,12 @@ class Settings(BaseSettings):
     channel_sms_provider: str | None = None
     channel_sms_api_key: SecretStr | None = None
     channel_sms_sender_id: str | None = None
+    channel_sms_device_id: str | None = None
+    # Comma separated international numbers that agreed to receive test messages.
+    channel_sms_recipients: str = ""
+    channel_x_access_token: SecretStr | None = None
+    # Fernet key for subscriber phone numbers. Unset switches phone subscriptions off.
+    subscriber_encryption_key: SecretStr | None = None
     channel_whatsapp_token: SecretStr | None = None
     channel_whatsapp_phone_number_id: str | None = None
 
@@ -92,6 +98,10 @@ class Settings(BaseSettings):
             msg = "AUTH_JWT_SECRET must be set to a private value when APP_ENV=production"
             raise ValueError(msg)
         return self
+
+    @property
+    def sms_recipients(self) -> list[str]:
+        return [n.strip() for n in self.channel_sms_recipients.split(",") if n.strip()]
 
     @property
     def is_test(self) -> bool:

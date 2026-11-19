@@ -20,3 +20,19 @@ class NotAuthorizedError(DomainError):
 
 class RenderError(DomainError):
     """Raised when a rendition cannot be produced, for example audio in the wrong format."""
+
+
+class InvalidCodeError(DomainError):
+    """Raised when a verification code is wrong, expired or out of attempts."""
+
+
+class RateLimitedError(DomainError):
+    """Raised when too many verification codes were requested."""
+
+
+class FeatureUnavailableError(DomainError):
+    """Raised when a feature is switched off in this environment (for example no key set)."""
+
+
+class InvalidPhoneError(DomainError):
+    """Raised when a phone number cannot be read as an international number."""

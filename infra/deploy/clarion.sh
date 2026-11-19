@@ -120,11 +120,19 @@ prepare_env() {
     say "generated secrets in $secrets"
   fi
 
+  # Key for subscriber phone numbers (ADR 0008). Generated once and kept: losing it makes
+  # every stored number unreadable, so it lives in secrets.env next to the database password.
+  if ! grep -q '^SUBSCRIBER_ENCRYPTION_KEY=' "$secrets"; then
+    umask 077
+    printf 'SUBSCRIBER_ENCRYPTION_KEY=%s\n' "$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '\n')" >>"$secrets"
+    say "generated the subscriber encryption key in $secrets"
+  fi
+
   umask 077
   {
-    grep -vE '^(POSTGRES_PASSWORD|AUTH_JWT_SECRET|CHANNEL_TELEGRAM_WEBHOOK_SECRET)=' "$file" || true
+    grep -vE '^(POSTGRES_PASSWORD|AUTH_JWT_SECRET|CHANNEL_TELEGRAM_WEBHOOK_SECRET|SUBSCRIBER_ENCRYPTION_KEY)=' "$file" || true
     echo "POSTGRES_PASSWORD=$(var POSTGRES_PASSWORD "$secrets")"
-    for k in AUTH_JWT_SECRET CHANNEL_TELEGRAM_WEBHOOK_SECRET; do
+    for k in AUTH_JWT_SECRET CHANNEL_TELEGRAM_WEBHOOK_SECRET SUBSCRIBER_ENCRYPTION_KEY; do
       mine="$(var "$k" "$file")"
       echo "$k=${mine:-$(var "$k" "$secrets")}"
     done

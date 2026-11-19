@@ -11,10 +11,13 @@ from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
 from clarion_api.domain.enums import (
     ChannelKind,
+    DeliveryMode,
     DeliveryStatus,
+    DigestFrequency,
     Language,
     RenditionFormat,
     ReviewStatus,
+    SubscriptionStatus,
     Verdict,
 )
 
@@ -112,6 +115,45 @@ class Subscriber(Entity):
     language: Language
     state: str | None = None
     consented_at: datetime = Field(default_factory=utc_now)
+
+
+class SmsPreferences(BaseModel):
+    """What a person asked to receive. Validated again server side; the form is not trusted."""
+
+    model_config = ConfigDict(frozen=True)
+
+    languages: list[Language] = Field(min_length=1, max_length=5)
+    mode: DeliveryMode = DeliveryMode.INSTANT
+    digest_frequency: DigestFrequency = DigestFrequency.DAILY
+    max_per_day: int = Field(default=3, ge=1, le=10)
+
+
+class SmsSubscription(Entity):
+    """A phone number that asked for corrections by SMS.
+
+    The number is stored encrypted; `phone_hash` finds it again. It stays `pending`
+    until the owner types the code we texted, and `consented_at` is set only then.
+    Requested changes (new preferences, or removal) wait in `requested` until a code
+    confirms them, so typing someone else's number changes nothing.
+    """
+
+    phone_hash: str
+    phone_encrypted: str
+    status: SubscriptionStatus = SubscriptionStatus.PENDING
+    preferences: SmsPreferences
+    requested: SmsPreferences | None = None
+    unsubscribe_requested: bool = False
+    consented_at: datetime | None = None
+    code_hash: str | None = None
+    code_sent_at: datetime | None = None
+    code_expires_at: datetime | None = None
+    code_attempts: int = 0
+    # Daily cap bookkeeping. `sent_on` is the local (Lagos) date the counter belongs to.
+    sent_on: str | None = None
+    sent_today: int = 0
+    last_sent_at: datetime | None = None
+    held_message_ids: list[UUID] = Field(default_factory=list)
+    seen_message_ids: list[UUID] = Field(default_factory=list)
 
 
 class AuditEvent(Entity):

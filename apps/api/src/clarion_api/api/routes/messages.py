@@ -25,7 +25,7 @@ from clarion_api.domain.models import MasterMessage
 from clarion_api.services import messages as workflow
 from clarion_api.services.delivery_stream import stream_delivery_events
 from clarion_api.services.rendering.service import render_message as render_all
-from clarion_api.worker.tasks import send_delivery
+from clarion_api.worker.tasks import notify_phone_subscribers, send_delivery
 
 # Every message route is for invited reviewers; the public page reads sealed messages elsewhere.
 router = APIRouter(prefix="/messages", tags=["messages"], dependencies=[Depends(get_reviewer)])
@@ -126,6 +126,7 @@ async def broadcast_message(
     )
     for delivery in planned:
         await send_delivery.kiq(str(delivery.id))
+    await notify_phone_subscribers.kiq(str(message_id))
     planned_ids = {d.id for d in planned}
     stored = await container.deliveries.list_for_message(message_id)
     return [delivery_out(d) for d in stored if d.id in planned_ids]

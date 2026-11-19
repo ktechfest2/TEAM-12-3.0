@@ -12,10 +12,14 @@ from clarion_api.api.container import build_container, load_seed_sources
 from clarion_api.api.routes import router
 from clarion_api.config import Settings, get_settings
 from clarion_api.domain.errors import (
+    FeatureUnavailableError,
+    InvalidCodeError,
+    InvalidPhoneError,
     LlmBudgetExceededError,
     NotAuthorizedError,
     NotFoundError,
     NotPublishableError,
+    RateLimitedError,
 )
 from clarion_api.observability import configure_logging, get_logger
 from clarion_api.worker.broker import broker
@@ -65,6 +69,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.exception_handler(LlmBudgetExceededError)
     async def over_budget(_: Request, exc: LlmBudgetExceededError) -> JSONResponse:
+        return JSONResponse(status_code=503, content={"detail": str(exc)})
+
+    @app.exception_handler(InvalidCodeError)
+    async def invalid_code(_: Request, exc: InvalidCodeError) -> JSONResponse:
+        return JSONResponse(status_code=400, content={"detail": str(exc)})
+
+    @app.exception_handler(InvalidPhoneError)
+    async def invalid_phone(_: Request, exc: InvalidPhoneError) -> JSONResponse:
+        return JSONResponse(status_code=422, content={"detail": str(exc)})
+
+    @app.exception_handler(RateLimitedError)
+    async def rate_limited(_: Request, exc: RateLimitedError) -> JSONResponse:
+        return JSONResponse(status_code=429, content={"detail": str(exc)})
+
+    @app.exception_handler(FeatureUnavailableError)
+    async def unavailable(_: Request, exc: FeatureUnavailableError) -> JSONResponse:
         return JSONResponse(status_code=503, content={"detail": str(exc)})
 
     return app

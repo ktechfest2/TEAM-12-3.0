@@ -102,7 +102,7 @@ Built so far: SMS text (shortened by whole words, never stripping tone marks), v
 
 ## 6. Data model
 
-Tables (`db/tables.py`, migration `0001`): `source_passages` (with `embedding vector(768)` and an HNSW cosine index), `claims`, `messages` (verdict check constraint), `reviews`, `localisations`, `deliveries`, `subscribers` (address stored as a hash, consent time required), `audit_events`.
+Tables (`db/tables.py`, migrations `0001` and `0002`): `source_passages` (with `embedding vector(768)` and an HNSW cosine index), `claims`, `messages` (verdict check constraint), `reviews`, `localisations`, `deliveries`, `subscribers` (chat address stored as a hash, consent time required), `sms_subscriptions` (phone number stored encrypted, see ADR 0008), `audit_events`.
 
 Naming: plural snake_case tables, `<entity>_id` foreign keys, `<verb>_at` UTC timestamps, constraint names from a fixed naming convention so migrations are stable.
 
@@ -131,7 +131,7 @@ All settings live in `config.py` (`pydantic-settings`), documented in `.env.exam
 ## 9. Security and safety
 
 - Publish rules are domain code with tests; weakening them needs an ADR.
-- Subscriber phone numbers are hashed; raw numbers only pass through the channel adapter at send time.
+- Chat subscriber addresses (Telegram) are hashed. Phone subscribers' numbers are stored encrypted (Fernet, key in `SUBSCRIBER_ENCRYPTION_KEY`, never in the database) next to a keyed hash used for lookup; they are decrypted only to send a text and are never logged. A number is texted corrections only after the owner confirms a code we sent (ADR 0008).
 - No personal data in logs at info level. No message bodies in logs.
 - LLM spend capped by `LLM_MONTHLY_BUDGET_USD` (enforcement is task T-10).
 - Reviewer access requires an invite code until proper auth lands (T-11).

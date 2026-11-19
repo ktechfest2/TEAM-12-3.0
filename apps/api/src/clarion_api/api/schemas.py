@@ -1,13 +1,16 @@
 """Public request and response shapes. Changing these changes contracts/openapi.json."""
 
 from datetime import datetime
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field
 
 from clarion_api.domain.enums import (
     ChannelKind,
+    DeliveryMode,
     DeliveryStatus,
+    DigestFrequency,
     Language,
     RenditionFormat,
     ReviewStatus,
@@ -186,3 +189,34 @@ class RenditionOut(BaseModel):
     format: RenditionFormat
     text: str | None
     media_url: str | None
+
+
+class SmsPreferencesIn(BaseModel):
+    languages: list[Language] = Field(min_length=1, max_length=5)
+    mode: DeliveryMode = DeliveryMode.INSTANT
+    digest_frequency: DigestFrequency = DigestFrequency.DAILY
+    max_per_day: int = Field(default=3, ge=1, le=10)
+
+
+class SubscribeIn(SmsPreferencesIn):
+    phone: str = Field(min_length=7, max_length=32)
+
+
+class UnsubscribeIn(BaseModel):
+    phone: str = Field(min_length=7, max_length=32)
+
+
+class ConfirmIn(BaseModel):
+    phone: str = Field(min_length=7, max_length=32)
+    code: str = Field(min_length=4, max_length=8)
+
+
+class CodeSentOut(BaseModel):
+    """Same answer whether or not the number is already known, so it cannot be probed."""
+
+    status: Literal["code_sent"] = "code_sent"
+
+
+class SubscriptionConfirmedOut(BaseModel):
+    status: Literal["active", "removed"]
+    preferences: SmsPreferencesIn | None = None

@@ -2,10 +2,12 @@
 foreign keys as <entity>_id, timestamps as <verb>_at in UTC."""
 
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import DateTime, Float, ForeignKey, MetaData, String, Text, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 EMBEDDING_DIMENSIONS = 768
@@ -96,6 +98,18 @@ class SubscriberRow(Timestamped, Base):
     language: Mapped[str] = mapped_column(String(8))
     state: Mapped[str | None] = mapped_column(String(40))
     consented_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class SmsSubscriptionRow(Timestamped, Base):
+    """Phone subscribers. The number is encrypted; the hash finds it. Everything else
+    (preferences, code state, send counters) lives in `payload`."""
+
+    __tablename__ = "sms_subscriptions"
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    phone_hash: Mapped[str] = mapped_column(String(80), unique=True)
+    phone_encrypted: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(16), index=True)
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
 
 
 class AuditEventRow(Timestamped, Base):

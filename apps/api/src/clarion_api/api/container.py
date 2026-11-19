@@ -1,12 +1,21 @@
 """Builds every adapter once at startup from settings. Routes read it from app.state."""
 
 from dataclasses import dataclass, field
+from datetime import timedelta
 from importlib.resources import files
 
 import httpx
 from sqlalchemy.ext.asyncio import AsyncEngine
 
-from clarion_api.adapters.channels import Channel, Replier, build_channels, build_replier
+from clarion_api.adapters.channels import (
+    Channel,
+    Replier,
+    SmsSender,
+    build_channels,
+    build_replier,
+    build_sms_sender,
+)
+from clarion_api.adapters.crypto import Cipher, build_cipher
 from clarion_api.adapters.llm import LanguageModel, build_language_model
 from clarion_api.adapters.speech import SpeechSynthesizer, build_speech
 from clarion_api.adapters.storage import ObjectStore, build_object_store
@@ -17,6 +26,7 @@ from clarion_api.repositories.base import (
     ClaimRepository,
     DeliveryRepository,
     MessageRepository,
+    SmsSubscriptionRepository,
     SourceRepository,
     SubscriberRepository,
 )
@@ -25,6 +35,7 @@ from clarion_api.repositories.memory import (
     MemoryClaimRepository,
     MemoryDeliveryRepository,
     MemoryMessageRepository,
+    MemorySmsSubscriptionRepository,
     MemorySourceRepository,
     MemorySubscriberRepository,
 )
@@ -33,9 +44,11 @@ from clarion_api.repositories.sql import (
     SqlClaimRepository,
     SqlDeliveryRepository,
     SqlMessageRepository,
+    SqlSmsSubscriptionRepository,
     SqlSourceRepository,
     SqlSubscriberRepository,
 )
+from clarion_api.services.rate_limit import SlidingWindowLimiter
 from clarion_api.services.sources import load_passages, parse_passages
 
 
@@ -48,12 +61,23 @@ class Container:
     store: ObjectStore
     channels: list[Channel]
     replier: Replier
+    sms_sender: SmsSender
+    cipher: Cipher | None
     sources: SourceRepository = field(default_factory=MemorySourceRepository)
     claims: ClaimRepository = field(default_factory=MemoryClaimRepository)
     messages: MessageRepository = field(default_factory=MemoryMessageRepository)
     deliveries: DeliveryRepository = field(default_factory=MemoryDeliveryRepository)
     subscribers: SubscriberRepository = field(default_factory=MemorySubscriberRepository)
+    sms_subscriptions: SmsSubscriptionRepository = field(
+        default_factory=MemorySmsSubscriptionRepository
+    )
     audit: AuditRepository = field(default_factory=MemoryAuditRepository)
+    code_limiter_per_client: SlidingWindowLimiter = field(
+        default_factory=lambda: SlidingWindowLimiter(limit=5, window=timedelta(hours=1))
+    )
+    code_limiter_overall: SlidingWindowLimiter = field(
+        default_factory=lambda: SlidingWindowLimiter(limit=60, window=timedelta(hours=1))
+    )
     engine: AsyncEngine | None = None
 
     async def aclose(self) -> None:
@@ -73,6 +97,8 @@ def build_container(settings: Settings) -> Container:
         store=build_object_store(settings, http),
         channels=channels,
         replier=build_replier(channels),
+        sms_sender=build_sms_sender(settings, http),
+        cipher=build_cipher(settings),
     )
     if settings.repository_backend == "sql":
         container.engine = build_engine(settings.database_url)
@@ -82,6 +108,7 @@ def build_container(settings: Settings) -> Container:
         container.messages = SqlMessageRepository(sessions)
         container.deliveries = SqlDeliveryRepository(sessions)
         container.subscribers = SqlSubscriberRepository(sessions)
+        container.sms_subscriptions = SqlSmsSubscriptionRepository(sessions)
         container.audit = SqlAuditRepository(sessions)
     return container
 

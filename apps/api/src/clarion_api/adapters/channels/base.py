@@ -18,3 +18,12 @@ class Replier(Protocol):
     async def reply(self, recipient: str, text: str) -> str:
         """Send `text` to `recipient` and return the provider's message id. Raise on failure."""
         ...
+
+
+@runtime_checkable
+class SmsSender(Protocol):
+    """A channel that can text specific numbers (subscribers, verification codes)."""
+
+    async def send_sms(self, numbers: list[str], text: str) -> str:
+        """Send `text` to every number and return a provider reference. Raise on failure."""
+        ...
