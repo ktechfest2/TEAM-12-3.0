@@ -82,6 +82,8 @@ class LocalisationOut(BaseModel):
 class MessageOut(BaseModel):
     id: UUID
     claim_id: UUID
+    claim_text: str
+    claim_language: Language
     verdict: Verdict
     summary: str
     confidence: float
