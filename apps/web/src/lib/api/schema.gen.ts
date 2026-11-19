@@ -4,6 +4,26 @@
  */
 
 export interface paths {
+  "/auth/tokens": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Create Token
+     * @description Exchange an invite code for a signed reviewer token.
+     */
+    post: operations["createToken"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/claims": {
     parameters: {
       query?: never;
@@ -304,11 +324,6 @@ export interface components {
      * @enum {string}
      */
     Language: "en" | "yo" | "ha" | "ig" | "pcm";
-    /** LocalisationApprovalIn */
-    LocalisationApprovalIn: {
-      /** Approved By */
-      approved_by: string;
-    };
     /** LocalisationIn */
     LocalisationIn: {
       language: components["schemas"]["Language"];
@@ -366,15 +381,11 @@ export interface components {
     RetractIn: {
       /** Reason */
       reason: string;
-      /** Reviewer Id */
-      reviewer_id: string;
     };
     /** ReviewIn */
     ReviewIn: {
       /** Note */
       note?: string | null;
-      /** Reviewer Id */
-      reviewer_id: string;
       status: components["schemas"]["ReviewStatus"];
       /** Summary */
       summary?: string | null;
@@ -433,6 +444,27 @@ export interface components {
       /** Url */
       url: string;
     };
+    /** TokenIn */
+    TokenIn: {
+      /** Invite Code */
+      invite_code: string;
+      /** Reviewer Name */
+      reviewer_name: string;
+    };
+    /** TokenOut */
+    TokenOut: {
+      /** Access Token */
+      access_token: string;
+      /** Expires In Seconds */
+      expires_in_seconds: number;
+      /** Reviewer Name */
+      reviewer_name: string;
+      /**
+       * Token Type
+       * @default bearer
+       */
+      token_type: string;
+    };
     /** ValidationError */
     ValidationError: {
       /** Context */
@@ -461,6 +493,39 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  createToken: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TokenIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TokenOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   createClaim: {
     parameters: {
       query?: never;
@@ -519,7 +584,9 @@ export interface operations {
       query?: {
         limit?: number;
       };
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path?: never;
       cookie?: never;
     };
@@ -548,7 +615,9 @@ export interface operations {
   createMessage: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path?: never;
       cookie?: never;
     };
@@ -581,7 +650,9 @@ export interface operations {
   getMessage: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
@@ -612,7 +683,9 @@ export interface operations {
   broadcastMessage: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
@@ -647,7 +720,9 @@ export interface operations {
   listDeliveries: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
@@ -678,7 +753,9 @@ export interface operations {
   setLocalisation: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
@@ -713,18 +790,16 @@ export interface operations {
   approveLocalisation: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
         language: components["schemas"]["Language"];
       };
       cookie?: never;
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["LocalisationApprovalIn"];
-      };
-    };
+    requestBody?: never;
     responses: {
       /** @description Successful Response */
       200: {
@@ -749,7 +824,9 @@ export interface operations {
   retractMessage: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
@@ -784,7 +861,9 @@ export interface operations {
   addReview: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
@@ -819,7 +898,9 @@ export interface operations {
   sealMessage: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        authorization?: string | null;
+      };
       path: {
         message_id: string;
       };
