@@ -4,6 +4,7 @@
 | --- | --- |
 | [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md) | Before any change that touches more than one folder |
 | [CONVENTIONS.md](CONVENTIONS.md) | Naming, style and test rules |
+| [DESIGN.md](DESIGN.md) | Brand, tokens, type, icons and UI rules |
 | [VERIFICATION.md](VERIFICATION.md) | How to prove a change works |
 | [CREDITS.md](CREDITS.md) | Adding a dependency, model or tool |
 | [adr/](adr/) | Before changing a decision; to record a new one |

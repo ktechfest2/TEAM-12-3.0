@@ -20,6 +20,10 @@ FastAPI, Uvicorn, Pydantic, pydantic-settings, SQLAlchemy, asyncpg, Alembic, pgv
 
 React, React DOM, React Router, TanStack Query, openapi-fetch, openapi-typescript, Vite, @vitejs/plugin-react, Tailwind CSS, TypeScript, Biome, Vitest, jsdom, Testing Library.
 
+## Design
+
+Logo, icon set, colour palette and type scale were drawn for Clarion (see `docs/DESIGN.md`). Typography uses each device's system fonts; no web fonts or icon libraries are bundled.
+
 ## Data
 
 Seed passages paraphrase INEC statements as reported by Africa Check, News Central, Premium Times and Leadership; each links its source in `apps/api/src/clarion_api/data/seed_sources.json`.
