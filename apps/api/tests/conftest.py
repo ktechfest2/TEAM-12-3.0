@@ -1,6 +1,7 @@
 import os
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
+from pathlib import Path
 
 os.environ["APP_ENV"] = "test"  # before any clarion_api import reads settings
 
@@ -26,9 +27,10 @@ class Running:
 
 
 @pytest.fixture
-def settings() -> Settings:
+def settings(tmp_path: Path) -> Settings:
     return Settings(  # type: ignore[call-arg]
         app_env=AppEnv.TEST,
+        storage_local_dir=str(tmp_path),
         auth_reviewer_invite_code=SecretStr(INVITE_CODE),
         auth_jwt_secret=SecretStr("test-signing-secret"),
         channel_telegram_webhook_secret=SecretStr(WEBHOOK_SECRET),
