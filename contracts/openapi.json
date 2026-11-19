@@ -2261,6 +2261,28 @@
         ]
       }
     },
+    "/webhooks/sms": {
+      "post": {
+        "description": "The SMS gateway calls this for every text its phone receives (ADR 0010).\n\nThe phone is also a personal SIM: texts that do not start with CLARION are dropped\nwithout being stored, logged or answered. Answers 200 for those, so they are not retried.",
+        "operationId": "receiveSms",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Receive Sms",
+        "tags": [
+          "webhooks"
+        ]
+      }
+    },
     "/webhooks/telegram": {
       "post": {
         "description": "Telegram calls this for every message sent to the bot.\n\nAlways answers 200 for updates we choose to ignore, so Telegram does not retry them.",
