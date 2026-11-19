@@ -6,7 +6,7 @@ from collections.abc import Iterable
 
 from clarion_api.adapters.channels.base import Channel
 from clarion_api.domain.enums import DeliveryStatus, Language
-from clarion_api.domain.models import Delivery, MasterMessage
+from clarion_api.domain.models import Delivery, MasterMessage, utc_now
 from clarion_api.domain.rules import ensure_publishable
 
 
@@ -40,4 +40,10 @@ async def send_one(
         external_id = await channel.send_text(body)
     except Exception as exc:
         return delivery.model_copy(update={"status": DeliveryStatus.FAILED, "error": str(exc)})
-    return delivery.model_copy(update={"status": DeliveryStatus.SENT, "external_id": external_id})
+    return delivery.model_copy(
+        update={
+            "status": DeliveryStatus.SENT,
+            "external_id": external_id,
+            "sent_at": utc_now(),
+        }
+    )
