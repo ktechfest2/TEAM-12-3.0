@@ -1,37 +1,60 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ReactNode } from "react";
+import { NavLink } from "react-router";
 import { Icon, type IconName } from "../icons";
 
-type Variant = "primary" | "secondary" | "quiet";
-
-const variants: Record<Variant, string> = {
-  primary: "bg-brand text-paper shadow-card enabled:hover:bg-brand-600 enabled:active:bg-brand-800",
-  secondary:
-    "border border-line-strong bg-surface text-brand enabled:hover:border-brand enabled:hover:bg-brand-50",
-  quiet: "text-brand enabled:hover:bg-brand-50",
-};
-
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: Variant;
-  size?: "md" | "sm";
+type CommonProps = {
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "quiet" | "destructive";
+  size?: "sm" | "md";
+  className?: string;
+  children: ReactNode;
   icon?: IconName;
 };
 
-export function Button({
-  variant = "primary",
-  size = "md",
-  icon,
-  className,
-  children,
-  type = "button",
-  ...rest
-}: Props) {
-  const pad = size === "sm" ? "min-h-9 px-3 text-sm" : "min-h-11 px-5";
+type ButtonProps = CommonProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "children" | "className">;
+
+type LinkProps = CommonProps & {
+  as: "link";
+  to: string;
+};
+
+export function Button(props: ButtonProps | LinkProps) {
+  const variant = props.variant ?? "primary";
+  const size = props.size ?? "md";
+  const styles = {
+    primary: "border-brand bg-brand text-white hover:bg-brand-hover",
+    secondary: "border-brand-soft bg-brand-soft text-brand hover:bg-[#cbeecf]",
+    outline: "border-border-strong bg-white text-foreground hover:bg-surface",
+    ghost: "border-transparent bg-transparent text-secondary hover:bg-surface",
+    destructive: "border-[#dc2626] bg-[#dc2626] text-white hover:bg-[#b91c1c]",
+    quiet: "border-transparent bg-transparent text-brand hover:bg-brand-soft",
+  }[variant === "quiet" ? "quiet" : variant];
+  const sizes = {
+    sm: "min-h-11 px-3 text-sm",
+    md: "min-h-11 px-4 text-sm",
+  }[size];
+  const className = `inline-flex items-center justify-center gap-2 rounded-[10px] border font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${sizes} ${styles} ${props.className ?? ""}`;
+
+  if ("as" in props && props.as === "link") {
+    const icon = props.icon;
+    return (
+      <NavLink to={props.to} className={className}>
+        {icon ? <Icon name={icon} size={size === "sm" ? 16 : 18} /> : null}
+        {props.children}
+      </NavLink>
+    );
+  }
+
+  const {
+    children,
+    variant: _variant,
+    size: _size,
+    className: _className,
+    icon,
+    ...buttonProps
+  } = props;
   return (
-    <button
-      type={type}
-      className={`inline-flex items-center justify-center gap-2 rounded-control font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${pad} ${variants[variant]} ${className ?? ""}`}
-      {...rest}
-    >
+    <button type="button" {...buttonProps} className={className}>
       {icon ? <Icon name={icon} size={size === "sm" ? 16 : 18} /> : null}
       {children}
     </button>

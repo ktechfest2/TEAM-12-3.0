@@ -14,7 +14,7 @@ How Clarion looks, sounds and behaves. Tokens live in `apps/web/src/styles.css`.
 
 ## Logo
 
-The mark is a "C" open on the right with an amber beacon sitting in the opening: the correction landing with the voter. It sits on an ink navy rounded square.
+The Clarion mark is a clear, civic wordmark used with the forest-green brand colour.
 
 | Asset | File | Use |
 | --- | --- | --- |
@@ -23,41 +23,35 @@ The mark is a "C" open on the right with an amber beacon sitting in the opening:
 | Static lockup | `apps/web/public/logo.svg` | Docs, slides, README |
 | Social card | `apps/web/public/social-card.svg` | Link previews |
 
-Rules: keep clear space equal to the beacon's diameter on every side. Minimum mark size 20 px. Never recolour the beacon, stretch, rotate, outline or add effects. The wordmark is set in the display face, bold, in Brand ink; do not retype it in another font.
+Rules: keep clear space around the mark, preserve its proportions, and use the provided logo assets rather than recreating the wordmark.
 
 ## Colour
 
-Warm paper surfaces, ink navy for brand and text, amber used sparingly as the single accent. The three verdict colours are reserved for verdicts and delivery state.
+Forest green is the primary brand colour. Neutral slate surfaces support readable public information and reviewer tools. Verdict colours are reserved for verdicts and delivery state.
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `brand` | `#12304f` | Brand, headings, primary buttons |
-| `brand-50 / 100 / 200 / 500 / 600 / 800 / 900` | tints and shades | Hover, selected, panels, dark surfaces |
-| `beacon` | `#f5a524` | Accent: focus ring, quote rule, key figures on dark |
-| `beacon-soft`, `beacon-ink` | `#fdf1d9`, `#7a4a00` | Attention pills and eyebrow labels |
-| `paper` | `#faf8f4` | Page background |
-| `surface` | `#ffffff` | Cards and inputs |
-| `sunken` | `#f2efe8` | Quiet fills, empty table cells |
-| `line`, `line-strong` | `#e4dfd5`, `#cfc8ba` | Borders, input borders |
-| `ink` | `#14202e` | Body text |
-| `muted` | `#566170` | Secondary text |
-| `faint` | `#7d8794` | Placeholders and icons only, never body text |
-| `confirmed` / `-soft` | `#11694a` / `#e5f3ec` | Verdict: confirmed, delivery sent |
-| `contradicted` / `-soft` | `#b3261e` / `#fbebe9` | Verdict: contradicted, delivery failed |
-| `unknown` / `-soft` | `#54606f` / `#eceef1` | Verdict: no official statement |
+| `brand` / `brand-hover` | forest green | Brand, headings, primary buttons |
+| `brand-soft` | pale forest green | Selected controls and supporting panels |
+| `surface` / `surface-muted` | white / slate-50 | Cards, inputs and quiet fills |
+| `foreground` / `secondary` / `muted` | slate tones | Body, secondary and supporting text |
+| `border` / `border-strong` | slate borders | Dividers and input borders |
+| `confirmed` / `confirmed-soft` | green | Verdict: confirmed, delivery sent |
+| `contradicted` / `contradicted-soft` | red | Verdict: contradicted, delivery failed |
+| `no-official-statement` | slate | Verdict: no official statement |
 
 Rules
-- Never use raw hex or Tailwind palette colours (`slate-*`, `green-*`) in components. Use tokens.
+- Never use raw hex or Tailwind palette colours in components. Use tokens.
 - Colour is never the only signal. Every verdict and state also carries an icon and words.
-- Body text must reach 4.5:1 contrast. `ink` and `muted` on `paper` or `surface` pass. Do not put `faint` on text that carries meaning.
+- Body text must reach 4.5:1 contrast. `foreground` and `secondary` on `surface` pass. Do not put `muted` on text that carries meaning.
 - Brand blue is not a verdict colour. Do not use green or red for brand or navigation.
 
 ## Typography
 
 | Role | Token | Stack | Use |
 | --- | --- | --- | --- |
-| Display | `font-display` | Iowan Old Style, Palatino, Georgia, serif | h1, h2, quoted claims, official passages, big numbers |
-| UI and body | `font-sans` | System UI (Segoe UI Variable, Roboto, San Francisco) | Everything else |
+| Display | `font-display` | System sans display stack | h1, h2, quoted claims, official passages, big numbers |
+| UI and body | `font-sans` | System UI | Everything else |
 | Data | `font-mono` | System monospace | Hashes, record text |
 
 System stacks are deliberate: no font download on low bandwidth connections, and full coverage for Yoruba, Igbo and Hausa diacritics. A serif voice for claims and sources says "this is the record"; the sans voice says "this is the tool".
@@ -66,10 +60,10 @@ Scale: page title `text-4xl` to `text-5xl` (marketing page) or `text-3xl` to `te
 
 ## Shape, depth, motion
 
-- Radii: `rounded-control` (10 px) for inputs and buttons, `rounded-card` (16 px) for cards, `rounded-full` for pills and badges.
+- Radii: `rounded-control` for inputs and buttons, `rounded-card` for cards, `rounded-full` for pills and badges.
 - Depth: `shadow-card` for resting cards, `shadow-lift` for the one thing that matters on the page (verdict, board header). Never stack shadows.
 - Motion: colour transitions only, plus the loading spinner. Everything respects `prefers-reduced-motion`.
-- Focus: a 3 px beacon outline on every focusable element. Do not remove it.
+- Focus: a visible brand-colour outline on every focusable element. Do not remove it.
 
 ## Iconography
 

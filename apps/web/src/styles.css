@@ -1,101 +1,118 @@
 @import "tailwindcss";
 
-/*
- * Clarion design tokens. The single source of truth for colour, type, radius,
- * shadow and motion. Rules for using them live in docs/DESIGN.md.
- * Components use these names (bg-paper, text-ink, border-line ...), never raw hex.
- */
 @theme {
-  /* Brand: ink navy with a beacon amber accent. */
-  --color-brand-50: #eef3f9;
-  --color-brand-100: #d9e4f1;
-  --color-brand-200: #b3c8e0;
-  --color-brand-500: #2a5a8c;
-  --color-brand-600: #1d4a77;
-  --color-brand: #12304f;
-  --color-brand-800: #0d2540;
-  --color-brand-900: #081a2e;
-  --color-beacon: #f5a524;
-  --color-beacon-soft: #fdf1d9;
-  --color-beacon-ink: #7a4a00;
-
-  /* Surfaces and text. Warm paper, not stark white. */
-  --color-paper: #faf8f4;
-  --color-surface: #ffffff;
-  --color-sunken: #f2efe8;
-  --color-line: #e4dfd5;
-  --color-line-strong: #cfc8ba;
-  --color-ink: #14202e;
-  --color-muted: #566170;
-  --color-faint: #7d8794;
-
-  /* The three verdicts. Colour is never the only signal: each also has an icon and a word. */
-  --color-confirmed: #11694a;
-  --color-confirmed-soft: #e5f3ec;
-  --color-contradicted: #b3261e;
-  --color-contradicted-soft: #fbebe9;
-  --color-unknown: #54606f;
-  --color-unknown-soft: #eceef1;
-
-  /* Type. System stacks keep the page fast on low bandwidth connections. */
-  --font-sans:
-    ui-sans-serif, "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto,
-    "Helvetica Neue", Arial, sans-serif;
-  --font-display:
-    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman",
-    serif;
-  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
-
-  --radius-control: 0.625rem;
-  --radius-card: 1rem;
-
-  --shadow-card: 0 1px 2px rgb(20 32 46 / 0.05), 0 4px 16px rgb(20 32 46 / 0.04);
-  --shadow-lift: 0 2px 4px rgb(20 32 46 / 0.06), 0 12px 32px rgb(20 32 46 / 0.1);
+  --color-brand: #14532d;
+  --color-brand-hover: #166534;
+  --color-brand-accent: #22a06b;
+  --color-brand-soft: #dcfce7;
+  --color-surface: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+  --color-foreground: #0f172a;
+  --color-muted: #64748b;
+  --color-secondary: #475569;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+  --color-contradicted: #dc2626;
+  --color-brand-50: #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-500: #22a06b;
+  --color-brand-600: #166534;
+  --color-brand-800: #14532d;
+  --color-brand-900: #052e16;
+  --color-paper: #ffffff;
+  --color-sunken: #f1f5f9;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+  --color-ink: #0f172a;
+  --color-faint: #64748b;
+  --color-confirmed: #15803d;
+  --color-confirmed-soft: #dcfce7;
+  --color-contradicted-soft: #fee2e2;
+  --color-unknown: #475569;
+  --color-unknown-soft: #f1f5f9;
+  --color-beacon: #22a06b;
+  --color-beacon-soft: #dcfce7;
+  --color-beacon-ink: #14532d;
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --shadow-lift: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --font-display: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
-@layer base {
+:root {
+  --brand-primary: #14532d;
+  --brand-secondary: #166534;
+  --brand-accent: #22a06b;
+  --brand-soft: #dcfce7;
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --surface-muted: #f1f5f9;
+  --foreground: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --verdict-true: #15803d;
+  --verdict-true-bg: #dcfce7;
+  --verdict-false: #dc2626;
+  --verdict-false-bg: #fee2e2;
+  --verdict-misleading: #b45309;
+  --verdict-misleading-bg: #fef3c7;
+  --verdict-unverified: #475569;
+  --verdict-unverified-bg: #f1f5f9;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --shadow-card: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-dropdown: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --container-width: 1200px;
+  --header-height: 72px;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--foreground);
+  background: var(--background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--background);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  outline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(34, 160, 107, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
   html {
-    -webkit-text-size-adjust: 100%;
-    text-rendering: optimizeLegibility;
-  }
-
-  body {
-    background: var(--color-paper);
-    color: var(--color-ink);
-    font-family: var(--font-sans);
-    font-size: 1rem;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  h1,
-  h2 {
-    font-family: var(--font-display);
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-  }
-
-  ::selection {
-    background: var(--color-beacon-soft);
-    color: var(--color-brand);
-  }
-
-  :focus-visible {
-    outline: 3px solid var(--color-beacon);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation timings */
-      animation-duration: 0.01ms !important;
-      /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation timings */
-      animation-iteration-count: 1 !important;
-      /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation timings */
-      transition-duration: 0.01ms !important;
-    }
+    scroll-behavior: auto;
   }
 }
