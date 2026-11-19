@@ -55,7 +55,6 @@ class MessageCreateIn(BaseModel):
 
 
 class ReviewIn(BaseModel):
-    reviewer_id: str = Field(min_length=1, max_length=120)
     status: ReviewStatus
     note: str | None = Field(default=None, max_length=2000)
     summary: str | None = Field(default=None, min_length=3, max_length=1000)
@@ -71,10 +70,6 @@ class ReviewOut(BaseModel):
 class LocalisationIn(BaseModel):
     language: Language
     text: str | None = Field(default=None, min_length=1, max_length=1000)
-
-
-class LocalisationApprovalIn(BaseModel):
-    approved_by: str = Field(min_length=1, max_length=120)
 
 
 class LocalisationOut(BaseModel):
@@ -102,7 +97,6 @@ class BroadcastIn(BaseModel):
 
 
 class RetractIn(BaseModel):
-    reviewer_id: str = Field(min_length=1, max_length=120)
     reason: str = Field(min_length=3, max_length=500)
 
 
@@ -116,3 +110,15 @@ class DeliveryOut(BaseModel):
     error: str | None
     sent_at: datetime | None
     created_at: datetime
+
+
+class TokenIn(BaseModel):
+    invite_code: str = Field(min_length=1, max_length=200)
+    reviewer_name: str = Field(min_length=1, max_length=120)
+
+
+class TokenOut(BaseModel):
+    access_token: str
+    token_type: str = "bearer"  # noqa: S105 - the OAuth token type name, not a secret
+    expires_in_seconds: int
+    reviewer_name: str

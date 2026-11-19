@@ -1,14 +1,13 @@
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 
-from clarion_api.api.deps import ContainerDep
+from clarion_api.api.deps import ContainerDep, ReviewerDep, get_reviewer
 from clarion_api.api.mappers import delivery_out, message_out
 from clarion_api.api.schemas import (
     BroadcastIn,
     DeliveryOut,
-    LocalisationApprovalIn,
     LocalisationIn,
     MessageCreateIn,
     MessageOut,
@@ -19,7 +18,8 @@ from clarion_api.domain.enums import Language
 from clarion_api.services import messages as workflow
 from clarion_api.worker.tasks import send_delivery
 
-router = APIRouter(prefix="/messages", tags=["messages"])
+# Every message route is for invited reviewers; the public page reads sealed messages elsewhere.
+router = APIRouter(prefix="/messages", tags=["messages"], dependencies=[Depends(get_reviewer)])
 
 LimitQuery = Annotated[int, Query(ge=1, le=200)]
 
@@ -47,10 +47,12 @@ async def get_message(message_id: UUID, container: ContainerDep) -> MessageOut:
 
 
 @router.post("/{message_id}/reviews", status_code=status.HTTP_201_CREATED, operation_id="addReview")
-async def add_review(message_id: UUID, body: ReviewIn, container: ContainerDep) -> MessageOut:
+async def add_review(
+    message_id: UUID, body: ReviewIn, container: ContainerDep, reviewer: ReviewerDep
+) -> MessageOut:
     message = await workflow.add_review(
         message_id,
-        reviewer_id=body.reviewer_id,
+        reviewer_id=reviewer,
         status=body.status,
         note=body.note,
         summary=body.summary,
@@ -75,10 +77,10 @@ async def set_localisation(
 
 @router.post("/{message_id}/localisations/{language}/approval", operation_id="approveLocalisation")
 async def approve_localisation(
-    message_id: UUID, language: Language, body: LocalisationApprovalIn, container: ContainerDep
+    message_id: UUID, language: Language, container: ContainerDep, reviewer: ReviewerDep
 ) -> MessageOut:
     message = await workflow.approve_localisation(
-        message_id, language=language, approved_by=body.approved_by, messages=container.messages
+        message_id, language=language, approved_by=reviewer, messages=container.messages
     )
     return message_out(message)
 
