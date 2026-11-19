@@ -4,6 +4,9 @@ from uuid import UUID
 
 from clarion_api.domain.models import Claim, SourcePassage
 
+# Passages less similar than this (cosine similarity) are never returned by search.
+MIN_SIMILARITY = 0.15
+
 
 class SourceRepository(Protocol):
     async def add(self, passage: SourcePassage, embedding: Sequence[float]) -> None: ...
