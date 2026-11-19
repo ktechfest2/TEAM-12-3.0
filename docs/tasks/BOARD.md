@@ -8,9 +8,10 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
-- [T-02](T-02-sql-repositories-with-pgvector-search.md) SQL repositories with pgvector search (M, after T-01) - claude
 
 ## Review
+
+- [T-02](T-02-sql-repositories-with-pgvector-search.md) SQL repositories with pgvector search (M, after T-01) - claude
 
 ## Ready
 
