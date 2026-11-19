@@ -4,7 +4,7 @@
 #   infra/deploy/clarion.sh <command>                 run on the VPS
 #   infra/deploy/clarion.sh --host <ssh host> <cmd>   run from your laptop; sends the working tree
 #
-# Commands: init | up | update | status | logs [service] | backup | telegram-webhook | down | destroy
+# Commands: init | up | update | status | logs [service] | backup | telegram-webhook | sms-webhook | down | destroy
 # Everything it creates carries the compose project label "clarion"; it never touches other stacks.
 # Docs: docs/deploy/
 set -euo pipefail
@@ -128,11 +128,18 @@ prepare_env() {
     say "generated the subscriber encryption key in $secrets"
   fi
 
+  # Signing secret for incoming texts (ADR 0010). Paste it into the SMS gateway webhook.
+  if ! grep -q '^CHANNEL_SMS_WEBHOOK_SECRET=' "$secrets"; then
+    umask 077
+    printf 'CHANNEL_SMS_WEBHOOK_SECRET=%s\n' "$(random_hex 32)" >>"$secrets"
+    say "generated the incoming text webhook secret in $secrets"
+  fi
+
   umask 077
   {
-    grep -vE '^(POSTGRES_PASSWORD|AUTH_JWT_SECRET|CHANNEL_TELEGRAM_WEBHOOK_SECRET|SUBSCRIBER_ENCRYPTION_KEY)=' "$file" || true
+    grep -vE '^(POSTGRES_PASSWORD|AUTH_JWT_SECRET|CHANNEL_TELEGRAM_WEBHOOK_SECRET|SUBSCRIBER_ENCRYPTION_KEY|CHANNEL_SMS_WEBHOOK_SECRET)=' "$file" || true
     echo "POSTGRES_PASSWORD=$(var POSTGRES_PASSWORD "$secrets")"
-    for k in AUTH_JWT_SECRET CHANNEL_TELEGRAM_WEBHOOK_SECRET SUBSCRIBER_ENCRYPTION_KEY; do
+    for k in AUTH_JWT_SECRET CHANNEL_TELEGRAM_WEBHOOK_SECRET SUBSCRIBER_ENCRYPTION_KEY CHANNEL_SMS_WEBHOOK_SECRET; do
       mine="$(var "$k" "$file")"
       echo "$k=${mine:-$(var "$k" "$secrets")}"
     done
@@ -284,6 +291,18 @@ cmd_telegram_webhook() {
   say "Telegram will now call https://$domain/api/webhooks/telegram"
 }
 
+cmd_sms_webhook() {
+  preflight; placeholder_env
+  local domain secret
+  domain="$(var DOMAIN "$STATE_DIR/deploy.env")"
+  secret="$(var CHANNEL_SMS_WEBHOOK_SECRET "$STATE_DIR/compose.env")"
+  [[ -n "$secret" ]] || die "run 'clarion.sh up' first so the webhook secret exists"
+  say "In the TextBee dashboard: Webhooks, Add Webhook, event MESSAGE_RECEIVED"
+  echo "  URL:            https://$domain/api/webhooks/sms"
+  echo "  Signing secret: $secret"
+  echo "  Then switch on Receive SMS in the TextBee app. Only texts starting with CLARION are used."
+}
+
 cmd_down() { preflight; placeholder_env; dc down; say "stopped; data volumes kept"; }
 
 cmd_destroy() {
@@ -350,6 +369,7 @@ case "$cmd" in
   logs) cmd_logs "$@" ;;
   backup) cmd_backup ;;
   telegram-webhook) cmd_telegram_webhook ;;
+  sms-webhook) cmd_sms_webhook ;;
   down) cmd_down ;;
   destroy) cmd_destroy "$@" ;;
   -h | --help | help | "") usage 0 ;;

@@ -11,6 +11,7 @@ All commands run from the repository root. Add `--host <ssh-host>` to run them a
 | `clarion.sh logs [service]` | Follows logs. Services: `api`, `worker`, `web`, `postgres`, `redis` |
 | `clarion.sh backup` | Writes a Postgres dump and a media archive to `~/.clarion-deploy/backups` (keeps the newest 14 of each) |
 | `clarion.sh telegram-webhook` | Registers the Telegram webhook with the generated secret |
+| `clarion.sh sms-webhook` | Prints the URL and signing secret to paste into the TextBee webhook for incoming texts (ADR 0010) |
 | `clarion.sh down` | Stops containers, keeps all data |
 | `clarion.sh destroy` | Removes everything (see below) |
 
@@ -76,6 +77,7 @@ After `destroy`, delete the proxied DNS record in Cloudflare (the script cannot,
 | Redirect loop | Cloudflare SSL mode is Flexible; change it to Full (strict) |
 | `/api/health` works locally but not publicly | `clarion.sh status`; `sudo journalctl -u caddy -n 50` for certificate errors (DNS must point at the server first) |
 | Telegram bot never replies | Run `telegram-webhook`; check the WAF skip rule; `clarion.sh logs api` for 401s (secret mismatch) |
+| Texts to the gateway get no reply | Run `sms-webhook` and check the TextBee webhook matches; Receive SMS must be on in the app; the text must start with CLARION; `clarion.sh logs api` for 401s (secret or clock mismatch) |
 | Live board stays empty | The board lists sealed messages only. Seal one on the review screen, then press send |
 | Language model errors or "budget used up" | `LLM_*` values in `deploy.env`; the monthly cap `LLM_MONTHLY_BUDGET_USD`; run `up` after editing |
 

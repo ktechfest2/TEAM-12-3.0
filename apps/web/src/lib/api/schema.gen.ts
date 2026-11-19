@@ -372,6 +372,29 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/webhooks/sms": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Receive Sms
+     * @description The SMS gateway calls this for every text its phone receives (ADR 0010).
+     *
+     *     The phone is also a personal SIM: texts that do not start with CLARION are dropped
+     *     without being stored, logged or answered. Answers 200 for those, so they are not retried.
+     */
+    post: operations["receiveSms"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/webhooks/telegram": {
     parameters: {
       query?: never;
@@ -1529,6 +1552,26 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  receiveSms: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WebhookOut"];
         };
       };
     };
