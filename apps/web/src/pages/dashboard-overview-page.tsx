@@ -20,7 +20,6 @@ export function DashboardOverviewPage() {
   if (!session) {
     return (
       <section>
-        <h1 className="text-3xl font-bold">Reviewer overview</h1>
         <div className="mt-6">
           <LoginForm />
         </div>

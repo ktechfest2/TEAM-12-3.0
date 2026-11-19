@@ -7,10 +7,7 @@ export function BroadcastBoardPage() {
   const session = useSession();
   return (
     <section className="space-y-8">
-      <PageHeader
-        title="Broadcast board"
-        lead="Watch an approved correction reach every channel and language."
-      />
+      <PageHeader title="Broadcast board" />
       {session ? <BroadcastBoard /> : <LoginForm />}
     </section>
   );
