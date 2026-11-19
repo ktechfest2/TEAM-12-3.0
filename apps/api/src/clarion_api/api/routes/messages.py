@@ -1,7 +1,10 @@
+import json
+from collections.abc import AsyncIterator
 from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
+from fastapi.responses import StreamingResponse
 
 from clarion_api.api.container import Container
 from clarion_api.api.deps import ContainerDep, ReviewerDep, get_reviewer
@@ -18,6 +21,7 @@ from clarion_api.api.schemas import (
 from clarion_api.domain.enums import Language
 from clarion_api.domain.models import MasterMessage
 from clarion_api.services import messages as workflow
+from clarion_api.services.delivery_stream import stream_delivery_events
 from clarion_api.worker.tasks import send_delivery
 
 # Every message route is for invited reviewers; the public page reads sealed messages elsewhere.
@@ -128,6 +132,37 @@ async def broadcast_message(
 async def list_deliveries(message_id: UUID, container: ContainerDep) -> list[DeliveryOut]:
     await workflow.load_message(message_id, container.messages)
     return [delivery_out(d) for d in await container.deliveries.list_for_message(message_id)]
+
+
+def _sse(event: str, payload: str) -> str:
+    return f"event: {event}\ndata: {payload}\n\n"
+
+
+@router.get(
+    "/{message_id}/deliveries/events",
+    operation_id="streamDeliveryEvents",
+    response_class=StreamingResponse,
+    responses={200: {"content": {"text/event-stream": {}}, "description": "Server sent events"}},
+)
+async def stream_deliveries(message_id: UUID, container: ContainerDep) -> StreamingResponse:
+    """Server sent events: `snapshot` (all deliveries), `delivery` (one changed), then `done`."""
+    await workflow.load_message(message_id, container.messages)
+
+    async def body() -> AsyncIterator[str]:
+        async for event in stream_delivery_events(message_id, deliveries=container.deliveries):
+            if event.name == "snapshot":
+                items = [delivery_out(d).model_dump(mode="json") for d in event.deliveries]
+                yield _sse("snapshot", json.dumps(items))
+            elif event.name == "delivery":
+                [delivery] = event.deliveries
+                yield _sse("delivery", delivery_out(delivery).model_dump_json())
+            elif event.name == "ping":
+                yield ": keep-alive\n\n"
+            else:
+                yield _sse("done", "{}")
+
+    headers = {"Cache-Control": "no-cache", "X-Accel-Buffering": "no"}
+    return StreamingResponse(body(), media_type="text/event-stream", headers=headers)
 
 
 @router.post("/{message_id}/retraction", operation_id="retractMessage")

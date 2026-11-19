@@ -1,3 +1,5 @@
+import json
+
 import httpx
 
 from clarion_api.adapters.channels.console import ConsoleChannel
@@ -156,3 +158,30 @@ async def test_english_needs_no_localisation(client: httpx.AsyncClient) -> None:
     message = await _message(client)
     response = await client.put(f"/messages/{message['id']}/localisations", json={"language": "en"})
     assert response.status_code == 409
+
+
+async def test_delivery_events_stream_reports_real_receipts(
+    client: httpx.AsyncClient, console: ConsoleChannel
+) -> None:
+    message = await _message(client)
+    await _approve(client, message["id"])
+    await client.post(f"/messages/{message['id']}/seal")
+    await client.post(f"/messages/{message['id']}/broadcast", json={})
+
+    response = await client.get(f"/messages/{message['id']}/deliveries/events")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/event-stream")
+    events = [block for block in response.text.split("\n\n") if block.strip()]
+    assert events[0].startswith("event: snapshot\ndata: ")
+    snapshot = json.loads(events[0].split("data: ", 1)[1])
+    assert [d["status"] for d in snapshot] == ["sent"]
+    assert snapshot[0]["external_id"] == "console-1"
+    assert events[-1] == "event: done\ndata: {}"
+
+
+async def test_delivery_events_need_a_token_and_a_known_message(
+    client: httpx.AsyncClient, anonymous_client: httpx.AsyncClient
+) -> None:
+    missing = "00000000-0000-0000-0000-000000000000"
+    assert (await anonymous_client.get(f"/messages/{missing}/deliveries/events")).status_code == 401
+    assert (await client.get(f"/messages/{missing}/deliveries/events")).status_code == 404
