@@ -1,6 +1,6 @@
 # T-12. Telegram intake and JOIN subscriptions
 
-- Owner:
+- Owner: claude
 - Depends on: T-04
 - Estimate: M
 
