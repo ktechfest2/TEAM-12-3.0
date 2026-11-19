@@ -10,8 +10,16 @@ export const verdictLabel: Record<Verdict, string> = {
   no_official_statement: "No official statement found yet",
 };
 
+/** Colour pairs for each verdict. The badge also adds an icon so colour is never the only signal. */
 export const verdictTone: Record<Verdict, string> = {
-  confirmed: "border-brand text-brand",
-  contradicted: "border-contradicted text-contradicted",
-  no_official_statement: "border-slate-300 text-muted",
+  confirmed: "border-confirmed/30 bg-confirmed-soft text-confirmed",
+  contradicted: "border-contradicted/30 bg-contradicted-soft text-contradicted",
+  no_official_statement: "border-unknown/30 bg-unknown-soft text-unknown",
+};
+
+/** Accent used for the stripe on a verdict card. */
+export const verdictAccent: Record<Verdict, string> = {
+  confirmed: "bg-confirmed",
+  contradicted: "bg-contradicted",
+  no_official_statement: "bg-unknown",
 };

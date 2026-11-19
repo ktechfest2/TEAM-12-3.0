@@ -1,5 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { type FormEvent, useState } from "react";
+import { Icon } from "../../components/icons";
+import { Button } from "../../components/ui/button";
+import { Card, controlClass, Notice } from "../../components/ui/surface";
 import { api } from "../../lib/api/client";
 import { saveSession } from "../../lib/auth/session";
 
@@ -24,43 +27,44 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="max-w-md space-y-4">
-      <p className="text-muted">Only invited reviewers can approve and send corrections.</p>
-      <div>
-        <label htmlFor="reviewer-name" className="block font-semibold">
-          Your name
-        </label>
-        <input
-          id="reviewer-name"
-          value={reviewerName}
-          onChange={(e) => setReviewerName(e.target.value)}
-          required
-          autoComplete="name"
-          className="mt-1 w-full rounded-md border border-slate-300 p-2"
-        />
-      </div>
-      <div>
-        <label htmlFor="invite-code" className="block font-semibold">
-          Invite code
-        </label>
-        <input
-          id="invite-code"
-          type="password"
-          value={inviteCode}
-          onChange={(e) => setInviteCode(e.target.value)}
-          required
-          autoComplete="off"
-          className="mt-1 w-full rounded-md border border-slate-300 p-2"
-        />
-      </div>
-      <button
-        type="submit"
-        disabled={mutation.isPending}
-        className="rounded-md bg-brand px-4 py-2 font-semibold text-white disabled:opacity-60"
-      >
-        {mutation.isPending ? "Checking..." : "Sign in"}
-      </button>
-      {mutation.error ? <p role="alert">{mutation.error.message}</p> : null}
-    </form>
+    <Card className="max-w-md">
+      <form onSubmit={onSubmit} className="space-y-5">
+        <p className="flex items-start gap-2 text-muted">
+          <Icon name="lock" size={20} className="mt-0.5 text-brand" />
+          Only invited reviewers can approve and send corrections.
+        </p>
+        <div className="space-y-1.5">
+          <label htmlFor="reviewer-name" className="block font-semibold">
+            Your name
+          </label>
+          <input
+            id="reviewer-name"
+            value={reviewerName}
+            onChange={(e) => setReviewerName(e.target.value)}
+            required
+            autoComplete="name"
+            className={controlClass}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label htmlFor="invite-code" className="block font-semibold">
+            Invite code
+          </label>
+          <input
+            id="invite-code"
+            type="password"
+            value={inviteCode}
+            onChange={(e) => setInviteCode(e.target.value)}
+            required
+            autoComplete="off"
+            className={controlClass}
+          />
+        </div>
+        <Button type="submit" disabled={mutation.isPending} className="w-full">
+          {mutation.isPending ? "Checking..." : "Sign in"}
+        </Button>
+        {mutation.error ? <Notice tone="error">{mutation.error.message}</Notice> : null}
+      </form>
+    </Card>
   );
 }
