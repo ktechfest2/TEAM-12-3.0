@@ -1,4 +1,4 @@
-import { ShieldCheck } from "lucide-react";
+import { Icon } from "../components/icons";
 import { Card } from "../components/ui/card";
 import { ClaimForm } from "../features/claims/claim-form";
 
@@ -23,7 +23,7 @@ export function SubmitClaimPage() {
             <ClaimForm />
           </Card>
           <div className="flex gap-3 rounded-[14px] border border-border bg-white p-4 text-sm leading-6 text-secondary">
-            <ShieldCheck size={18} className="mt-0.5 shrink-0 text-brand" aria-hidden="true" />
+            <Icon name="shieldCheck" size={18} className="mt-0.5 shrink-0 text-brand" />
             <p>
               A result is not a final verdict until it cites an official source. Do not share a
               claim as confirmed based on an automated assessment alone.

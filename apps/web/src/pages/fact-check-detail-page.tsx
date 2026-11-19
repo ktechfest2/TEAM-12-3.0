@@ -1,7 +1,7 @@
-import { ArrowLeft, Building2, Share2 } from "lucide-react";
 import { Link, useParams } from "react-router";
+import { Icon } from "../components/icons";
 import { Card } from "../components/ui/card";
-import { VerdictBadge } from "../components/ui/verdict-badge";
+import { VerdictBadge } from "../features/claims/verdict-badge";
 import { FactCheckCard } from "../features/public/public-cards";
 import { demonstrationNotice, factChecks } from "../features/public/public-demo";
 
@@ -14,7 +14,7 @@ export function FactCheckDetailPage() {
       <section className="mx-auto max-w-[1200px] px-5 py-16 sm:px-8">
         <h1 className="text-2xl font-bold">Fact-check not found</h1>
         <Link to="/fact-checks" className="mt-4 inline-flex min-h-11 items-center text-brand">
-          <ArrowLeft size={16} className="mr-2" /> Back to fact-checks
+          <Icon name="arrowLeft" size={16} className="mr-2" /> Back to fact-checks
         </Link>
       </section>
     );
@@ -37,14 +37,14 @@ export function FactCheckDetailPage() {
           to="/fact-checks"
           className="inline-flex min-h-11 items-center text-sm font-semibold text-secondary hover:text-brand"
         >
-          <ArrowLeft size={16} className="mr-2" /> Fact-checks
+          <Icon name="arrowLeft" size={16} className="mr-2" /> Fact-checks
         </Link>
         <button
           type="button"
           onClick={() => void share()}
           className="flex min-h-11 items-center gap-2 rounded-[10px] border border-border px-3 text-sm font-semibold hover:bg-surface"
         >
-          <Share2 size={16} aria-hidden="true" /> Share
+          <Icon name="share" size={16} /> Share
         </button>
       </div>
 
@@ -84,7 +84,7 @@ export function FactCheckDetailPage() {
         <aside className="h-fit rounded-[14px] border border-border p-5">
           <h2 className="font-bold">Evidence and sources</h2>
           <div className="mt-4 flex gap-3 rounded-[10px] bg-surface p-3">
-            <Building2 size={18} className="shrink-0 text-brand" aria-hidden="true" />
+            <Icon name="building" size={18} className="shrink-0 text-brand" />
             <div>
               <p className="text-sm font-semibold">Official source passage</p>
               <p className="mt-1 text-xs leading-5 text-muted">

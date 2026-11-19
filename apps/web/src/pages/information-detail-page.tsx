@@ -1,5 +1,5 @@
-import { ArrowLeft, Building2, CalendarDays, ExternalLink } from "lucide-react";
 import { Link, useParams } from "react-router";
+import { Icon } from "../components/icons";
 import { Card } from "../components/ui/card";
 import { InformationCard } from "../features/public/public-cards";
 import { demonstrationNotice, informationArticles } from "../features/public/public-demo";
@@ -13,7 +13,7 @@ export function InformationDetailPage() {
       <section className="mx-auto max-w-[1200px] px-5 py-16 sm:px-8">
         <h1 className="text-2xl font-bold">Information not found</h1>
         <Link to="/information" className="mt-4 inline-flex min-h-11 items-center text-brand">
-          <ArrowLeft size={16} className="mr-2" /> Back to election information
+          <Icon name="arrowLeft" size={16} className="mr-2" /> Back to election information
         </Link>
       </section>
     );
@@ -27,7 +27,7 @@ export function InformationDetailPage() {
         to="/information"
         className="inline-flex min-h-11 items-center text-sm font-semibold text-secondary hover:text-brand"
       >
-        <ArrowLeft size={16} className="mr-2" /> Election information
+        <Icon name="arrowLeft" size={16} className="mr-2" /> Election information
       </Link>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_280px]">
         <div>
@@ -40,10 +40,10 @@ export function InformationDetailPage() {
           <p className="mt-5 text-lg leading-8 text-secondary">{article.summary}</p>
           <div className="mt-5 flex flex-wrap gap-4 text-xs text-muted">
             <span className="flex items-center gap-1.5">
-              <CalendarDays size={15} /> Updated {article.updatedAt}
+              <Icon name="calendar" size={15} /> Updated {article.updatedAt}
             </span>
             <span className="flex items-center gap-1.5">
-              <Building2 size={15} /> {article.sourceName}
+              <Icon name="building" size={15} /> {article.sourceName}
             </span>
           </div>
           <p className="mt-6 rounded-[10px] border border-border bg-surface px-4 py-3 text-xs leading-5 text-secondary">
@@ -67,7 +67,7 @@ export function InformationDetailPage() {
           <h2 className="font-bold">Official source</h2>
           <p className="mt-2 text-sm leading-6 text-muted">{article.sourceName}</p>
           <span className="mt-4 flex min-h-11 items-center gap-2 text-sm font-semibold text-brand">
-            Source link unavailable <ExternalLink size={15} aria-hidden="true" />
+            Source link unavailable <Icon name="external" size={15} />
           </span>
         </aside>
       </div>

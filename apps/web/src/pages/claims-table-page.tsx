@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { VerdictBadge } from "../components/ui/verdict-badge";
+import { Icon } from "../components/icons";
 import { LoginForm } from "../features/auth/login-form";
+import { VerdictBadge } from "../features/claims/verdict-badge";
 import { listMessages } from "../features/review/review-api";
 import { stageLabel, stageOf } from "../features/review/review-rules";
 import { useSession } from "../lib/auth/session";
@@ -44,7 +44,7 @@ export function ClaimsTablePage() {
       <div className="mt-6 grid gap-3 sm:grid-cols-[1fr_200px]">
         <label className="relative">
           <span className="sr-only">Search claims</span>
-          <Search size={18} className="absolute left-3 top-3.5 text-muted" aria-hidden="true" />
+          <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
           <input
             type="search"
             value={queryText}

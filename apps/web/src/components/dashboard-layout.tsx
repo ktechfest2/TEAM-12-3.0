@@ -1,34 +1,25 @@
-import {
-  Archive,
-  LayoutDashboard,
-  MessageSquareText,
-  Radio,
-  ShieldCheck,
-  Workflow,
-} from "lucide-react";
 import { NavLink, Outlet } from "react-router";
 import { useSession } from "../lib/auth/session";
+import { Logo } from "./brand/logo";
+import { Icon, type IconName } from "./icons";
 
 const dashboardLinks = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard, end: true },
-  { to: "/dashboard/claims", label: "Claims", icon: MessageSquareText, end: false },
-  { to: "/dashboard/verification", label: "Verification", icon: Workflow, end: false },
-  { to: "/dashboard/evidence", label: "Evidence library", icon: Archive, end: false },
-  { to: "/dashboard/board", label: "Broadcast board", icon: Radio, end: false },
-] as const;
+  { to: "/dashboard", label: "Overview", icon: "dashboard", end: true },
+  { to: "/dashboard/claims", label: "Claims", icon: "messages", end: false },
+  { to: "/dashboard/verification", label: "Verification", icon: "workflow", end: false },
+  { to: "/dashboard/evidence", label: "Evidence library", icon: "archive", end: false },
+  { to: "/dashboard/board", label: "Broadcast board", icon: "broadcast", end: false },
+] as const satisfies readonly { to: string; label: string; icon: IconName; end: boolean }[];
 
 export function DashboardLayout() {
   const session = useSession();
 
   return (
-    <div className="min-h-screen bg-surface text-slate-900 lg:grid lg:grid-cols-[240px_1fr]">
+    <div className="min-h-screen bg-surface text-foreground lg:grid lg:grid-cols-[240px_1fr]">
       <aside className="border-b border-border bg-white lg:min-h-screen lg:border-r lg:border-b-0">
         <div className="flex h-[72px] items-center border-b border-border px-5 lg:px-6">
           <NavLink to="/" className="flex items-center gap-2.5 font-bold">
-            <span className="grid size-9 place-items-center rounded-[10px] bg-brand text-white">
-              <ShieldCheck size={20} aria-hidden="true" />
-            </span>
-            Clarion
+            <Logo />
           </NavLink>
         </div>
         <nav
@@ -36,7 +27,6 @@ export function DashboardLayout() {
           aria-label="Dashboard navigation"
         >
           {dashboardLinks.map((link) => {
-            const Icon = link.icon;
             return (
               <NavLink
                 key={link.to}
@@ -48,7 +38,7 @@ export function DashboardLayout() {
                   }`
                 }
               >
-                <Icon size={18} aria-hidden="true" />
+                <Icon name={link.icon} size={18} />
                 {link.label}
               </NavLink>
             );

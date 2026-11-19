@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Archive, ExternalLink, Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Icon } from "../components/icons";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
 import { useSession } from "../lib/auth/session";
@@ -45,7 +45,7 @@ export function EvidenceLibraryPage() {
       </div>
       <label className="relative mt-6 block">
         <span className="sr-only">Search evidence</span>
-        <Search size={18} className="absolute left-3 top-3.5 text-muted" aria-hidden="true" />
+        <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
         <input
           type="search"
           value={queryText}
@@ -60,7 +60,7 @@ export function EvidenceLibraryPage() {
       </p>
       {sources.length === 0 ? (
         <div className="mt-4 rounded-[14px] border border-border bg-white p-8 text-center">
-          <Archive size={24} className="mx-auto text-muted" aria-hidden="true" />
+          <Icon name="archive" size={24} className="mx-auto text-muted" />
           <h2 className="mt-3 font-bold">No evidence found</h2>
           <p className="mt-2 text-sm text-muted">
             Sources appear here after a claim has a matching official passage.
@@ -71,7 +71,7 @@ export function EvidenceLibraryPage() {
           {sources.map((source) => (
             <article
               key={source.url}
-              className="rounded-[14px] border border-border bg-white p-5 shadow-[var(--shadow-card)]"
+              className="rounded-[14px] border border-border bg-white p-5 shadow-card"
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -79,7 +79,7 @@ export function EvidenceLibraryPage() {
                   <h2 className="mt-2 font-bold leading-6">{source.document_title}</h2>
                 </div>
                 <span className="grid size-9 shrink-0 place-items-center rounded-[10px] bg-brand-soft text-brand">
-                  <Archive size={17} aria-hidden="true" />
+                  <Icon name="archive" size={17} />
                 </span>
               </div>
               <blockquote className="mt-4 border-l-2 border-brand pl-3 text-sm leading-6 text-secondary">
@@ -91,7 +91,7 @@ export function EvidenceLibraryPage() {
                 rel="noreferrer"
                 className="mt-4 flex min-h-11 items-center gap-2 text-sm font-semibold text-brand"
               >
-                Open official source <ExternalLink size={15} aria-hidden="true" />
+                Open official source <Icon name="external" size={15} />
               </a>
             </article>
           ))}

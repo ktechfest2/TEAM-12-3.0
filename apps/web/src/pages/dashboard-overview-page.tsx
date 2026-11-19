@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2, Clock3, MessageSquareText, Radio } from "lucide-react";
 import { Link } from "react-router";
 import { Card } from "../components/ui/card";
 import { StatCard } from "../components/ui/stat-card";
-import { VerdictBadge } from "../components/ui/verdict-badge";
 import { LoginForm } from "../features/auth/login-form";
+import { VerdictBadge } from "../features/claims/verdict-badge";
 import { listMessages } from "../features/review/review-api";
 import { stageLabel, stageOf } from "../features/review/review-rules";
 import { useSession } from "../lib/auth/session";
@@ -62,25 +61,20 @@ export function DashboardOverviewPage() {
           label="Total claims"
           value={messages.length}
           detail="Available to this workspace"
-          icon={MessageSquareText}
+          icon="messages"
         />
         <StatCard
           label="Needs review"
           value={draft}
           detail="Waiting for a reviewer decision"
-          icon={Clock3}
+          icon="clock"
         />
-        <StatCard
-          label="Approved"
-          value={approved}
-          detail="Ready for sealing"
-          icon={CheckCircle2}
-        />
+        <StatCard label="Approved" value={approved} detail="Ready for sealing" icon="checkCircle" />
         <StatCard
           label="Sealed"
           value={sealed}
           detail="Prepared for controlled broadcast"
-          icon={Radio}
+          icon="broadcast"
         />
       </div>
 

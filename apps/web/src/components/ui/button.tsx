@@ -23,12 +23,12 @@ export function Button(props: ButtonProps | LinkProps) {
   const size = props.size ?? "md";
   const styles = {
     primary: "border-brand bg-brand text-white hover:bg-brand-hover",
-    secondary: "border-brand-soft bg-brand-soft text-brand hover:bg-[#cbeecf]",
+    secondary: "border-brand-soft bg-brand-soft text-brand hover:bg-brand-100",
     outline: "border-border-strong bg-white text-foreground hover:bg-surface",
     ghost: "border-transparent bg-transparent text-secondary hover:bg-surface",
-    destructive: "border-[#dc2626] bg-[#dc2626] text-white hover:bg-[#b91c1c]",
+    destructive: "border-contradicted bg-contradicted text-white hover:opacity-90",
     quiet: "border-transparent bg-transparent text-brand hover:bg-brand-soft",
-  }[variant === "quiet" ? "quiet" : variant];
+  }[variant];
   const sizes = {
     sm: "min-h-11 px-3 text-sm",
     md: "min-h-11 px-4 text-sm",
