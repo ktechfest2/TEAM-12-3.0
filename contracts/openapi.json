@@ -320,6 +320,13 @@
             "title": "Claim Id",
             "type": "string"
           },
+          "claim_language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "claim_text": {
+            "title": "Claim Text",
+            "type": "string"
+          },
           "confidence": {
             "title": "Confidence",
             "type": "number"
@@ -383,6 +390,8 @@
         "required": [
           "id",
           "claim_id",
+          "claim_text",
+          "claim_language",
           "verdict",
           "summary",
           "confidence",
