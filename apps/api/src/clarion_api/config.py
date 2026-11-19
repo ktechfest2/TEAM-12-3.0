@@ -52,6 +52,7 @@ class Settings(BaseSettings):
     llm_embedding_dimensions: int = 768
     llm_timeout_seconds: float = 30.0
     llm_monthly_budget_usd: float = 20.0
+    llm_usd_per_million_tokens: float = 1.0
 
     # speech
     speech_provider: Literal["fake"] = "fake"

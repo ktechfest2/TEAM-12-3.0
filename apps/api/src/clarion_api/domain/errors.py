@@ -8,3 +8,7 @@ class NotPublishableError(DomainError):
 
 class NotFoundError(DomainError):
     """Raised when an id does not match any stored record."""
+
+
+class LlmBudgetExceededError(DomainError):
+    """Raised before a language model call when the monthly spend cap is reached."""
