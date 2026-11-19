@@ -2,7 +2,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev fmt lint typecheck test contract verify services-up services-down db-migrate clean
+.PHONY: help setup dev fmt lint typecheck test contract verify services-up services-down db-migrate demo-reset clean
 
 help: ## List commands
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -46,6 +46,9 @@ services-down: ## Stop local services
 
 db-migrate: ## Apply database migrations
 	$(MAKE) -C apps/api db-migrate
+
+demo-reset: ## Reset the demo workspace to known data (needs REPOSITORY_BACKEND=sql, CONFIRM=1)
+	$(MAKE) -C apps/api demo-reset CONFIRM=$(CONFIRM)
 
 clean: ## Remove caches and build output
 	$(MAKE) -C apps/api clean

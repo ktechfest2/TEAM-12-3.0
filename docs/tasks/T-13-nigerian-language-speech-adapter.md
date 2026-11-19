@@ -24,3 +24,6 @@ ADR 0002; `adapters/speech/`.
 adapters/speech/, docs/adr/, docs/CREDITS.md
 
 ## Questions
+
+- Not started, on purpose. Criterion 1 says to pick the provider after native speakers rate sample clips, and to record the choice in an ADR. That needs people listening to Yoruba, Hausa, Igbo and Pidgin samples, which I cannot do or guess. Candidates named in `docs/CREDITS.md`: 9jaLingo and Spitch.
+- When a provider is chosen: add `adapters/speech/<name>.py` that returns OGG Opus (the renderer in `services/rendering/voice.py` already refuses anything else), a factory branch, the `SPEECH_PROVIDER` value, a `banned-api` entry if it has an SDK, and credits.

@@ -11,6 +11,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Review
 
+- [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09) - claude (video needs a person)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13) - claude
 - [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04) - claude
 - [T-09](T-09-public-correction-page.md) Public correction page (S, after T-04) - claude
@@ -27,6 +28,5 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 - [T-13](T-13-nigerian-language-speech-adapter.md) Nigerian language speech adapter (S, after T-01)
 - [T-14](T-14-sandbox-channels-sms-whatsapp-x-instagram.md) Sandbox channels: SMS, WhatsApp, X, Instagram (L, after T-04)
-- [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09)
 
 ## Blocked or questions

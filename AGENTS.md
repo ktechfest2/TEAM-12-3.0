@@ -28,6 +28,7 @@ Clarion closes the correction gap: the time and language distance between an ele
 | `make test` | pytest and vitest |
 | `make contract` | Export OpenAPI and regenerate web types |
 | `make verify` | Everything above, as CI runs it |
+| `make demo-reset CONFIRM=1` | Wipe workspace data and queue the demo claims (sql backend, never production) |
 
 Run one app only: `make -C apps/api verify` or `make -C apps/web verify`.
 
