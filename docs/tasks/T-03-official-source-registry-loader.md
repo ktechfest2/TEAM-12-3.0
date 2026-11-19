@@ -1,6 +1,6 @@
 # T-03. Official source registry loader
 
-- Owner:
+- Owner: claude
 - Depends on: T-02
 - Estimate: S
 
@@ -14,13 +14,15 @@ ADR 0003; `data/seed_sources.json`.
 
 ## Acceptance criteria
 
-- [ ] `make -C apps/api seed-sources` loads a JSON file of passages with embeddings into the active repository
-- [ ] Duplicate URLs plus text are skipped
+- [x] `make -C apps/api seed-sources` loads a JSON file of passages with embeddings into the active repository
+- [x] Duplicate URLs plus text are skipped
 - [ ] Seed passages replaced with direct INEC wording where available and each URL checked by a person
-- [ ] `make verify` passes
+- [x] `make verify` passes
 
 ## Files likely touched
 
 apps/api/scripts/, data/, Makefile
 
 ## Questions
+
+- Duplicates are detected by URL plus text together (same URL with different text is a different passage). Criterion 3 (replace seed passages with direct INEC wording, each URL checked by a person) needs a human and is left unticked.
