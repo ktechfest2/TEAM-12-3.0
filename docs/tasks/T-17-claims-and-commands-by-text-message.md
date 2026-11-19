@@ -30,8 +30,8 @@ ADR 0010, ADR 0008, `services/chat_bot.py` (the Telegram version of the same com
 ## Setup for the SIM owner
 
 1. In the TextBee app: Settings, SMS, switch on **Receive SMS**.
-2. Make a secret: `openssl rand -hex 32`. Put it in the server's deploy env as `CHANNEL_SMS_WEBHOOK_SECRET`. Also set `CHANNEL_SMS_DEVICE_ID`, so only your gateway phone is accepted.
-3. In the TextBee dashboard: Webhooks, Add Webhook. Use the URL `https://<api host>/webhooks/sms`, the event `MESSAGE_RECEIVED`, and the same secret.
+2. Run `infra/deploy/clarion.sh --host <ssh-host> sms-webhook`. It prints the URL (`https://<domain>/api/webhooks/sms`) and the signing secret that `up` generated. Keep `CHANNEL_SMS_DEVICE_ID` set, so only your gateway phone is accepted.
+3. In the TextBee dashboard: Webhooks, Add Webhook. Paste that URL and secret and pick the event `MESSAGE_RECEIVED`.
 4. Text `CLARION` from another phone; you should get the help text back.
 
 ## Questions
