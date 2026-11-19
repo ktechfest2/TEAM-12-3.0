@@ -100,9 +100,13 @@ Built so far: SMS text (shortened by whole words, never stripping tone marks), v
 
 `services.broadcasting.plan_deliveries` calls `ensure_publishable`, then creates one `Delivery` per channel and language. Each delivery is a queued job (`worker/tasks.py: deliveries.send`) with retries. A failing channel is recorded as `failed` and never blocks others. Receipts stream to the broadcast board over server sent events. Retraction sends a correction notice through the same path.
 
+### 5.6 Claims by text message (ADR 0010)
+
+The SMS gateway posts every text its phone receives to `POST /webhooks/sms`. The `InboundSmsReader` adapter checks the gateway's HMAC signature and timestamp. `services.sms_inbox` then applies a keyword gate, because the gateway SIM also carries personal texts. Only texts whose first word is `CLARION`, and a bare `STOP` from an existing subscriber, are acted on: a claim (through the same intake as the web form and Telegram), `JOIN <language>` (active at once, because texting from the number proves control of it) or `STOP` (the subscription and encrypted number are deleted). Every other text is dropped without being stored, logged or answered. Replies are fixed one-text messages, de-duplicated by gateway id and capped per number and per day.
+
 ## 6. Data model
 
-Tables (`db/tables.py`, migration `0001`): `source_passages` (with `embedding vector(768)` and an HNSW cosine index), `claims`, `messages` (verdict check constraint), `reviews`, `localisations`, `deliveries`, `subscribers` (address stored as a hash, consent time required), `audit_events`.
+Tables (`db/tables.py`, migrations `0001` and `0002`): `source_passages` (with `embedding vector(768)` and an HNSW cosine index), `claims`, `messages` (verdict check constraint), `reviews`, `localisations`, `deliveries`, `subscribers` (chat address stored as a hash, consent time required), `sms_subscriptions` (phone number stored encrypted, see ADR 0008), `audit_events`.
 
 Naming: plural snake_case tables, `<entity>_id` foreign keys, `<verb>_at` UTC timestamps, constraint names from a fixed naming convention so migrations are stable.
 
@@ -131,7 +135,7 @@ All settings live in `config.py` (`pydantic-settings`), documented in `.env.exam
 ## 9. Security and safety
 
 - Publish rules are domain code with tests; weakening them needs an ADR.
-- Subscriber phone numbers are hashed; raw numbers only pass through the channel adapter at send time.
+- Chat subscriber addresses (Telegram) are hashed. Phone subscribers' numbers are stored encrypted (Fernet, key in `SUBSCRIBER_ENCRYPTION_KEY`, never in the database) next to a keyed hash used for lookup; they are decrypted only to send a text and are never logged. A number is texted corrections only after the owner confirms a code we sent (ADR 0008), or after the owner texts `CLARION JOIN <language>` from that number (ADR 0010). Incoming texts are signature checked; texts not addressed to Clarion are never stored or logged, and a claim never stores its sender.
 - No personal data in logs at info level. No message bodies in logs.
 - LLM spend capped by `LLM_MONTHLY_BUDGET_USD` (enforcement is task T-10).
 - Reviewer access requires an invite code until proper auth lands (T-11).

@@ -51,3 +51,19 @@ class DeliveryStatus(StrEnum):
     SENT = "sent"
     FAILED = "failed"
     RETRACTED = "retracted"
+
+
+class SubscriptionStatus(StrEnum):
+    PENDING = "pending"
+    ACTIVE = "active"
+
+
+class DeliveryMode(StrEnum):
+    INSTANT = "instant"
+    DIGEST = "digest"
+
+
+class DigestFrequency(StrEnum):
+    HOURLY = "hourly"
+    DAILY = "daily"
+    WEEKLY = "weekly"

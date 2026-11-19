@@ -15,7 +15,7 @@ from clarion_api.domain.rules import ensure_publishable
 from clarion_api.services.broadcasting import text_for
 from clarion_api.services.rendering.graphics import poster_pdf, social_card_png
 from clarion_api.services.rendering.sms import shorten_for_sms
-from clarion_api.services.rendering.voice import render_voice_note
+from clarion_api.services.rendering.voice import render_voice_note, voice_key
 
 SMS_MAX_SEGMENTS = 2
 PNG = "image/png"
@@ -64,7 +64,11 @@ async def render_message(
             )
         )
         voice_url = await render_voice_note(
-            text, language=language, speech=speech, store=store, key=f"{base}/voice-{language}.ogg"
+            text,
+            language=language,
+            speech=speech,
+            store=store,
+            key=voice_key(message.id, language),
         )
         items.append(RenderedItem(language, RenditionFormat.VOICE_NOTE, media_url=voice_url))
 

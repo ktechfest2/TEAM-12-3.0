@@ -8,6 +8,7 @@ from clarion_api.domain.models import (
     Claim,
     Delivery,
     MasterMessage,
+    SmsSubscription,
     SourcePassage,
     Subscriber,
 )
@@ -78,3 +79,15 @@ class AuditRepository(Protocol):
     ) -> list[AuditEvent]:
         """Events about one record, oldest first, optionally only one action."""
         ...
+
+
+class SmsSubscriptionRepository(Protocol):
+    async def save(self, subscription: SmsSubscription) -> None:
+        """Insert, or replace the row with the same id."""
+        ...
+
+    async def get_by_hash(self, phone_hash: str) -> SmsSubscription | None: ...
+
+    async def delete(self, subscription_id: UUID) -> bool: ...
+
+    async def list_active(self) -> list[SmsSubscription]: ...

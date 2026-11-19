@@ -13,4 +13,10 @@ class LocalObjectStore:
         path = self._root / key
         await asyncio.to_thread(path.parent.mkdir, parents=True, exist_ok=True)
         await asyncio.to_thread(path.write_bytes, data)
+        return self.public_url(key)
+
+    async def exists(self, key: str) -> bool:
+        return await asyncio.to_thread((self._root / key).is_file)
+
+    def public_url(self, key: str) -> str:
         return f"{self._public}/{key}"

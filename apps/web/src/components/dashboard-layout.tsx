@@ -1,72 +1,83 @@
-import {
-  Archive,
-  LayoutDashboard,
-  MessageSquareText,
-  Radio,
-  ShieldCheck,
-  Workflow,
-} from "lucide-react";
 import { NavLink, Outlet } from "react-router";
-import { useSession } from "../lib/auth/session";
+import { clearSession, useSession } from "../lib/auth/session";
+import { Logo } from "./brand/logo";
+import { Icon, type IconName } from "./icons";
 
 const dashboardLinks = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard, end: true },
-  { to: "/dashboard/claims", label: "Claims", icon: MessageSquareText, end: false },
-  { to: "/dashboard/verification", label: "Verification", icon: Workflow, end: false },
-  { to: "/dashboard/evidence", label: "Evidence library", icon: Archive, end: false },
-  { to: "/dashboard/board", label: "Broadcast board", icon: Radio, end: false },
-] as const;
+  { to: "/dashboard", label: "Overview", icon: "dashboard", end: true },
+  { to: "/dashboard/claims", label: "Claims", icon: "messages", end: false },
+  { to: "/dashboard/verification", label: "Verification", icon: "workflow", end: false },
+  { to: "/dashboard/evidence", label: "Evidence", icon: "archive", end: false },
+  { to: "/dashboard/board", label: "Broadcast", icon: "broadcast", end: false },
+] as const satisfies readonly { to: string; label: string; icon: IconName; end: boolean }[];
+
+function ReviewerChip({ compact = false }: { compact?: boolean }) {
+  const session = useSession();
+  if (!session) {
+    return <span className="text-sm text-muted">Reviewer workspace</span>;
+  }
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-soft text-brand">
+        <Icon name="user" size={16} />
+      </span>
+      {compact ? null : (
+        <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+          {session.reviewerName}
+        </span>
+      )}
+      <button
+        type="button"
+        onClick={clearSession}
+        className="grid size-10 shrink-0 place-items-center rounded-control text-muted hover:bg-surface hover:text-foreground"
+      >
+        <Icon name="logout" size={18} label="Sign out" />
+      </button>
+    </div>
+  );
+}
 
 export function DashboardLayout() {
-  const session = useSession();
-
   return (
-    <div className="min-h-screen bg-surface text-slate-900 lg:grid lg:grid-cols-[240px_1fr]">
-      <aside className="border-b border-border bg-white lg:min-h-screen lg:border-r lg:border-b-0">
-        <div className="flex h-[72px] items-center border-b border-border px-5 lg:px-6">
+    <div className="min-h-screen bg-surface text-foreground lg:grid lg:grid-cols-[232px_minmax(0,1fr)]">
+      <aside className="sticky top-0 z-20 border-b border-border bg-white lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
+        <div className="flex h-14 items-center justify-between gap-3 px-4 lg:h-16 lg:px-5">
           <NavLink to="/" className="flex items-center gap-2.5 font-bold">
-            <span className="grid size-9 place-items-center rounded-[10px] bg-brand text-white">
-              <ShieldCheck size={20} aria-hidden="true" />
-            </span>
-            Clarion
+            <Logo />
           </NavLink>
+          <div className="lg:hidden">
+            <ReviewerChip compact />
+          </div>
         </div>
         <nav
-          className="flex gap-2 overflow-x-auto p-3 lg:grid lg:overflow-visible"
+          className="-mb-px flex gap-1 overflow-x-auto px-2 lg:mb-0 lg:grid lg:gap-0.5 lg:overflow-visible lg:px-3 lg:py-2"
           aria-label="Dashboard navigation"
         >
-          {dashboardLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.end}
-                className={({ isActive }) =>
-                  `flex min-h-11 shrink-0 items-center gap-3 rounded-[10px] px-3 text-sm font-medium ${
-                    isActive ? "bg-brand-soft text-brand" : "text-secondary hover:bg-surface"
-                  }`
-                }
-              >
-                <Icon size={18} aria-hidden="true" />
-                {link.label}
-              </NavLink>
-            );
-          })}
+          {dashboardLinks.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.end}
+              className={({ isActive }) =>
+                `flex min-h-11 shrink-0 items-center gap-2.5 whitespace-nowrap border-b-2 px-3 text-sm font-medium transition-colors lg:rounded-control lg:border-b-0 ${
+                  isActive
+                    ? "border-brand text-brand lg:bg-brand-soft"
+                    : "border-transparent text-secondary hover:text-foreground lg:hover:bg-surface"
+                }`
+              }
+            >
+              <Icon name={link.icon} size={18} />
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
+        <div className="mt-auto hidden border-t border-border p-3 lg:block">
+          <ReviewerChip />
+        </div>
       </aside>
-      <div className="min-w-0">
-        <header className="hidden h-[72px] items-center justify-end border-b border-border bg-white px-8 lg:flex">
-          {session ? (
-            <span className="text-sm font-medium text-secondary">{session.reviewerName}</span>
-          ) : (
-            <span className="text-sm text-muted">Reviewer workspace</span>
-          )}
-        </header>
-        <main className="mx-auto max-w-[1120px] p-5 sm:p-8">
-          <Outlet />
-        </main>
-      </div>
+      <main className="mx-auto w-full max-w-[1120px] min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        <Outlet />
+      </main>
     </div>
   );
 }

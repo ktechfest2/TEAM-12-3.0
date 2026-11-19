@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
+import { Icon } from "../components/icons";
 import { InformationCard } from "../features/public/public-cards";
 import { demonstrationNotice, informationArticles } from "../features/public/public-demo";
 
@@ -55,7 +55,7 @@ export function InformationHubPage() {
       <div className="mt-8 flex flex-col gap-3 md:flex-row">
         <label className="relative flex-1">
           <span className="sr-only">Search election information</span>
-          <Search size={18} className="absolute left-3 top-3.5 text-muted" aria-hidden="true" />
+          <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
           <input
             type="search"
             value={query}

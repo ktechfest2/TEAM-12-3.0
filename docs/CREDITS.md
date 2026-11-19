@@ -1,11 +1,10 @@
 # Credits and declarations
 
-Required by hackathon rules 1.2 and 1.4. Update in the same change that adds a dependency or tool.
+Update in the same change that adds a dependency or tool.
 
 ## AI coding assistants
 
 - Claude (Anthropic), used for planning, scaffolding, code and documentation.
-- Add any other assistant the team uses here.
 
 ## AI models used by the product
 
@@ -14,7 +13,7 @@ Required by hackathon rules 1.2 and 1.4. Update in the same change that adds a d
 
 ## Python libraries
 
-FastAPI, Uvicorn, Pydantic, pydantic-settings, SQLAlchemy, asyncpg, Alembic, pgvector, taskiq, taskiq-redis, redis-py, google-genai, HTTPX, structlog, qrcode, Pillow. Development: Ruff, mypy, pytest, pytest-asyncio, pytest-cov, pre-commit.
+FastAPI, Uvicorn, Pydantic, pydantic-settings, SQLAlchemy, asyncpg, Alembic, pgvector, taskiq, taskiq-redis, redis-py, google-genai, HTTPX, structlog, qrcode, Pillow, cryptography (Fernet encryption of subscriber phone numbers, see ADR 0008). Development: Ruff, mypy, pytest, pytest-asyncio, pytest-cov, pre-commit.
 
 ## JavaScript libraries
 
@@ -30,4 +29,4 @@ Seed passages paraphrase INEC statements as reported by Africa Check, News Centr
 
 ## Services
 
-Vercel, Render, Supabase, Cloudflare (DNS and proxy), Caddy (host reverse proxy), Telegram Bot API. Container images for the self hosted deploy: pgvector/pgvector (PostgreSQL with pgvector), Redis, nginx, Node.js (build stage only). Object storage is reached through the S3 protocol (AWS Signature Version 4, implemented in `adapters/storage/s3.py` with HTTPX and the standard library; checked against the published AWS test vectors).
+Vercel, Render, Supabase, Cloudflare (DNS and proxy), Caddy (host reverse proxy), Telegram Bot API, TextBee (SMS gateway through an Android phone), X API v2 (posting). Container images for the self hosted deploy: pgvector/pgvector (PostgreSQL with pgvector), Redis, nginx, Node.js (build stage only). Object storage is reached through the S3 protocol (AWS Signature Version 4, implemented in `adapters/storage/s3.py` with HTTPX and the standard library; checked against the published AWS test vectors).

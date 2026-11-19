@@ -2,12 +2,13 @@ import math
 from collections.abc import Sequence
 from uuid import UUID
 
-from clarion_api.domain.enums import ChannelKind
+from clarion_api.domain.enums import ChannelKind, SubscriptionStatus
 from clarion_api.domain.models import (
     AuditEvent,
     Claim,
     Delivery,
     MasterMessage,
+    SmsSubscription,
     SourcePassage,
     Subscriber,
 )
@@ -115,6 +116,23 @@ class MemorySubscriberRepository:
 
     async def count(self) -> int:
         return len(self._items)
+
+
+class MemorySmsSubscriptionRepository:
+    def __init__(self) -> None:
+        self._items: dict[UUID, SmsSubscription] = {}
+
+    async def save(self, subscription: SmsSubscription) -> None:
+        self._items[subscription.id] = subscription
+
+    async def get_by_hash(self, phone_hash: str) -> SmsSubscription | None:
+        return next((s for s in self._items.values() if s.phone_hash == phone_hash), None)
+
+    async def delete(self, subscription_id: UUID) -> bool:
+        return self._items.pop(subscription_id, None) is not None
+
+    async def list_active(self) -> list[SmsSubscription]:
+        return [s for s in self._items.values() if s.status is SubscriptionStatus.ACTIVE]
 
 
 class MemoryAuditRepository:

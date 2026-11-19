@@ -31,6 +31,14 @@ export function PageHeader({
   );
 }
 
+/**
+ * Reviewer pages have no visible title: the active sidebar or tab item names the page.
+ * Each page still has one h1 for screen readers.
+ */
+export function PageTitle({ title }: { title: string }) {
+  return <h1 className="sr-only">{title}</h1>;
+}
+
 /** Small uppercase label above a block of content. */
 export function SectionTitle({ icon, children }: { icon?: IconName; children: ReactNode }) {
   return (

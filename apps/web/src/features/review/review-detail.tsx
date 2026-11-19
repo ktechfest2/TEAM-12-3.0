@@ -1,7 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router";
-import { verdictLabel, verdictTone } from "../claims/verdict";
+import { Icon } from "../../components/icons";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  controlClass,
+  Loading,
+  Notice,
+  Pill,
+  SectionTitle,
+} from "../../components/ui/surface";
+import { VerdictBadge } from "../claims/verdict-badge";
 import {
   addReview,
   approveTranslation,
@@ -16,12 +26,22 @@ import {
   languageName,
   type Message,
   missingApprovals,
+  type Stage,
   stageLabel,
   stageOf,
 } from "./review-rules";
 import { TranslationsPanel } from "./translations-panel";
+import { VoiceNotesPanel } from "./voice-notes-panel";
 
 type Props = { messageId: string };
+
+const stageTone: Record<Stage, "neutral" | "good" | "bad" | "attention"> = {
+  draft: "attention",
+  approved: "good",
+  rejected: "bad",
+  escalated: "attention",
+  sealed: "good",
+};
 
 export function ReviewDetail({ messageId }: Props) {
   const queryClient = useQueryClient();
@@ -61,8 +81,8 @@ export function ReviewDetail({ messageId }: Props) {
   const seal = useMutation({ mutationFn: () => sealMessage(messageId), onSuccess: store });
   const broadcast = useMutation({ mutationFn: () => broadcastMessage(messageId) });
 
-  if (query.isPending) return <p className="text-muted">Loading...</p>;
-  if (query.error) return <p role="alert">{query.error.message}</p>;
+  if (query.isPending) return <Loading />;
+  if (query.error) return <Notice tone="error">{query.error.message}</Notice>;
 
   const message = query.data;
   const stage = stageOf(message);
@@ -80,66 +100,76 @@ export function ReviewDetail({ messageId }: Props) {
   const summaryChanged = summaryEdit !== null && summaryEdit !== message.summary;
 
   return (
-    <article className="space-y-6" aria-label="Claim review">
-      <header className="space-y-1">
-        <p className="text-sm text-muted">Claim</p>
-        <h2 className="text-xl font-bold">{message.claim_text}</h2>
-        <p className="text-sm text-muted">{stageLabel[stage]}</p>
+    <article className="space-y-8" aria-label="Claim review">
+      <header className="space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <SectionTitle>Claim</SectionTitle>
+          <Pill tone={stageTone[stage]}>{stageLabel[stage]}</Pill>
+        </div>
+        <h2 className="font-display text-2xl font-bold leading-snug text-ink">
+          {message.claim_text}
+        </h2>
       </header>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <section aria-label="Draft answer" className="space-y-2">
-          <h3 className="font-bold">Draft answer</h3>
-          <p
-            className={`inline-block rounded-md border-2 px-2 py-1 ${verdictTone[message.verdict]}`}
-          >
-            {verdictLabel[message.verdict]}
-          </p>
-          <label htmlFor="summary" className="block text-sm font-semibold">
-            Answer people will read
-          </label>
-          <textarea
-            id="summary"
-            value={summary}
-            onChange={(e) => setSummaryEdit(e.target.value)}
-            rows={5}
-            className="w-full rounded-md border border-slate-300 p-2"
-          />
-          {summaryChanged ? (
-            <>
-              <button
-                type="button"
-                disabled={busy || summary.trim().length < 3}
-                onClick={() => saveSummary.mutate(summary.trim())}
-                className="rounded-md border border-slate-300 px-3 py-1"
-              >
-                Save answer
-              </button>
-              <p className="text-sm text-muted">
-                Saving a new answer removes existing translations.
-              </p>
-            </>
-          ) : null}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <section aria-label="Draft answer">
+          <Card className="h-full space-y-3">
+            <SectionTitle icon="user">Draft answer</SectionTitle>
+            <VerdictBadge verdict={message.verdict} />
+            <label htmlFor="summary" className="block text-sm font-semibold">
+              Answer people will read
+            </label>
+            <textarea
+              id="summary"
+              value={summary}
+              onChange={(e) => setSummaryEdit(e.target.value)}
+              rows={5}
+              className={controlClass}
+            />
+            {summaryChanged ? (
+              <div className="space-y-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={busy || summary.trim().length < 3}
+                  onClick={() => saveSummary.mutate(summary.trim())}
+                >
+                  Save answer
+                </Button>
+                <p className="text-sm text-muted">
+                  Saving a new answer removes existing translations.
+                </p>
+              </div>
+            ) : null}
+          </Card>
         </section>
 
-        <section aria-label="Official source" className="space-y-2">
-          <h3 className="font-bold">Official source</h3>
-          {message.source ? (
-            <blockquote className="rounded-md border-l-4 border-brand bg-slate-50 p-3">
-              <p>{message.source.text}</p>
-              <footer className="mt-2 text-sm text-slate-700">
-                <a className="underline" href={message.source.url} target="_blank" rel="noreferrer">
-                  {message.source.document_title}
-                </a>{" "}
-                ({message.source.publisher})
-              </footer>
-            </blockquote>
-          ) : (
-            <p className="text-muted">
-              No official passage was found. The answer can only say that there is no official
-              statement.
-            </p>
-          )}
+        <section aria-label="Official source">
+          <Card className="h-full space-y-3">
+            <SectionTitle icon="shieldCheck">Official source</SectionTitle>
+            {message.source ? (
+              <blockquote className="space-y-3 border-l-4 border-beacon pl-4">
+                <p className="font-display text-lg leading-snug">{message.source.text}</p>
+                <footer className="text-sm text-muted">
+                  <a
+                    className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-200 underline-offset-2 hover:decoration-brand"
+                    href={message.source.url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {message.source.document_title}
+                    <Icon name="external" size={14} />
+                  </a>{" "}
+                  ({message.source.publisher})
+                </footer>
+              </blockquote>
+            ) : (
+              <p className="text-muted">
+                No official passage was found. The answer can only say that there is no official
+                statement.
+              </p>
+            )}
+          </Card>
         </section>
       </div>
 
@@ -152,89 +182,85 @@ export function ReviewDetail({ messageId }: Props) {
         onApprove={(language) => approveLanguage.mutate(language)}
       />
 
-      <section aria-label="Decision" className="space-y-2">
-        <h3 className="font-bold">Decision</h3>
-        <label htmlFor="note" className="block text-sm font-semibold">
-          Note (optional)
-        </label>
-        <input
-          id="note"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="w-full rounded-md border border-slate-300 p-2"
-        />
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            disabled={busy || summaryChanged || !canApprove(message)}
-            onClick={() => decide.mutate("approved")}
-            className="rounded-md bg-brand px-4 py-2 font-semibold text-white disabled:opacity-50"
-          >
-            Approve
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => decide.mutate("escalated")}
-            className="rounded-md border border-slate-300 px-4 py-2"
-          >
-            Escalate
-          </button>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => decide.mutate("rejected")}
-            className="rounded-md border border-slate-300 px-4 py-2"
-          >
-            Reject
-          </button>
-        </div>
-        {missing.length > 0 ? (
-          <p className="text-sm text-muted">
-            Approve is available after these languages are approved:{" "}
-            {missing.map((language) => languageName[language]).join(", ")}.
-          </p>
-        ) : null}
+      <section aria-label="Decision">
+        <Card className="space-y-4">
+          <SectionTitle icon="check">Decision</SectionTitle>
+          <div className="space-y-1.5">
+            <label htmlFor="note" className="block text-sm font-semibold">
+              Note (optional)
+            </label>
+            <input
+              id="note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className={controlClass}
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              icon="check"
+              disabled={busy || summaryChanged || !canApprove(message)}
+              onClick={() => decide.mutate("approved")}
+            >
+              Approve
+            </Button>
+            <Button variant="secondary" disabled={busy} onClick={() => decide.mutate("escalated")}>
+              Escalate
+            </Button>
+            <Button variant="secondary" disabled={busy} onClick={() => decide.mutate("rejected")}>
+              Reject
+            </Button>
+          </div>
+          {missing.length > 0 ? (
+            <p className="text-sm text-muted">
+              Approve is available after these languages are approved:{" "}
+              {missing.map((language) => languageName[language]).join(", ")}.
+            </p>
+          ) : null}
+        </Card>
       </section>
 
       {stage === "approved" || stage === "sealed" ? (
-        <section aria-label="Send" className="space-y-2">
-          <h3 className="font-bold">Send</h3>
-          {stage === "approved" ? (
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => seal.mutate()}
-              className="rounded-md border border-brand px-4 py-2 font-semibold text-brand"
-            >
-              Seal this message
-            </button>
-          ) : (
-            <>
-              <p className="break-all text-sm">Integrity hash: {message.integrity_hash}</p>
-              {broadcast.isSuccess ? (
-                <p>
-                  Sending started.{" "}
-                  <Link to="/dashboard/board" className="underline">
-                    Watch the broadcast board
-                  </Link>
+        <section aria-label="Send">
+          <Card className="space-y-4 border-brand-200 bg-brand-50">
+            <SectionTitle icon="send">Send</SectionTitle>
+            {stage === "approved" ? (
+              <Button variant="secondary" icon="lock" disabled={busy} onClick={() => seal.mutate()}>
+                Seal this message
+              </Button>
+            ) : (
+              <>
+                <p className="flex items-start gap-2 break-all font-mono text-sm text-brand">
+                  <Icon name="fingerprint" size={18} className="mt-0.5" />
+                  Integrity hash: {message.integrity_hash}
                 </p>
-              ) : (
-                <button
-                  type="button"
-                  disabled={broadcast.isPending}
-                  onClick={() => broadcast.mutate()}
-                  className="rounded-md bg-brand px-4 py-2 font-semibold text-white disabled:opacity-60"
-                >
-                  {broadcast.isPending ? "Starting..." : "Send to every channel"}
-                </button>
-              )}
-            </>
-          )}
+                <VoiceNotesPanel messageId={messageId} />
+                {broadcast.isSuccess ? (
+                  <p className="flex items-center gap-2 font-semibold text-confirmed">
+                    <Icon name="checkCircle" size={18} />
+                    <span>
+                      Sending started.{" "}
+                      <Link to="/dashboard/board" className="underline underline-offset-2">
+                        Watch the broadcast board
+                      </Link>
+                    </span>
+                  </p>
+                ) : (
+                  <Button
+                    icon="send"
+                    disabled={broadcast.isPending}
+                    onClick={() => broadcast.mutate()}
+                  >
+                    {broadcast.isPending ? "Starting..." : "Send to every channel"}
+                  </Button>
+                )}
+              </>
+            )}
+          </Card>
         </section>
       ) : null}
 
-      {failure ? <p role="alert">{failure.message}</p> : null}
+      {failure ? <Notice tone="error">{failure.message}</Notice> : null}
     </article>
   );
 }

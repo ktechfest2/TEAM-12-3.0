@@ -12,6 +12,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Review
 
+- [T-17](T-17-claims-and-commands-by-text-message.md) Claims and commands by text message (M, after T-12) - claude (TextBee webhook setup needs the SIM owner)
 - [T-16](T-16-self-hosted-vps-deploy.md) Self hosted VPS deploy behind Cloudflare (L, after T-04) - claude (real DNS not tested)
 - [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09) - claude (video needs a person)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13) - claude

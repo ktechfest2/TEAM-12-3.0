@@ -1,7 +1,14 @@
 import { api } from "../../lib/api/client";
 import type { components } from "../../lib/api/schema.gen";
+import { env } from "../../lib/env";
 
 export type PublicCorrection = components["schemas"]["PublicCorrectionOut"];
+type Language = components["schemas"]["Language"];
+
+/** The audio for one approved language. The server makes it the first time and reuses it after. */
+export function voiceNoteUrl(messageId: string, language: Language): string {
+  return `${env.apiBaseUrl}/public/corrections/${messageId}/voice/${language}`;
+}
 
 export class CorrectionNotFoundError extends Error {}
 

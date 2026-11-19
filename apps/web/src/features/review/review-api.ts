@@ -1,5 +1,5 @@
 import { api } from "../../lib/api/client";
-import type { Language, Message } from "./review-rules";
+import type { Language, Message, Rendition } from "./review-rules";
 
 const FAILED = "Something went wrong. Check your connection and try again.";
 
@@ -55,6 +55,16 @@ export function approveTranslation(id: string, language: Language): Promise<Mess
 
 export function sealMessage(id: string): Promise<Message> {
   return unwrap(api.POST("/messages/{message_id}/seal", { params: { path: { message_id: id } } }));
+}
+
+/** Speaks every approved language and makes the card and poster. Needs a sealed message. */
+export function renderRenditions(id: string): Promise<Rendition[]> {
+  return unwrap(
+    api.POST("/messages/{message_id}/renditions", {
+      params: { path: { message_id: id } },
+      body: {},
+    }),
+  );
 }
 
 export function broadcastMessage(id: string): Promise<void> {

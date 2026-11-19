@@ -16,10 +16,18 @@ from clarion_api.db.tables import (
     LocalisationRow,
     MessageRow,
     ReviewRow,
+    SmsSubscriptionRow,
     SourcePassageRow,
     SubscriberRow,
 )
-from clarion_api.domain.enums import ChannelKind, DeliveryStatus, Language, ReviewStatus, Verdict
+from clarion_api.domain.enums import (
+    ChannelKind,
+    DeliveryStatus,
+    Language,
+    ReviewStatus,
+    SubscriptionStatus,
+    Verdict,
+)
 from clarion_api.domain.models import (
     AuditEvent,
     Claim,
@@ -27,6 +35,7 @@ from clarion_api.domain.models import (
     Localisation,
     MasterMessage,
     Review,
+    SmsSubscription,
     SourcePassage,
     Subscriber,
 )
@@ -356,6 +365,66 @@ class SqlSubscriberRepository:
     async def count(self) -> int:
         async with self._sessions() as session:
             return int(await session.scalar(select(func.count()).select_from(SubscriberRow)) or 0)
+
+
+_SUBSCRIPTION_COLUMNS = {"id", "created_at", "phone_hash", "phone_encrypted", "status"}
+
+
+def _subscription_from_row(row: SmsSubscriptionRow) -> SmsSubscription:
+    return SmsSubscription.model_validate(
+        {
+            **row.payload,
+            "id": row.id,
+            "created_at": row.created_at,
+            "phone_hash": row.phone_hash,
+            "phone_encrypted": row.phone_encrypted,
+            "status": row.status,
+        }
+    )
+
+
+class SqlSmsSubscriptionRepository:
+    def __init__(self, sessions: SessionFactory) -> None:
+        self._sessions = sessions
+
+    async def save(self, subscription: SmsSubscription) -> None:
+        payload = subscription.model_dump(mode="json", exclude=_SUBSCRIPTION_COLUMNS)
+        async with self._sessions.begin() as session:
+            row = await session.get(SmsSubscriptionRow, subscription.id)
+            if row is None:
+                row = SmsSubscriptionRow(
+                    id=subscription.id,
+                    created_at=subscription.created_at,
+                    phone_hash=subscription.phone_hash,
+                    phone_encrypted=subscription.phone_encrypted,
+                )
+                session.add(row)
+            row.status = subscription.status.value
+            row.payload = payload
+
+    async def get_by_hash(self, phone_hash: str) -> SmsSubscription | None:
+        async with self._sessions() as session:
+            row = await session.scalar(
+                select(SmsSubscriptionRow).where(SmsSubscriptionRow.phone_hash == phone_hash)
+            )
+            return _subscription_from_row(row) if row else None
+
+    async def delete(self, subscription_id: UUID) -> bool:
+        async with self._sessions.begin() as session:
+            row = await session.get(SmsSubscriptionRow, subscription_id)
+            if row is None:
+                return False
+            await session.delete(row)
+            return True
+
+    async def list_active(self) -> list[SmsSubscription]:
+        async with self._sessions() as session:
+            rows = await session.scalars(
+                select(SmsSubscriptionRow).where(
+                    SmsSubscriptionRow.status == SubscriptionStatus.ACTIVE.value
+                )
+            )
+            return [_subscription_from_row(r) for r in rows]
 
 
 class SqlAuditRepository:

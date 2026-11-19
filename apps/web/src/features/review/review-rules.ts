@@ -3,6 +3,7 @@ import type { components } from "../../lib/api/schema.gen";
 export type Message = components["schemas"]["MessageOut"];
 export type Language = Message["claim_language"];
 export type Localisation = Message["localisations"][number];
+export type Rendition = components["schemas"]["RenditionOut"];
 
 /** Every language a correction must reach before it can be approved. English is the master text. */
 export const TARGET_LANGUAGES = ["yo", "ha", "ig", "pcm"] as const satisfies readonly Language[];
