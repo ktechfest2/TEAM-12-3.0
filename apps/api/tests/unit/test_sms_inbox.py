@@ -38,12 +38,8 @@ def test_every_reply_is_one_plain_text(reply: str) -> None:
 
 
 def test_keyword_gate() -> None:
-    assert read_text("CLARION INEC moved it", has_subscription=False) == ClaimText(
-        "INEC moved it"
-    )
-    assert read_text("clarion, join hausa", has_subscription=False) == JoinCommand(
-        Language.HAUSA
-    )
+    assert read_text("CLARION INEC moved it", has_subscription=False) == ClaimText("INEC moved it")
+    assert read_text("clarion, join hausa", has_subscription=False) == JoinCommand(Language.HAUSA)
     assert read_text("Clarion", has_subscription=False) == IgnoredMessage()
     assert read_text("CLARION STOP", has_subscription=False) == StopCommand()
     assert read_text("STOP", has_subscription=True) == StopCommand()

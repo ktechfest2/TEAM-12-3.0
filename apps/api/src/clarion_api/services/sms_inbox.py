@@ -135,11 +135,26 @@ class InboxDeps:
     guard: InboxGuard
 
 
-async def handle_inbound_sms(sms: InboundSms, deps: InboxDeps, now: datetime) -> Outcome:
+@dataclass(frozen=True)
+class _Sender:
+    """The person who texted, for this one request only. The number is never stored here."""
+
+    phone: str
+    phone_hash: str
+    subscription: SmsSubscription | None
+
+
+def _phone_or_none(raw: str) -> str | None:
     try:
-        phone = normalize_phone(sms.sender)
+        return normalize_phone(raw)
     except InvalidPhoneError:
-        return Outcome.NOT_FOR_US  # bank, network operator or short code names
+        return None  # bank, network operator or short code names are never people
+
+
+async def handle_inbound_sms(sms: InboundSms, deps: InboxDeps, now: datetime) -> Outcome:
+    phone = _phone_or_none(sms.sender)
+    if phone is None:
+        return Outcome.NOT_FOR_US
     phone_hash = address_hash(deps.secret, ChannelKind.SMS, phone)
     subscription = await deps.subscriptions.get_by_hash(phone_hash)
     command = read_text(sms.text, has_subscription=subscription is not None)
@@ -149,50 +164,48 @@ async def handle_inbound_sms(sms: InboundSms, deps: InboxDeps, now: datetime) ->
         return Outcome.DUPLICATE
     if not deps.guard.per_sender.allow(phone_hash, now):
         return Outcome.THROTTLED
+    return await _act(command, _Sender(phone, phone_hash, subscription), deps, now)
 
-    async def reply(text: str) -> None:
-        await _reply(deps, phone=phone, phone_hash=phone_hash, text=text, now=now)
 
+async def _act(command: Command, who: _Sender, deps: InboxDeps, now: datetime) -> Outcome:
     if isinstance(command, IgnoredMessage):
-        await reply(HELP)
+        await _reply(deps, who, HELP, now)
         return Outcome.HELP
     if isinstance(command, StopCommand):
-        if subscription is None:
-            await reply(NOT_SUBSCRIBED)
+        if who.subscription is None:
+            await _reply(deps, who, NOT_SUBSCRIBED, now)
         else:
-            await deps.subscriptions.delete(subscription.id)
-            await reply(STOPPED)
+            await deps.subscriptions.delete(who.subscription.id)
+            await _reply(deps, who, STOPPED, now)
         return Outcome.STOPPED
     if isinstance(command, JoinCommand):
-        if command.language is None:
-            await reply(JOIN_HELP)
-            return Outcome.HELP
-        if deps.cipher is None:
-            await reply(ALERTS_CLOSED)
-            return Outcome.HELP
-        joined = _joined(subscription, phone, phone_hash, command.language, deps.cipher, now)
-        await deps.subscriptions.save(joined)
-        await reply(joined_text(command.language, joined.preferences.max_per_day))
-        return Outcome.JOINED
+        return await _join(command.language, who, deps, now)
     claim: ClaimText = command  # the only kind left; mypy fails here if a new one is added
-    await _take_claim(claim.text, subscription, deps)
-    await reply(CLAIM_RECEIVED)
+    await _take_claim(claim.text, who.subscription, deps)
+    await _reply(deps, who, CLAIM_RECEIVED, now)
     return Outcome.CLAIM
 
 
-def _joined(
-    existing: SmsSubscription | None,
-    phone: str,
-    phone_hash: str,
-    language: Language,
-    cipher: Cipher,
-    now: datetime,
-) -> SmsSubscription:
+async def _join(language: Language | None, who: _Sender, deps: InboxDeps, now: datetime) -> Outcome:
+    if language is None:
+        await _reply(deps, who, JOIN_HELP, now)
+        return Outcome.HELP
+    if deps.cipher is None:
+        await _reply(deps, who, ALERTS_CLOSED, now)
+        return Outcome.HELP
+    joined = _joined(who, language=language, cipher=deps.cipher, now=now)
+    await deps.subscriptions.save(joined)
+    await _reply(deps, who, joined_text(language, joined.preferences.max_per_day), now)
+    return Outcome.JOINED
+
+
+def _joined(who: _Sender, *, language: Language, cipher: Cipher, now: datetime) -> SmsSubscription:
     """Texting from the number proves control of it, so the subscription is active at once."""
+    existing = who.subscription
     if existing is None:
         return SmsSubscription(
-            phone_hash=phone_hash,
-            phone_encrypted=cipher.encrypt(phone),
+            phone_hash=who.phone_hash,
+            phone_encrypted=cipher.encrypt(who.phone),
             status=SubscriptionStatus.ACTIVE,
             preferences=SmsPreferences(languages=[language]),
             consented_at=now,
@@ -238,15 +251,13 @@ async def _take_claim(text: str, subscription: SmsSubscription | None, deps: Inb
     )
 
 
-async def _reply(
-    deps: InboxDeps, *, phone: str, phone_hash: str, text: str, now: datetime
-) -> None:
+async def _reply(deps: InboxDeps, who: _Sender, text: str, now: datetime) -> None:
     """One text back, unless this number or everyone together is over the reply limit."""
-    if not deps.guard.replies_per_sender.allow(phone_hash, now):
+    if not deps.guard.replies_per_sender.allow(who.phone_hash, now):
         return
     if not deps.guard.replies_overall.allow("all", now):
         return
     try:
-        await deps.sender.send_sms([phone], text)
-    except Exception as exc:  # noqa: BLE001 - a failed reply must not lose the claim or retry it
+        await deps.sender.send_sms([who.phone], text)
+    except Exception as exc:  # a failed reply must not lose the claim or make the gateway retry
         log.warning("sms_reply_failed", error=type(exc).__name__)
