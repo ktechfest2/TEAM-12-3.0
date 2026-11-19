@@ -9,9 +9,11 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from clarion_api.adapters.channels import (
     Channel,
+    InboundSmsReader,
     Replier,
     SmsSender,
     build_channels,
+    build_inbound_sms_reader,
     build_replier,
     build_sms_sender,
 )
@@ -49,6 +51,7 @@ from clarion_api.repositories.sql import (
     SqlSubscriberRepository,
 )
 from clarion_api.services.rate_limit import SlidingWindowLimiter
+from clarion_api.services.sms_inbox import InboxGuard
 from clarion_api.services.sources import load_passages, parse_passages
 
 
@@ -63,6 +66,7 @@ class Container:
     replier: Replier
     sms_sender: SmsSender
     cipher: Cipher | None
+    inbound_sms: InboundSmsReader | None = None
     sources: SourceRepository = field(default_factory=MemorySourceRepository)
     claims: ClaimRepository = field(default_factory=MemoryClaimRepository)
     messages: MessageRepository = field(default_factory=MemoryMessageRepository)
@@ -78,6 +82,7 @@ class Container:
     code_limiter_overall: SlidingWindowLimiter = field(
         default_factory=lambda: SlidingWindowLimiter(limit=60, window=timedelta(hours=1))
     )
+    sms_inbox_guard: InboxGuard = field(default_factory=InboxGuard)
     engine: AsyncEngine | None = None
 
     async def aclose(self) -> None:
@@ -99,6 +104,7 @@ def build_container(settings: Settings) -> Container:
         replier=build_replier(channels),
         sms_sender=build_sms_sender(settings, http),
         cipher=build_cipher(settings),
+        inbound_sms=build_inbound_sms_reader(settings),
     )
     if settings.repository_backend == "sql":
         container.engine = build_engine(settings.database_url)

@@ -13,6 +13,14 @@ class SlidingWindowLimiter:
         self._window = window
         self._hits: dict[str, deque[datetime]] = defaultdict(deque)
 
+    def allow(self, key: str, now: datetime) -> bool:
+        """Like `hit`, but answers False instead of raising when the key is over its limit."""
+        try:
+            self.hit(key, now)
+        except RateLimitedError:
+            return False
+        return True
+
     def hit(self, key: str, now: datetime) -> None:
         """Record a request or raise RateLimitedError when the key is over its limit."""
         hits = self._hits[key]
