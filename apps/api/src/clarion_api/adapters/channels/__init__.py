@@ -1,6 +1,6 @@
 import httpx
 
-from clarion_api.adapters.channels.base import Channel
+from clarion_api.adapters.channels.base import Channel, Replier
 from clarion_api.adapters.channels.console import ConsoleChannel
 from clarion_api.adapters.channels.telegram import TelegramChannel
 from clarion_api.config import Settings
@@ -22,4 +22,12 @@ def build_channels(settings: Settings, client: httpx.AsyncClient) -> list[Channe
     return channels or [ConsoleChannel()]
 
 
-__all__ = ["Channel", "build_channels"]
+def build_replier(channels: list[Channel]) -> Replier:
+    """The first channel that can hold a conversation; the console recorder if none can."""
+    for channel in channels:
+        if isinstance(channel, Replier):
+            return channel
+    return ConsoleChannel()
+
+
+__all__ = ["Channel", "Replier", "build_channels", "build_replier"]

@@ -64,6 +64,7 @@ class Settings(BaseSettings):
     # channels
     channel_telegram_bot_token: SecretStr | None = None
     channel_telegram_chat_id: str | None = None
+    channel_telegram_webhook_secret: SecretStr | None = None
     channel_sms_provider: str | None = None
     channel_sms_api_key: SecretStr | None = None
     channel_sms_sender_id: str | None = None

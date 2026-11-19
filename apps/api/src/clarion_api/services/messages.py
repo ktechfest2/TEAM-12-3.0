@@ -17,6 +17,7 @@ from clarion_api.domain.models import (
     Localisation,
     MasterMessage,
     Review,
+    VerdictResult,
 )
 from clarion_api.repositories.base import (
     ClaimRepository,
@@ -45,13 +46,15 @@ async def create_message(
     sources: SourceRepository,
     messages: MessageRepository,
     llm: LanguageModel,
+    result: VerdictResult | None = None,
 ) -> MasterMessage:
-    """Match the claim to official sources and store the draft answer for review."""
+    """Store the draft answer for review. Pass `result` to reuse a match already made."""
     claim = await claims.get(claim_id)
     if claim is None:
         msg = f"claim {claim_id} not found"
         raise NotFoundError(msg)
-    result = await match_claim(claim, llm=llm, sources=sources)
+    if result is None:
+        result = await match_claim(claim, llm=llm, sources=sources)
     passage = await sources.get(result.passage_id) if result.passage_id else None
     message = MasterMessage(
         claim_id=claim.id,
