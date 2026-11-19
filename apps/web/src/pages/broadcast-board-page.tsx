@@ -1,8 +1,13 @@
+import { LoginForm } from "../features/auth/login-form";
+import { BroadcastBoard } from "../features/board/broadcast-board";
+import { useSession } from "../lib/auth/session";
+
 export function BroadcastBoardPage() {
+  const session = useSession();
   return (
-    <section>
+    <section className="space-y-4">
       <h1 className="text-2xl font-bold">Broadcast board</h1>
-      <p className="text-muted">Not built yet. See docs/tasks/T-08.</p>
+      {session ? <BroadcastBoard /> : <LoginForm />}
     </section>
   );
 }
