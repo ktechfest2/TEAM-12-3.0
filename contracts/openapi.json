@@ -575,6 +575,66 @@
         "title": "SourceOut",
         "type": "object"
       },
+      "TelegramChat": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "TelegramChat",
+        "type": "object"
+      },
+      "TelegramMessage": {
+        "properties": {
+          "chat": {
+            "$ref": "#/components/schemas/TelegramChat"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "chat"
+        ],
+        "title": "TelegramMessage",
+        "type": "object"
+      },
+      "TelegramUpdateIn": {
+        "description": "The part of a Telegram update Clarion reads. Other fields are ignored.",
+        "properties": {
+          "message": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TelegramMessage"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "update_id": {
+            "title": "Update Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "update_id"
+        ],
+        "title": "TelegramUpdateIn",
+        "type": "object"
+      },
       "TokenIn": {
         "properties": {
           "invite_code": {
@@ -674,6 +734,17 @@
         ],
         "title": "Verdict",
         "type": "string"
+      },
+      "WebhookOut": {
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "title": "WebhookOut",
+        "type": "object"
       }
     }
   },
@@ -1479,6 +1550,66 @@
         "summary": "Sms Size",
         "tags": [
           "tools"
+        ]
+      }
+    },
+    "/webhooks/telegram": {
+      "post": {
+        "description": "Telegram calls this for every message sent to the bot.\n\nAlways answers 200 for updates we choose to ignore, so Telegram does not retry them.",
+        "operationId": "receiveTelegramUpdate",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Telegram-Bot-Api-Secret-Token",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Telegram-Bot-Api-Secret-Token"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TelegramUpdateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Receive Telegram Update",
+        "tags": [
+          "webhooks"
         ]
       }
     }

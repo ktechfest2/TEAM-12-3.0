@@ -229,6 +229,28 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/webhooks/telegram": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Receive Telegram Update
+     * @description Telegram calls this for every message sent to the bot.
+     *
+     *     Always answers 200 for updates we choose to ignore, so Telegram does not retry them.
+     */
+    post: operations["receiveTelegramUpdate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -444,6 +466,26 @@ export interface components {
       /** Url */
       url: string;
     };
+    /** TelegramChat */
+    TelegramChat: {
+      /** Id */
+      id: number;
+    };
+    /** TelegramMessage */
+    TelegramMessage: {
+      chat: components["schemas"]["TelegramChat"];
+      /** Text */
+      text?: string | null;
+    };
+    /**
+     * TelegramUpdateIn
+     * @description The part of a Telegram update Clarion reads. Other fields are ignored.
+     */
+    TelegramUpdateIn: {
+      message?: components["schemas"]["TelegramMessage"] | null;
+      /** Update Id */
+      update_id: number;
+    };
     /** TokenIn */
     TokenIn: {
       /** Invite Code */
@@ -484,6 +526,14 @@ export interface components {
      * @enum {string}
      */
     Verdict: "confirmed" | "contradicted" | "no_official_statement";
+    /** WebhookOut */
+    WebhookOut: {
+      /**
+       * Ok
+       * @default true
+       */
+      ok: boolean;
+    };
   };
   responses: never;
   parameters: never;
@@ -948,6 +998,41 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SmsSizeOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  receiveTelegramUpdate: {
+    parameters: {
+      query?: never;
+      header?: {
+        "X-Telegram-Bot-Api-Secret-Token"?: string | null;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TelegramUpdateIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WebhookOut"];
         };
       };
       /** @description Validation Error */
