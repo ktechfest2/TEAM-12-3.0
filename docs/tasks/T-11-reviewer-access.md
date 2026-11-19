@@ -1,6 +1,6 @@
 # T-11. Reviewer access
 
-- Owner:
+- Owner: claude
 - Depends on: T-04
 - Estimate: S
 
