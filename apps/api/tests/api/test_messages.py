@@ -185,3 +185,33 @@ async def test_delivery_events_need_a_token_and_a_known_message(
     missing = "00000000-0000-0000-0000-000000000000"
     assert (await anonymous_client.get(f"/messages/{missing}/deliveries/events")).status_code == 401
     assert (await client.get(f"/messages/{missing}/deliveries/events")).status_code == 404
+
+
+async def test_renditions_are_made_from_a_sealed_message(client: httpx.AsyncClient) -> None:
+    message = await _message(client)
+    await _approve(client, message["id"])
+    await _approve_yoruba(client, message["id"])
+    await client.post(f"/messages/{message['id']}/seal")
+
+    response = await client.post(f"/messages/{message['id']}/renditions", json={})
+    assert response.status_code == 200
+    items = response.json()
+    assert {(i["language"], i["format"]) for i in items} == {
+        ("en", "sms_text"),
+        ("en", "voice_note"),
+        ("yo", "sms_text"),
+        ("yo", "voice_note"),
+        ("en", "social_card"),
+        ("en", "poster_pdf"),
+    }
+    sms_yo = next(i for i in items if i["language"] == "yo" and i["format"] == "sms_text")
+    assert sms_yo["text"].startswith("[yo]")
+    assert f"/c/{message['id']}" in sms_yo["text"]
+    assert all(i["media_url"] for i in items if i["format"] != "sms_text")
+
+
+async def test_unsealed_message_cannot_be_rendered(client: httpx.AsyncClient) -> None:
+    message = await _message(client)
+    await _approve(client, message["id"])
+    response = await client.post(f"/messages/{message['id']}/renditions", json={})
+    assert response.status_code == 409

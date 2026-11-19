@@ -15,6 +15,8 @@ from clarion_api.api.schemas import (
     LocalisationIn,
     MessageCreateIn,
     MessageOut,
+    RenditionOut,
+    RenditionsIn,
     RetractIn,
     ReviewIn,
 )
@@ -22,6 +24,7 @@ from clarion_api.domain.enums import Language
 from clarion_api.domain.models import MasterMessage
 from clarion_api.services import messages as workflow
 from clarion_api.services.delivery_stream import stream_delivery_events
+from clarion_api.services.rendering.service import render_message as render_all
 from clarion_api.worker.tasks import send_delivery
 
 # Every message route is for invited reviewers; the public page reads sealed messages elsewhere.
@@ -132,6 +135,27 @@ async def broadcast_message(
 async def list_deliveries(message_id: UUID, container: ContainerDep) -> list[DeliveryOut]:
     await workflow.load_message(message_id, container.messages)
     return [delivery_out(d) for d in await container.deliveries.list_for_message(message_id)]
+
+
+@router.post("/{message_id}/renditions", operation_id="renderMessage")
+async def render_message(
+    message_id: UUID, body: RenditionsIn, container: ContainerDep
+) -> list[RenditionOut]:
+    """Make SMS text, voice notes, a social card and a poster from a sealed message."""
+    message = await workflow.load_message(message_id, container.messages)
+    items = await render_all(
+        message,
+        workflow.broadcast_languages(message, body.languages),
+        public_url=f"{container.settings.public_web_url}/c/{message_id}",
+        speech=container.speech,
+        store=container.store,
+    )
+    return [
+        RenditionOut(
+            language=item.language, format=item.format, text=item.text, media_url=item.media_url
+        )
+        for item in items
+    ]
 
 
 def _sse(event: str, payload: str) -> str:

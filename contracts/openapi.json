@@ -518,6 +518,79 @@
         "title": "PublicTranslationOut",
         "type": "object"
       },
+      "RenditionFormat": {
+        "enum": [
+          "text",
+          "sms_text",
+          "voice_note",
+          "radio_script",
+          "social_card",
+          "poster_pdf",
+          "short_video"
+        ],
+        "title": "RenditionFormat",
+        "type": "string"
+      },
+      "RenditionOut": {
+        "properties": {
+          "format": {
+            "$ref": "#/components/schemas/RenditionFormat"
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "media_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media Url"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          }
+        },
+        "required": [
+          "language",
+          "format",
+          "text",
+          "media_url"
+        ],
+        "title": "RenditionOut",
+        "type": "object"
+      },
+      "RenditionsIn": {
+        "properties": {
+          "languages": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/Language"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Languages"
+          }
+        },
+        "title": "RenditionsIn",
+        "type": "object"
+      },
       "RetractIn": {
         "properties": {
           "reason": {
@@ -1485,6 +1558,80 @@
           }
         },
         "summary": "Approve Localisation",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
+    "/messages/{message_id}/renditions": {
+      "post": {
+        "description": "Make SMS text, voice notes, a social card and a poster from a sealed message.",
+        "operationId": "renderMessage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenditionsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RenditionOut"
+                  },
+                  "title": "Response Rendermessage",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Render Message",
         "tags": [
           "messages"
         ]

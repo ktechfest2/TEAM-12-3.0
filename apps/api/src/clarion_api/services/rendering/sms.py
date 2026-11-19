@@ -49,3 +49,26 @@ def measure(text: str) -> SmsSize:
 
 def fits(text: str, max_segments: int) -> bool:
     return measure(text).segments <= max_segments
+
+
+ELLIPSIS = "..."  # ASCII on purpose: the real ellipsis character would force UCS-2
+
+
+def shorten_for_sms(text: str, link: str, *, max_segments: int) -> str:
+    """Fit `text` plus the short link into `max_segments` SMS parts.
+
+    Whole words are dropped from the end of the text and "..." is added; the link is always
+    kept. Letters and tone marks are never removed or replaced. If even the link alone does
+    not fit, the link is returned unchanged rather than damaged.
+    """
+    full = f"{text} {link}".strip()
+    if fits(full, max_segments):
+        return full
+    words = text.split()
+    while words:
+        words.pop()
+        body = " ".join(words)
+        candidate = f"{body}{ELLIPSIS} {link}" if body else link
+        if fits(candidate, max_segments):
+            return candidate
+    return link

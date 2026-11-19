@@ -16,3 +16,7 @@ class LlmBudgetExceededError(DomainError):
 
 class NotAuthorizedError(DomainError):
     """Raised when a request has no valid reviewer token or a wrong invite code."""
+
+
+class RenderError(DomainError):
+    """Raised when a rendition cannot be produced, for example audio in the wrong format."""

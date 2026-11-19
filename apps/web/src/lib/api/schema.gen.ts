@@ -181,6 +181,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/messages/{message_id}/renditions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Render Message
+     * @description Make SMS text, voice notes, a social card and a poster from a sealed message.
+     */
+    post: operations["renderMessage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/messages/{message_id}/retraction": {
     parameters: {
       query?: never;
@@ -488,6 +508,32 @@ export interface components {
       language: components["schemas"]["Language"];
       /** Text */
       text: string;
+    };
+    /**
+     * RenditionFormat
+     * @enum {string}
+     */
+    RenditionFormat:
+      | "text"
+      | "sms_text"
+      | "voice_note"
+      | "radio_script"
+      | "social_card"
+      | "poster_pdf"
+      | "short_video";
+    /** RenditionOut */
+    RenditionOut: {
+      format: components["schemas"]["RenditionFormat"];
+      language: components["schemas"]["Language"];
+      /** Media Url */
+      media_url: string | null;
+      /** Text */
+      text: string | null;
+    };
+    /** RenditionsIn */
+    RenditionsIn: {
+      /** Languages */
+      languages?: components["schemas"]["Language"][] | null;
     };
     /** RetractIn */
     RetractIn: {
@@ -981,6 +1027,43 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  renderMessage: {
+    parameters: {
+      query?: never;
+      header?: {
+        authorization?: string | null;
+      };
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RenditionsIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RenditionOut"][];
         };
       };
       /** @description Validation Error */

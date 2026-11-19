@@ -5,7 +5,14 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
-from clarion_api.domain.enums import ChannelKind, DeliveryStatus, Language, ReviewStatus, Verdict
+from clarion_api.domain.enums import (
+    ChannelKind,
+    DeliveryStatus,
+    Language,
+    RenditionFormat,
+    ReviewStatus,
+    Verdict,
+)
 from clarion_api.services.rendering.sms import SmsEncoding
 
 
@@ -168,3 +175,14 @@ class PublicCorrectionOut(BaseModel):
     hash_algorithm: str
     canonical_json: str
     integrity_verified: bool
+
+
+class RenditionsIn(BaseModel):
+    languages: list[Language] | None = None
+
+
+class RenditionOut(BaseModel):
+    language: Language
+    format: RenditionFormat
+    text: str | None
+    media_url: str | None
