@@ -35,7 +35,7 @@ Decision record: [ADR 0006](../adr/0006-self-hosted-vps-deploy-behind-cloudflare
 You set only the things the app cannot guess:
 
 - `DOMAIN`, `AUTH_REVIEWER_INVITE_CODE`
-- `LLM_PROVIDER`, `LLM_API_KEY`, `LLM_MODEL`, `LLM_EMBEDDING_MODEL`, `LLM_MONTHLY_BUDGET_USD`
+- `LLM_PROVIDER`, `LLM_API_KEY`, `LLM_MODEL`, `LLM_EMBEDDING_MODEL`, `LLM_MONTHLY_BUDGET_USD`, `LLM_USD_PER_MILLION_TOKENS` (the price the budget cap uses; set it near the model's output price)
 - `CHANNEL_TELEGRAM_BOT_TOKEN`, `CHANNEL_TELEGRAM_CHAT_ID`
 
 The script generates the database password, the signing secret (`AUTH_JWT_SECRET`) and the Telegram webhook secret once, and keeps them in a mode 700 folder (`~/.clarion-deploy`) on the server. Database, queue and storage addresses are filled in by the compose file. Nothing secret is stored in the repository.
