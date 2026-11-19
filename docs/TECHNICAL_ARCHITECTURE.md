@@ -92,9 +92,9 @@ Reviewer opens the queue, edits the summary, approves, rejects or escalates. App
 
 After approval the master message is sealed: SHA-256 over a canonical JSON of claim, verdict, source, summary, approver and approved translations, chained to the previous message hash. The public correction page shows the hash so anyone can recompute it.
 
-### 5.4 Render (T-07)
+### 5.4 Render (built: `services/rendering/`)
 
-From one sealed message: SMS text sized with `services/rendering/sms.py` (GSM-7 or UCS-2, segment count, never strips tone marks), voice note via `SpeechSynthesizer` (OGG Opus), social card (HTML to PNG), poster (PDF), radio script and short captioned video (ffmpeg). Media goes to `ObjectStore`.
+Built so far: SMS text (shortened by whole words, never stripping tone marks), voice note (OGG checked, stored), social card PNG and poster PDF with a QR code to the public page. The card and poster draw English only; translations travel as SMS text and voice notes because drawing them needs a font that covers every tone mark. Radio script and short video are not built. Original plan: SMS text sized with `services/rendering/sms.py` (GSM-7 or UCS-2, segment count, never strips tone marks), voice note via `SpeechSynthesizer` (OGG Opus), social card (HTML to PNG), poster (PDF), radio script and short captioned video (ffmpeg). Media goes to `ObjectStore`.
 
 ### 5.5 Broadcast (T-04, T-08)
 
