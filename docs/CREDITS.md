@@ -10,7 +10,7 @@ Required by hackathon rules 1.2 and 1.4. Update in the same change that adds a d
 ## AI models used by the product
 
 - Google Gemini (language model: matching, translation drafts, screenshot reading).
-- Nigerian language speech provider: to be confirmed after testing (candidates: 9jaLingo, Spitch).
+- Spitch (speech generation for Yoruba, Hausa, Igbo and English voice notes), called over its HTTP API with HTTPX; no SDK is bundled. See ADR 0007.
 
 ## Python libraries
 
@@ -19,6 +19,10 @@ FastAPI, Uvicorn, Pydantic, pydantic-settings, SQLAlchemy, asyncpg, Alembic, pgv
 ## JavaScript libraries
 
 React, React DOM, React Router, TanStack Query, openapi-fetch, openapi-typescript, Vite, @vitejs/plugin-react, Tailwind CSS, TypeScript, Biome, Vitest, jsdom, Testing Library.
+
+## Design
+
+Logo, icon set, colour palette and type scale were drawn for Clarion (see `docs/DESIGN.md`). Typography uses each device's system fonts; no web fonts or icon libraries are bundled.
 
 ## Data
 

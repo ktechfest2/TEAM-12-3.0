@@ -44,7 +44,8 @@ Say only what you can show.
 
 - **Real:** matching to official passages, the review and translation approval steps, sealing, sending to Telegram (if configured), the live board, the public page and its fingerprint check, SMS text sizing, the social card, poster and QR code.
 - **Placeholder:** with `LLM_PROVIDER=fake` the "translations" are the English text with a language tag, so show the approval step but do not read them out. With real keys (`LLM_PROVIDER=gemini`) they are model drafts that must be approved by native speakers.
-- **Not built yet:** real Yoruba, Hausa, Igbo and Pidgin voice (task T-13; the current speech adapter is a fake), SMS, WhatsApp, X and Instagram sending (T-14), sending future corrections to JOIN subscribers. Do not say the board reaches those channels. With no Telegram keys the board shows a single test channel called "Console (test)".
+- **Voice notes:** with `SPEECH_PROVIDER=spitch` they are real Yoruba, Hausa and Igbo voices; Pidgin is read by an English voice until a Pidgin voice is confirmed, so say so if you play it. With `SPEECH_PROVIDER=fake` the stored file does not play; do not open it on screen.
+- **Not built yet:** SMS, WhatsApp, X and Instagram sending (T-14), sending future corrections to JOIN subscribers. Do not say the board reaches those channels. With no Telegram keys the board shows a single test channel called "Console (test)".
 - **Seed sources** paraphrase INEC statements as reported by news and fact checking outlets. A person must check each against the original before a public demo.
 
 ## If something goes wrong

@@ -5,4 +5,5 @@
 - Read environment values only in `src/lib/env.ts`.
 - Feature code lives in `src/features/<feature>/` with its tests beside it (`*.test.tsx`). Pages stay thin.
 - Verdict wording comes from `features/claims/verdict.ts`. Do not add new labels or opinion words.
+- Look and feel follow `docs/DESIGN.md`. Use tokens from `src/styles.css` (no raw hex, no `slate-*`), the icons in `src/components/icons.tsx` and the primitives in `src/components/ui/`. Show verdicts only through `VerdictBadge`.
 - Accessibility: every form control has a label, colour is never the only signal, pages work at 360 px wide.

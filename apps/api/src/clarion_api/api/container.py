@@ -69,7 +69,7 @@ def build_container(settings: Settings) -> Container:
         settings=settings,
         http=http,
         llm=build_language_model(settings),
-        speech=build_speech(settings),
+        speech=build_speech(settings, http),
         store=build_object_store(settings, http),
         channels=channels,
         replier=build_replier(channels),

@@ -17,6 +17,8 @@ envVarGroups:
         sync: false
       - key: LLM_EMBEDDING_MODEL
         sync: false
+      - key: SPEECH_PROVIDER
+        value: spitch
       - key: SPEECH_API_KEY
         sync: false
       - key: STORAGE_PROVIDER

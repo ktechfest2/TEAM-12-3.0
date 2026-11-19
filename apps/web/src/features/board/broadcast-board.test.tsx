@@ -92,7 +92,7 @@ describe("BroadcastBoard", () => {
     const smsRow = within(table).getByRole("row", { name: /SMS/ });
     const telegramTiles = within(telegramRow).getAllByRole("cell");
     expect(telegramTiles[0]?.getAttribute("data-state")).toBe("sent");
-    expect(telegramTiles[0]?.textContent).toContain("✓ Sent");
+    expect(telegramTiles[0]?.textContent).toContain("Sent");
     expect(telegramTiles[1]?.getAttribute("data-state")).toBe("waiting");
     const smsTiles = within(smsRow).getAllByRole("cell");
     expect(smsTiles[0]?.getAttribute("data-state")).toBe("failed");

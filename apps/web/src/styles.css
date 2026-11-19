@@ -13,6 +13,31 @@
   --color-border: #e2e8f0;
   --color-border-strong: #cbd5e1;
   --color-contradicted: #dc2626;
+  --color-brand-50: #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-500: #22a06b;
+  --color-brand-600: #166534;
+  --color-brand-800: #14532d;
+  --color-brand-900: #052e16;
+  --color-paper: #ffffff;
+  --color-sunken: #f1f5f9;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+  --color-ink: #0f172a;
+  --color-faint: #64748b;
+  --color-confirmed: #15803d;
+  --color-confirmed-soft: #dcfce7;
+  --color-contradicted-soft: #fee2e2;
+  --color-unknown: #475569;
+  --color-unknown-soft: #f1f5f9;
+  --color-beacon: #22a06b;
+  --color-beacon-soft: #dcfce7;
+  --color-beacon-ink: #14532d;
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --shadow-lift: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --font-display: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
