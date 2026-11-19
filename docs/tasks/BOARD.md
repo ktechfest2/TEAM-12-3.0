@@ -8,6 +8,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
+- [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04) - claude
 
 ## Review
 
@@ -21,7 +22,6 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Ready
 
-- [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13)
 - [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04)
 - [T-09](T-09-public-correction-page.md) Public correction page (S, after T-04)

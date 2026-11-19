@@ -1,6 +1,6 @@
 # T-06. Review queue screen
 
-- Owner:
+- Owner: claude
 - Depends on: T-04
 - Estimate: M
 
