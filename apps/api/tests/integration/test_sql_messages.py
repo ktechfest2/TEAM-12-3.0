@@ -16,6 +16,7 @@ from clarion_api.repositories.sql import (
     SqlDeliveryRepository,
     SqlMessageRepository,
     SqlSourceRepository,
+    clear_workspace_data,
 )
 from tests.factories import approved_message
 from tests.support.repository_contract import unit_vector
@@ -101,3 +102,20 @@ async def test_sql_delivery_save_get_and_list(engine: AsyncEngine) -> None:
     assert loaded.status is DeliveryStatus.SENT
     assert [d.id for d in await repo.list_for_message(message.id)] == [delivery.id]
     assert len(await repo.list_recent(limit=5)) == 1
+
+
+async def test_clear_workspace_data_keeps_official_sources(engine: AsyncEngine) -> None:
+    sessions = build_sessionmaker(engine)
+    message = approved_message()
+    assert message.passage is not None
+    sources = SqlSourceRepository(sessions)
+    await sources.add(message.passage, unit_vector(0))
+    await SqlClaimRepository(sessions).add(Claim(id=message.claim_id, text="a claim"))
+    messages = SqlMessageRepository(sessions)
+    await messages.save(message)
+
+    await clear_workspace_data(sessions)
+
+    assert await messages.get(message.id) is None
+    assert await SqlClaimRepository(sessions).get(message.claim_id) is None
+    assert await sources.get(message.passage.id) is not None

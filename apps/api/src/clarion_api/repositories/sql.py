@@ -394,3 +394,21 @@ class SqlAuditRepository:
                 )
                 for r in (await session.scalars(stmt)).all()
             ]
+
+
+async def clear_workspace_data(sessions: SessionFactory) -> None:
+    """Delete claims, messages, reviews, localisations, deliveries, subscribers and audit events.
+
+    Official source passages are kept. Used only by the demo reset command.
+    """
+    async with sessions.begin() as session:
+        for table in (
+            AuditEventRow,
+            DeliveryRow,
+            LocalisationRow,
+            ReviewRow,
+            MessageRow,
+            SubscriberRow,
+            ClaimRow,
+        ):
+            await session.execute(delete(table))
