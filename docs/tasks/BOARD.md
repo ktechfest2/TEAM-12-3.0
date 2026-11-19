@@ -8,10 +8,10 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
-- [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09) - claude
 
 ## Review
 
+- [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09) - claude (video needs a person)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13) - claude
 - [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04) - claude
 - [T-09](T-09-public-correction-page.md) Public correction page (S, after T-04) - claude
