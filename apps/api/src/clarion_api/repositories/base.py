@@ -2,7 +2,8 @@ from collections.abc import Sequence
 from typing import Protocol
 from uuid import UUID
 
-from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage
+from clarion_api.domain.enums import ChannelKind
+from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage, Subscriber
 
 # Passages less similar than this (cosine similarity) are never returned by search.
 MIN_SIMILARITY = 0.15
@@ -46,3 +47,17 @@ class DeliveryRepository(Protocol):
     async def list_for_message(self, message_id: UUID) -> list[Delivery]: ...
 
     async def list_recent(self, *, limit: int) -> list[Delivery]: ...
+
+
+class SubscriberRepository(Protocol):
+    async def upsert(self, subscriber: Subscriber) -> Subscriber:
+        """Insert, or update language and state of the existing subscriber with the same hash."""
+        ...
+
+    async def get(self, channel: ChannelKind, address_hash: str) -> Subscriber | None: ...
+
+    async def remove(self, channel: ChannelKind, address_hash: str) -> bool:
+        """Delete the subscriber. Returns False when there was none."""
+        ...
+
+    async def count(self) -> int: ...
