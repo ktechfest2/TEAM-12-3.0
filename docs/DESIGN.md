@@ -84,7 +84,7 @@ Scale: page title `text-4xl` to `text-5xl` (marketing page) or `text-3xl` to `te
 
 ## Components
 
-In `src/components/ui/`: `Button` (primary, secondary, quiet; md and sm), `Card`, `PageHeader` (public pages), `WorkspaceHeader` (reviewer pages), `SectionTitle`, `Pill`, `Notice` (error, info, empty), `Loading`, and `controlClass` for inputs. Feature code composes these; it does not restyle them.
+In `src/components/ui/`: `Button` (primary, secondary, quiet; md and sm), `Card`, `PageHeader` (public pages), `PageTitle` (reviewer pages: a screen-reader-only `h1`, with no visible page header), `SectionTitle`, `Pill`, `Notice` (error, info, empty), `Loading`, and `controlClass` for inputs. Feature code composes these; it does not restyle them.
 
 Colours are tokens from `src/styles.css` (`brand-*`, `confirmed`, `contradicted`, `unknown`, `surface`, `line`). There is no `misleading` colour: the verdict has three values.
 

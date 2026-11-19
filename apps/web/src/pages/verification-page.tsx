@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { Icon } from "../components/icons";
-import { Loading, WorkspaceHeader } from "../components/ui/surface";
+import { Loading, PageTitle } from "../components/ui/surface";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
 import { ReviewDetail } from "../features/review/review-detail";
@@ -21,15 +21,12 @@ export function VerificationPage() {
 
   return (
     <section className="space-y-6">
-      <WorkspaceHeader
-        title="Verification"
-        lead={
-          <span className="flex gap-2">
-            <Icon name="shieldCheck" size={18} className="mt-0.5 shrink-0 text-brand" />
-            Nothing is sent until a reviewer approves every language and seals it.
-          </span>
-        }
-      />
+      <PageTitle title="Verification" />
+
+      <p className="flex gap-2 text-sm leading-6 text-secondary">
+        <Icon name="shieldCheck" size={18} className="mt-0.5 shrink-0 text-brand" />
+        Nothing is sent until a reviewer approves every language and seals it.
+      </p>
 
       {queue.isPending ? <Loading>Loading claims...</Loading> : null}
       {queue.error ? <p role="alert">{queue.error.message}</p> : null}

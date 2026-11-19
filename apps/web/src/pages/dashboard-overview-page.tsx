@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { Icon } from "../components/icons";
-import { Button } from "../components/ui/button";
 import { StatCard } from "../components/ui/stat-card";
-import { WorkspaceHeader } from "../components/ui/surface";
+import { PageTitle } from "../components/ui/surface";
 import { LoginForm } from "../features/auth/login-form";
 import { VerdictBadge } from "../features/claims/verdict-badge";
 import { listMessages } from "../features/review/review-api";
@@ -21,11 +20,8 @@ export function DashboardOverviewPage() {
 
   if (!session) {
     return (
-      <section className="space-y-6">
-        <WorkspaceHeader
-          title="Reviewer sign in"
-          lead="Use the invite code your team lead gave you."
-        />
+      <section>
+        <PageTitle title="Reviewer sign in" />
         <LoginForm />
       </section>
     );
@@ -34,7 +30,7 @@ export function DashboardOverviewPage() {
   if (query.isPending) {
     return (
       <section aria-busy="true" className="space-y-6">
-        <WorkspaceHeader title="Overview" />
+        <PageTitle title="Overview" />
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {[1, 2, 3, 4].map((item) => (
             <div key={item} className="h-24 animate-pulse rounded-card bg-white sm:h-28" />
@@ -53,20 +49,16 @@ export function DashboardOverviewPage() {
 
   return (
     <section className="space-y-6">
-      <WorkspaceHeader
-        title="Overview"
-        aside={
-          draft > 0 ? (
-            <Button as="link" to="/dashboard/verification" icon="workflow">
-              Review {draft} waiting
-            </Button>
-          ) : null
-        }
-      />
+      <PageTitle title="Overview" />
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard label="Total claims" value={messages.length} icon="messages" />
-        <StatCard label="Needs review" value={draft} icon="clock" />
+        <Link
+          to="/dashboard/verification"
+          className="block rounded-card transition-colors hover:border-brand-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          <StatCard label="Needs review" value={draft} icon="clock" />
+        </Link>
         <StatCard label="Approved" value={approved} icon="checkCircle" />
         <StatCard label="Sealed" value={sealed} icon="lock" />
       </div>

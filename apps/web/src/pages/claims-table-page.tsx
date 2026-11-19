@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { Icon } from "../components/icons";
-import { Loading, WorkspaceHeader } from "../components/ui/surface";
+import { Loading, PageTitle } from "../components/ui/surface";
 import { LoginForm } from "../features/auth/login-form";
 import { VerdictBadge } from "../features/claims/verdict-badge";
 import { listMessages } from "../features/review/review-api";
@@ -43,7 +43,7 @@ export function ClaimsTablePage() {
 
   return (
     <section className="space-y-5">
-      <WorkspaceHeader title="Claims" />
+      <PageTitle title="Claims" />
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <label className="relative flex-1">
