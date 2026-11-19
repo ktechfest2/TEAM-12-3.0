@@ -29,3 +29,4 @@ apps/api/var/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+scripts/remote.sh
