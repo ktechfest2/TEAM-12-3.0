@@ -13,6 +13,7 @@ from clarion_api.adapters.storage import ObjectStore, build_object_store
 from clarion_api.config import Settings
 from clarion_api.db.session import build_engine, build_sessionmaker
 from clarion_api.repositories.base import (
+    AuditRepository,
     ClaimRepository,
     DeliveryRepository,
     MessageRepository,
@@ -20,6 +21,7 @@ from clarion_api.repositories.base import (
     SubscriberRepository,
 )
 from clarion_api.repositories.memory import (
+    MemoryAuditRepository,
     MemoryClaimRepository,
     MemoryDeliveryRepository,
     MemoryMessageRepository,
@@ -27,6 +29,7 @@ from clarion_api.repositories.memory import (
     MemorySubscriberRepository,
 )
 from clarion_api.repositories.sql import (
+    SqlAuditRepository,
     SqlClaimRepository,
     SqlDeliveryRepository,
     SqlMessageRepository,
@@ -50,6 +53,7 @@ class Container:
     messages: MessageRepository = field(default_factory=MemoryMessageRepository)
     deliveries: DeliveryRepository = field(default_factory=MemoryDeliveryRepository)
     subscribers: SubscriberRepository = field(default_factory=MemorySubscriberRepository)
+    audit: AuditRepository = field(default_factory=MemoryAuditRepository)
     engine: AsyncEngine | None = None
 
     async def aclose(self) -> None:
@@ -78,6 +82,7 @@ def build_container(settings: Settings) -> Container:
         container.messages = SqlMessageRepository(sessions)
         container.deliveries = SqlDeliveryRepository(sessions)
         container.subscribers = SqlSubscriberRepository(sessions)
+        container.audit = SqlAuditRepository(sessions)
     return container
 
 

@@ -144,3 +144,27 @@ class TelegramUpdateIn(BaseModel):
 
 class WebhookOut(BaseModel):
     ok: bool = True
+
+
+class PublicTranslationOut(BaseModel):
+    language: Language
+    text: str
+
+
+class PublicCorrectionOut(BaseModel):
+    """Everything shown on the public correction page. Contains no citizen data."""
+
+    message_id: UUID
+    claim_text: str
+    verdict: Verdict
+    summary: str
+    source: SourceOut | None
+    translations: list[PublicTranslationOut]
+    approved_by: str
+    approved_at: datetime
+    sealed_at: datetime
+    integrity_hash: str
+    previous_hash: str | None
+    hash_algorithm: str
+    canonical_json: str
+    integrity_verified: bool
