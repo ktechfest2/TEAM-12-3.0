@@ -1,6 +1,6 @@
 # T-07. Renderers: SMS text, voice note, social card, poster, QR
 
-- Owner:
+- Owner: claude
 - Depends on: T-04, T-13
 - Estimate: L
 
