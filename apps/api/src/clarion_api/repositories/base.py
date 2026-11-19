@@ -3,7 +3,14 @@ from typing import Protocol
 from uuid import UUID
 
 from clarion_api.domain.enums import ChannelKind
-from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage, Subscriber
+from clarion_api.domain.models import (
+    AuditEvent,
+    Claim,
+    Delivery,
+    MasterMessage,
+    SourcePassage,
+    Subscriber,
+)
 
 # Passages less similar than this (cosine similarity) are never returned by search.
 MIN_SIMILARITY = 0.15
@@ -61,3 +68,13 @@ class SubscriberRepository(Protocol):
         ...
 
     async def count(self) -> int: ...
+
+
+class AuditRepository(Protocol):
+    async def add(self, event: AuditEvent) -> None: ...
+
+    async def list_for_subject(
+        self, subject_id: UUID, *, action: str | None = None
+    ) -> list[AuditEvent]:
+        """Events about one record, oldest first, optionally only one action."""
+        ...

@@ -3,7 +3,14 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from clarion_api.domain.enums import ChannelKind
-from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage, Subscriber
+from clarion_api.domain.models import (
+    AuditEvent,
+    Claim,
+    Delivery,
+    MasterMessage,
+    SourcePassage,
+    Subscriber,
+)
 from clarion_api.repositories.base import MIN_SIMILARITY
 
 
@@ -108,3 +115,20 @@ class MemorySubscriberRepository:
 
     async def count(self) -> int:
         return len(self._items)
+
+
+class MemoryAuditRepository:
+    def __init__(self) -> None:
+        self._items: list[AuditEvent] = []
+
+    async def add(self, event: AuditEvent) -> None:
+        self._items.append(event)
+
+    async def list_for_subject(
+        self, subject_id: UUID, *, action: str | None = None
+    ) -> list[AuditEvent]:
+        return [
+            e
+            for e in self._items
+            if e.subject_id == subject_id and (action is None or e.action == action)
+        ]

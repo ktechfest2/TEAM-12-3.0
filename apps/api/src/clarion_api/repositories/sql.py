@@ -10,6 +10,7 @@ from sqlalchemy import Select, delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from clarion_api.db.tables import (
+    AuditEventRow,
     ClaimRow,
     DeliveryRow,
     LocalisationRow,
@@ -20,6 +21,7 @@ from clarion_api.db.tables import (
 )
 from clarion_api.domain.enums import ChannelKind, DeliveryStatus, Language, ReviewStatus, Verdict
 from clarion_api.domain.models import (
+    AuditEvent,
     Claim,
     Delivery,
     Localisation,
@@ -354,3 +356,41 @@ class SqlSubscriberRepository:
     async def count(self) -> int:
         async with self._sessions() as session:
             return int(await session.scalar(select(func.count()).select_from(SubscriberRow)) or 0)
+
+
+class SqlAuditRepository:
+    def __init__(self, sessions: SessionFactory) -> None:
+        self._sessions = sessions
+
+    async def add(self, event: AuditEvent) -> None:
+        async with self._sessions.begin() as session:
+            session.add(
+                AuditEventRow(
+                    id=event.id,
+                    created_at=event.created_at,
+                    actor=event.actor,
+                    action=event.action,
+                    subject_id=event.subject_id,
+                    detail=event.detail,
+                )
+            )
+
+    async def list_for_subject(
+        self, subject_id: UUID, *, action: str | None = None
+    ) -> list[AuditEvent]:
+        stmt = select(AuditEventRow).where(AuditEventRow.subject_id == subject_id)
+        if action is not None:
+            stmt = stmt.where(AuditEventRow.action == action)
+        stmt = stmt.order_by(AuditEventRow.created_at, AuditEventRow.id)
+        async with self._sessions() as session:
+            return [
+                AuditEvent(
+                    id=r.id,
+                    created_at=r.created_at,
+                    actor=r.actor,
+                    action=r.action,
+                    subject_id=r.subject_id,
+                    detail=r.detail,
+                )
+                for r in (await session.scalars(stmt)).all()
+            ]
