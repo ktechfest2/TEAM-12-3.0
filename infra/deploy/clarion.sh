@@ -106,6 +106,9 @@ prepare_env() {
       [[ -n "$(var "$k" "$file")" ]] || die "$k is required when LLM_PROVIDER=gemini"
     done
   fi
+  if [[ "$(var SPEECH_PROVIDER "$file")" == "spitch" ]]; then
+    [[ -n "$(var SPEECH_API_KEY "$file")" ]] || die "SPEECH_API_KEY is required when SPEECH_PROVIDER=spitch"
+  fi
 
   if [[ ! -f "$secrets" ]]; then
     if docker volume inspect "${PROJECT}_pgdata" >/dev/null 2>&1; then

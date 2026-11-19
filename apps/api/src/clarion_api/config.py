@@ -11,6 +11,8 @@ from typing import Literal, Self
 from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from clarion_api.domain.enums import Language
+
 DEFAULT_JWT_SECRET = "change-me-in-every-environment"  # noqa: S105 - placeholder, refused in production
 
 
@@ -59,9 +61,12 @@ class Settings(BaseSettings):
     llm_usd_per_million_tokens: float = 1.0
 
     # speech
-    speech_provider: Literal["fake"] = "fake"
+    speech_provider: Literal["fake", "spitch"] = "fake"
     speech_api_key: SecretStr | None = None
     speech_base_url: str | None = None
+    # Optional voice per language as JSON, e.g. {"pcm": "<voice>"}; unset uses adapter defaults.
+    speech_voices: dict[Language, str] = Field(default_factory=dict)
+    speech_timeout_seconds: float = 30.0
 
     # channels
     channel_telegram_bot_token: SecretStr | None = None

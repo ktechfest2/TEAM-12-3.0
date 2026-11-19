@@ -8,7 +8,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
- - claude
+- [T-13](T-13-nigerian-language-speech-adapter.md) Nigerian language speech adapter (S, after T-01) - claude (Spitch; native speaker rating and `make verify` in the VM pending)
 
 ## Review
 
@@ -28,7 +28,6 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Ready
 
-- [T-13](T-13-nigerian-language-speech-adapter.md) Nigerian language speech adapter (S, after T-01)
 - [T-14](T-14-sandbox-channels-sms-whatsapp-x-instagram.md) Sandbox channels: SMS, WhatsApp, X, Instagram (L, after T-04)
 
 ## Blocked or questions

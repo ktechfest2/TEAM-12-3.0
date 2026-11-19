@@ -20,7 +20,7 @@ Local services and deployment configuration.
 | Database | `DATABASE_URL`, Postgres with pgvector | Supabase Postgres | Neon, RDS, self hosted |
 | Media storage | `STORAGE_*`, S3 protocol | Supabase Storage (S3 endpoint) | R2, S3, MinIO |
 | Language model | `LLM_PROVIDER` adapter | Gemini | any provider with an adapter |
-| Speech | `SPEECH_PROVIDER` adapter | Nigerian language speech API | any provider with an adapter |
+| Speech | `SPEECH_PROVIDER` adapter | Spitch (ADR 0007) | any provider with an adapter |
 
 The app talks to Supabase only as Postgres and as an S3 endpoint. Do not add the Supabase client SDK to the API; that would tie the core to one vendor.
 
