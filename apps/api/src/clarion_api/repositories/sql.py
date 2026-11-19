@@ -6,12 +6,26 @@ Only this module maps database rows to domain models and back.
 from collections.abc import Sequence
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from clarion_api.db.tables import ClaimRow, SourcePassageRow
-from clarion_api.domain.enums import ChannelKind, Language
-from clarion_api.domain.models import Claim, SourcePassage
+from clarion_api.db.tables import (
+    ClaimRow,
+    DeliveryRow,
+    LocalisationRow,
+    MessageRow,
+    ReviewRow,
+    SourcePassageRow,
+)
+from clarion_api.domain.enums import ChannelKind, DeliveryStatus, Language, ReviewStatus, Verdict
+from clarion_api.domain.models import (
+    Claim,
+    Delivery,
+    Localisation,
+    MasterMessage,
+    Review,
+    SourcePassage,
+)
 from clarion_api.repositories.base import MIN_SIMILARITY
 
 SessionFactory = async_sessionmaker[AsyncSession]
@@ -101,3 +115,180 @@ class SqlClaimRepository:
         stmt = select(ClaimRow).order_by(ClaimRow.created_at.desc()).limit(limit)
         async with self._sessions() as session:
             return [_claim_from_row(r) for r in (await session.scalars(stmt)).all()]
+
+
+def _review_from_row(row: ReviewRow, claim_id: UUID) -> Review:
+    return Review(
+        id=row.id,
+        created_at=row.created_at,
+        claim_id=claim_id,
+        reviewer_id=row.reviewer_id,
+        status=ReviewStatus(row.status),
+        note=row.note,
+    )
+
+
+def _localisation_from_row(row: LocalisationRow) -> Localisation:
+    return Localisation(
+        id=row.id,
+        created_at=row.created_at,
+        language=Language(row.language),
+        text=row.text,
+        approved_by=row.approved_by,
+    )
+
+
+def _delivery_from_row(row: DeliveryRow) -> Delivery:
+    return Delivery(
+        id=row.id,
+        created_at=row.created_at,
+        message_id=row.message_id,
+        channel=ChannelKind(row.channel),
+        language=Language(row.language),
+        status=DeliveryStatus(row.status),
+        external_id=row.external_id,
+        error=row.error,
+        sent_at=row.sent_at,
+    )
+
+
+class SqlMessageRepository:
+    def __init__(self, sessions: SessionFactory) -> None:
+        self._sessions = sessions
+
+    async def save(self, message: MasterMessage) -> None:
+        async with self._sessions.begin() as session:
+            await session.merge(
+                MessageRow(
+                    id=message.id,
+                    created_at=message.created_at,
+                    claim_id=message.claim_id,
+                    verdict=message.verdict.value,
+                    passage_id=message.passage.id if message.passage else None,
+                    summary=message.summary,
+                    confidence=message.confidence,
+                    integrity_hash=message.integrity_hash,
+                )
+            )
+            if message.review is not None:
+                await session.merge(
+                    ReviewRow(
+                        id=message.review.id,
+                        created_at=message.review.created_at,
+                        message_id=message.id,
+                        reviewer_id=message.review.reviewer_id,
+                        status=message.review.status.value,
+                        note=message.review.note,
+                    )
+                )
+            keep = [loc.id for loc in message.localisations]
+            await session.execute(
+                delete(LocalisationRow).where(
+                    LocalisationRow.message_id == message.id, LocalisationRow.id.not_in(keep)
+                )
+            )
+            for loc in message.localisations:
+                await session.merge(
+                    LocalisationRow(
+                        id=loc.id,
+                        created_at=loc.created_at,
+                        message_id=message.id,
+                        language=loc.language.value,
+                        text=loc.text,
+                        approved_by=loc.approved_by,
+                    )
+                )
+
+    async def get(self, message_id: UUID) -> MasterMessage | None:
+        async with self._sessions() as session:
+            row = await session.get(MessageRow, message_id)
+            return await self._load(session, row) if row else None
+
+    async def list_recent(self, *, limit: int) -> list[MasterMessage]:
+        stmt = select(MessageRow).order_by(MessageRow.created_at.desc()).limit(limit)
+        async with self._sessions() as session:
+            rows = (await session.scalars(stmt)).all()
+            return [await self._load(session, r) for r in rows]
+
+    async def latest_integrity_hash(self, *, excluding: UUID | None = None) -> str | None:
+        stmt = (
+            select(MessageRow.integrity_hash)
+            .where(MessageRow.integrity_hash.is_not(None))
+            .order_by(MessageRow.created_at.desc())
+            .limit(1)
+        )
+        if excluding is not None:
+            stmt = stmt.where(MessageRow.id != excluding)
+        async with self._sessions() as session:
+            return await session.scalar(stmt)
+
+    @staticmethod
+    async def _load(session: AsyncSession, row: MessageRow) -> MasterMessage:
+        passage_row = (
+            await session.get(SourcePassageRow, row.passage_id) if row.passage_id else None
+        )
+        review_row = await session.scalar(
+            select(ReviewRow)
+            .where(ReviewRow.message_id == row.id)
+            .order_by(ReviewRow.created_at.desc())
+            .limit(1)
+        )
+        loc_rows = (
+            await session.scalars(
+                select(LocalisationRow)
+                .where(LocalisationRow.message_id == row.id)
+                .order_by(LocalisationRow.created_at)
+            )
+        ).all()
+        return MasterMessage(
+            id=row.id,
+            created_at=row.created_at,
+            claim_id=row.claim_id,
+            verdict=Verdict(row.verdict),
+            passage=_passage_from_row(passage_row) if passage_row else None,
+            summary=row.summary,
+            confidence=row.confidence,
+            review=_review_from_row(review_row, row.claim_id) if review_row else None,
+            localisations=tuple(_localisation_from_row(r) for r in loc_rows),
+            integrity_hash=row.integrity_hash,
+        )
+
+
+class SqlDeliveryRepository:
+    def __init__(self, sessions: SessionFactory) -> None:
+        self._sessions = sessions
+
+    async def save(self, delivery: Delivery) -> None:
+        async with self._sessions.begin() as session:
+            await session.merge(
+                DeliveryRow(
+                    id=delivery.id,
+                    created_at=delivery.created_at,
+                    message_id=delivery.message_id,
+                    channel=delivery.channel.value,
+                    language=delivery.language.value,
+                    status=delivery.status.value,
+                    external_id=delivery.external_id,
+                    error=delivery.error,
+                    sent_at=delivery.sent_at,
+                )
+            )
+
+    async def get(self, delivery_id: UUID) -> Delivery | None:
+        async with self._sessions() as session:
+            row = await session.get(DeliveryRow, delivery_id)
+            return _delivery_from_row(row) if row else None
+
+    async def list_for_message(self, message_id: UUID) -> list[Delivery]:
+        stmt = (
+            select(DeliveryRow)
+            .where(DeliveryRow.message_id == message_id)
+            .order_by(DeliveryRow.created_at)
+        )
+        async with self._sessions() as session:
+            return [_delivery_from_row(r) for r in (await session.scalars(stmt)).all()]
+
+    async def list_recent(self, *, limit: int) -> list[Delivery]:
+        stmt = select(DeliveryRow).order_by(DeliveryRow.created_at.desc()).limit(limit)
+        async with self._sessions() as session:
+            return [_delivery_from_row(r) for r in (await session.scalars(stmt)).all()]

@@ -82,6 +82,7 @@ class MasterMessage(Entity):
     summary: str
     review: Review | None = None
     localisations: tuple[Localisation, ...] = ()
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
     integrity_hash: str | None = None
 
 
@@ -100,3 +101,4 @@ class Delivery(Entity):
     status: DeliveryStatus = DeliveryStatus.QUEUED
     external_id: str | None = None
     error: str | None = None
+    sent_at: datetime | None = None
