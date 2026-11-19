@@ -1882,6 +1882,51 @@
         ]
       }
     },
+    "/public/corrections/{message_id}/voice/{language}": {
+      "get": {
+        "description": "No sign in. Speaks an approved, sealed correction in one of its approved languages.\n\nThe audio is made the first time someone asks and stored, so the speech service is\ncalled at most once for each message and language. Anything not approved is a 404.",
+        "operationId": "getPublicVoiceNote",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "language",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Language"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirects to the voice note (OGG Opus)."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Public Voice Note",
+        "tags": [
+          "public"
+        ]
+      }
+    },
     "/tools/sms-size": {
       "post": {
         "operationId": "measureSms",

@@ -11,6 +11,7 @@ from collections.abc import Mapping
 import httpx
 
 from clarion_api.domain.enums import Language
+from clarion_api.domain.errors import RenderError
 
 DEFAULT_BASE_URL = "https://api.spitch.app"
 OUTPUT_FORMAT = "ogg_opus"
@@ -29,7 +30,7 @@ DEFAULT_VOICES: Mapping[Language, str] = {
 LANGUAGE_FALLBACKS: Mapping[Language, Language] = {Language.PIDGIN: Language.ENGLISH}
 
 
-class SpeechProviderError(RuntimeError):
+class SpeechProviderError(RenderError):
     """The provider refused or failed the request. The message never contains the key."""
 
 

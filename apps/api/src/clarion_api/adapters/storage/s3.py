@@ -137,3 +137,38 @@ class S3ObjectStore:
         )
         response.raise_for_status()
         return self.public_url(key)
+
+    async def exists(self, key: str) -> bool:
+        path = self._object_path(key)
+        amz_date = self._clock().strftime("%Y%m%dT%H%M%SZ")
+        payload_hash = sha256_hex(b"")
+        signed = {
+            "host": self._host,
+            "x-amz-content-sha256": payload_hash,
+            "x-amz-date": amz_date,
+        }
+        authorization = authorization_header(
+            method="HEAD",
+            canonical_uri=path,
+            query="",
+            headers=signed,
+            payload_hash=payload_hash,
+            access_key=self._access_key,
+            secret_key=self._secret_key,
+            region=self._region,
+            service="s3",
+            amz_date=amz_date,
+        )
+        response = await self._client.head(
+            f"{self._endpoint}{path}",
+            headers={
+                "x-amz-content-sha256": payload_hash,
+                "x-amz-date": amz_date,
+                "Authorization": authorization,
+            },
+            timeout=30.0,
+        )
+        if response.status_code == 404:
+            return False
+        response.raise_for_status()
+        return True

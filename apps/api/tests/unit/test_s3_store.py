@@ -97,6 +97,31 @@ async def test_failed_upload_raises() -> None:
             await _store(client).put("k", b"x", content_type="text/plain")
 
 
+async def test_exists_sends_a_signed_head_request_and_reads_the_status() -> None:
+    seen: list[httpx.Request] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        seen.append(request)
+        return httpx.Response(200 if request.url.path.endswith("yes.ogg") else 404)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as client:
+        store = _store(client)
+        assert await store.exists("voice/yes.ogg") is True
+        assert await store.exists("voice/no.ogg") is False
+
+    assert [r.method for r in seen] == ["HEAD", "HEAD"]
+    assert str(seen[0].url) == "https://storage.example.test/s3/clarion-media/voice/yes.ogg"
+    assert seen[0].headers["authorization"].startswith("AWS4-HMAC-SHA256 Credential=ACCESS/")
+
+
+async def test_exists_raises_on_a_real_error_instead_of_saying_no() -> None:
+    async with httpx.AsyncClient(
+        transport=httpx.MockTransport(lambda _: httpx.Response(403))
+    ) as client:
+        with pytest.raises(httpx.HTTPStatusError):
+            await _store(client).exists("k")
+
+
 def test_factory_builds_the_s3_store_and_demands_credentials() -> None:
     complete = Settings(  # type: ignore[call-arg]
         app_env=AppEnv.DEVELOPMENT,

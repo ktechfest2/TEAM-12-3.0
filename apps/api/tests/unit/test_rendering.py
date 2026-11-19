@@ -1,4 +1,5 @@
 import io
+from uuid import UUID
 
 import pytest
 from PIL import Image
@@ -17,7 +18,12 @@ from clarion_api.services.rendering.graphics import (
 )
 from clarion_api.services.rendering.service import render_message
 from clarion_api.services.rendering.sms import SmsEncoding, measure, shorten_for_sms
-from clarion_api.services.rendering.voice import looks_like_ogg, render_voice_note
+from clarion_api.services.rendering.voice import (
+    ensure_voice_note,
+    looks_like_ogg,
+    render_voice_note,
+    voice_key,
+)
 from tests.factories import approved_message
 
 LINK = "https://clarion.example/c/1"
@@ -31,6 +37,12 @@ class RecordingStore:
 
     async def put(self, key: str, data: bytes, *, content_type: str) -> str:
         self.saved[key] = (data, content_type)
+        return self.public_url(key)
+
+    async def exists(self, key: str) -> bool:
+        return key in self.saved
+
+    def public_url(self, key: str) -> str:
         return f"https://media.example/{key}"
 
 
@@ -157,6 +169,29 @@ async def test_audio_that_is_not_ogg_is_refused_and_not_stored() -> None:
             key="v/ha.ogg",
         )
     assert store.saved == {}
+
+
+class CountingSpeech(FakeSpeechSynthesizer):
+    def __init__(self) -> None:
+        self.calls = 0
+
+    async def synthesize(self, text: str, *, language: Language) -> bytes:
+        self.calls += 1
+        return await super().synthesize(text, language=language)
+
+
+async def test_a_voice_note_is_spoken_once_then_reused() -> None:
+    store, speech = RecordingStore(), CountingSpeech()
+    message_id = UUID("00000000-0000-0000-0000-000000000001")
+
+    async def ask() -> str:
+        return await ensure_voice_note(
+            "hello", message_id=message_id, language=Language.YORUBA, speech=speech, store=store
+        )
+
+    first, second = await ask(), await ask()
+    assert first == second == f"https://media.example/{voice_key(message_id, Language.YORUBA)}"
+    assert speech.calls == 1
 
 
 # ---------------------------------------------------------------- whole message
