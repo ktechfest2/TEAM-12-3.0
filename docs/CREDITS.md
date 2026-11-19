@@ -10,7 +10,7 @@ Required by hackathon rules 1.2 and 1.4. Update in the same change that adds a d
 ## AI models used by the product
 
 - Google Gemini (language model: matching, translation drafts, screenshot reading).
-- Nigerian language speech provider: to be confirmed after testing (candidates: 9jaLingo, Spitch).
+- Spitch (speech generation for Yoruba, Hausa, Igbo and English voice notes), called over its HTTP API with HTTPX; no SDK is bundled. See ADR 0007.
 
 ## Python libraries
 
