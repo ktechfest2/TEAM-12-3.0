@@ -95,8 +95,12 @@ async def approve_localisation(
 
 
 @router.post("/{message_id}/seal", operation_id="sealMessage")
-async def seal_message(message_id: UUID, container: ContainerDep) -> MessageOut:
-    sealed = await workflow.seal_message(message_id, messages=container.messages)
+async def seal_message(
+    message_id: UUID, container: ContainerDep, reviewer: ReviewerDep
+) -> MessageOut:
+    sealed = await workflow.seal_message(
+        message_id, actor=reviewer, messages=container.messages, audit=container.audit
+    )
     return await _out(container, sealed)
 
 

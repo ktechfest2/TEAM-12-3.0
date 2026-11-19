@@ -404,6 +404,120 @@
         "title": "MessageOut",
         "type": "object"
       },
+      "PublicCorrectionOut": {
+        "description": "Everything shown on the public correction page. Contains no citizen data.",
+        "properties": {
+          "approved_at": {
+            "format": "date-time",
+            "title": "Approved At",
+            "type": "string"
+          },
+          "approved_by": {
+            "title": "Approved By",
+            "type": "string"
+          },
+          "canonical_json": {
+            "title": "Canonical Json",
+            "type": "string"
+          },
+          "claim_text": {
+            "title": "Claim Text",
+            "type": "string"
+          },
+          "hash_algorithm": {
+            "title": "Hash Algorithm",
+            "type": "string"
+          },
+          "integrity_hash": {
+            "title": "Integrity Hash",
+            "type": "string"
+          },
+          "integrity_verified": {
+            "title": "Integrity Verified",
+            "type": "boolean"
+          },
+          "message_id": {
+            "format": "uuid",
+            "title": "Message Id",
+            "type": "string"
+          },
+          "previous_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Hash"
+          },
+          "sealed_at": {
+            "format": "date-time",
+            "title": "Sealed At",
+            "type": "string"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SourceOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "translations": {
+            "items": {
+              "$ref": "#/components/schemas/PublicTranslationOut"
+            },
+            "title": "Translations",
+            "type": "array"
+          },
+          "verdict": {
+            "$ref": "#/components/schemas/Verdict"
+          }
+        },
+        "required": [
+          "message_id",
+          "claim_text",
+          "verdict",
+          "summary",
+          "source",
+          "translations",
+          "approved_by",
+          "approved_at",
+          "sealed_at",
+          "integrity_hash",
+          "previous_hash",
+          "hash_algorithm",
+          "canonical_json",
+          "integrity_verified"
+        ],
+        "title": "PublicCorrectionOut",
+        "type": "object"
+      },
+      "PublicTranslationOut": {
+        "properties": {
+          "language": {
+            "$ref": "#/components/schemas/Language"
+          },
+          "text": {
+            "title": "Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "language",
+          "text"
+        ],
+        "title": "PublicTranslationOut",
+        "type": "object"
+      },
       "RetractIn": {
         "properties": {
           "reason": {
@@ -1518,6 +1632,50 @@
         "summary": "Seal Message",
         "tags": [
           "messages"
+        ]
+      }
+    },
+    "/public/corrections/{message_id}": {
+      "get": {
+        "description": "No sign in. Only approved and sealed corrections exist here; anything else is a 404.",
+        "operationId": "getPublicCorrection",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicCorrectionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Public Correction",
+        "tags": [
+          "public"
         ]
       }
     },

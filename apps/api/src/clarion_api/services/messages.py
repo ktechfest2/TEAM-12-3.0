@@ -13,6 +13,7 @@ from clarion_api.adapters.llm.base import LanguageModel
 from clarion_api.domain.enums import ChannelKind, DeliveryStatus, Language, ReviewStatus
 from clarion_api.domain.errors import NotFoundError, NotPublishableError
 from clarion_api.domain.models import (
+    AuditEvent,
     Delivery,
     Localisation,
     MasterMessage,
@@ -20,13 +21,14 @@ from clarion_api.domain.models import (
     VerdictResult,
 )
 from clarion_api.repositories.base import (
+    AuditRepository,
     ClaimRepository,
     DeliveryRepository,
     MessageRepository,
     SourceRepository,
 )
 from clarion_api.services.broadcasting import plan_deliveries
-from clarion_api.services.integrity import seal
+from clarion_api.services.integrity import NO_PREVIOUS_HASH, seal
 from clarion_api.services.localisation import draft_localisations
 from clarion_api.services.matching import match_claim
 
@@ -133,8 +135,17 @@ async def approve_localisation(
     return updated
 
 
-async def seal_message(message_id: UUID, *, messages: MessageRepository) -> MasterMessage:
-    """Freeze an approved message and chain its hash to the previous sealed message."""
+SEALED_ACTION = "message.sealed"
+
+
+async def seal_message(
+    message_id: UUID, *, actor: str, messages: MessageRepository, audit: AuditRepository
+) -> MasterMessage:
+    """Freeze an approved message and chain its hash to the previous sealed message.
+
+    The previous hash goes into the audit trail, so the public page can show everything
+    needed to recompute the seal.
+    """
     message = await load_message(message_id, messages)
     if message.review is None or message.review.status is not ReviewStatus.APPROVED:
         msg = "only a message with an approved review can be sealed"
@@ -142,6 +153,14 @@ async def seal_message(message_id: UUID, *, messages: MessageRepository) -> Mast
     previous = await messages.latest_integrity_hash(excluding=message.id)
     sealed = seal(message, previous)
     await messages.save(sealed)
+    await audit.add(
+        AuditEvent(
+            actor=actor,
+            action=SEALED_ACTION,
+            subject_id=message.id,
+            detail=previous or NO_PREVIOUS_HASH,
+        )
+    )
     return sealed
 
 

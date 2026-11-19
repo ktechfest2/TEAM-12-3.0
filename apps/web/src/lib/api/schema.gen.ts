@@ -212,6 +212,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/public/corrections/{message_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get Public Correction
+     * @description No sign in. Only approved and sealed corrections exist here; anything else is a 404.
+     */
+    get: operations["getPublicCorrection"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/tools/sms-size": {
     parameters: {
       query?: never;
@@ -401,6 +421,53 @@ export interface components {
       /** Summary */
       summary: string;
       verdict: components["schemas"]["Verdict"];
+    };
+    /**
+     * PublicCorrectionOut
+     * @description Everything shown on the public correction page. Contains no citizen data.
+     */
+    PublicCorrectionOut: {
+      /**
+       * Approved At
+       * Format: date-time
+       */
+      approved_at: string;
+      /** Approved By */
+      approved_by: string;
+      /** Canonical Json */
+      canonical_json: string;
+      /** Claim Text */
+      claim_text: string;
+      /** Hash Algorithm */
+      hash_algorithm: string;
+      /** Integrity Hash */
+      integrity_hash: string;
+      /** Integrity Verified */
+      integrity_verified: boolean;
+      /**
+       * Message Id
+       * Format: uuid
+       */
+      message_id: string;
+      /** Previous Hash */
+      previous_hash: string | null;
+      /**
+       * Sealed At
+       * Format: date-time
+       */
+      sealed_at: string;
+      source: components["schemas"]["SourceOut"] | null;
+      /** Summary */
+      summary: string;
+      /** Translations */
+      translations: components["schemas"]["PublicTranslationOut"][];
+      verdict: components["schemas"]["Verdict"];
+    };
+    /** PublicTranslationOut */
+    PublicTranslationOut: {
+      language: components["schemas"]["Language"];
+      /** Text */
+      text: string;
     };
     /** RetractIn */
     RetractIn: {
@@ -968,6 +1035,37 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["MessageOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  getPublicCorrection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicCorrectionOut"];
         };
       };
       /** @description Validation Error */

@@ -112,3 +112,12 @@ class Subscriber(Entity):
     language: Language
     state: str | None = None
     consented_at: datetime = Field(default_factory=utc_now)
+
+
+class AuditEvent(Entity):
+    """Who did what to which record. Never holds message bodies or personal data."""
+
+    actor: str
+    action: str
+    subject_id: UUID | None = None
+    detail: str | None = None
