@@ -1,11 +1,10 @@
 # Credits and declarations
 
-Required by hackathon rules 1.2 and 1.4. Update in the same change that adds a dependency or tool.
+Update in the same change that adds a dependency or tool.
 
 ## AI coding assistants
 
 - Claude (Anthropic), used for planning, scaffolding, code and documentation.
-- Add any other assistant the team uses here.
 
 ## AI models used by the product
 
