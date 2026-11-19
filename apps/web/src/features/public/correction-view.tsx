@@ -1,4 +1,7 @@
-import { verdictLabel, verdictTone } from "../claims/verdict";
+import { Icon } from "../../components/icons";
+import { Card, SectionTitle } from "../../components/ui/surface";
+import { verdictAccent } from "../claims/verdict";
+import { VerdictBadge } from "../claims/verdict-badge";
 import { languageName } from "../review/review-rules";
 import { formatWhen, type PublicCorrection } from "./correction";
 import { VerificationGuide } from "./verification-guide";
@@ -7,56 +10,69 @@ type Props = { correction: PublicCorrection };
 
 export function CorrectionView({ correction }: Props) {
   return (
-    <article className="space-y-5">
-      <header className="space-y-2">
-        <p className="text-sm text-muted">The message people are sharing</p>
-        <blockquote className="text-lg">{correction.claim_text}</blockquote>
-        <p
-          className={`inline-block rounded-md border-2 px-3 py-1 font-bold ${verdictTone[correction.verdict]}`}
-        >
-          {verdictLabel[correction.verdict]}
-        </p>
-      </header>
-
-      <section aria-label="Answer" className="space-y-2">
-        <h2 className="font-bold">What the official source says</h2>
-        <p>{correction.summary}</p>
-        {correction.translations.length > 0 ? (
-          <ul className="space-y-1 text-sm">
-            {correction.translations.map((t) => (
-              <li key={t.language}>
-                <span className="font-semibold">{languageName[t.language]}:</span> {t.text}
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </section>
-
-      <section aria-label="Official source" className="space-y-1">
-        <h2 className="font-bold">Official source</h2>
-        {correction.source ? (
-          <blockquote className="rounded-md border-l-4 border-brand bg-slate-50 p-3">
-            <p>{correction.source.text}</p>
-            <footer className="mt-2 text-sm">
-              <a
-                className="underline"
-                href={correction.source.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {correction.source.document_title}
-              </a>{" "}
-              ({correction.source.publisher})
-            </footer>
+    <article className="space-y-6">
+      <div className="overflow-hidden rounded-card border border-line bg-surface shadow-lift">
+        <div className={`h-1.5 ${verdictAccent[correction.verdict]}`} />
+        <header className="space-y-4 p-5 sm:p-6">
+          <p className="text-sm font-semibold text-muted">The message people are sharing</p>
+          <blockquote className="font-display text-2xl leading-snug text-ink">
+            {correction.claim_text}
           </blockquote>
-        ) : (
-          <p className="text-muted">We found no official statement on this yet.</p>
-        )}
+          <VerdictBadge verdict={correction.verdict} large />
+        </header>
+      </div>
+
+      <section aria-label="Answer">
+        <Card className="space-y-3">
+          <h2 className="text-xl font-bold text-brand">What the official source says</h2>
+          <p className="text-lg">{correction.summary}</p>
+          {correction.translations.length > 0 ? (
+            <ul className="space-y-2 border-t border-line pt-3">
+              {correction.translations.map((t) => (
+                <li key={t.language} className="flex gap-2">
+                  <Icon name="language" size={18} className="mt-1 text-brand" />
+                  <span>
+                    <span className="font-semibold text-brand">{languageName[t.language]}:</span>{" "}
+                    {t.text}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </Card>
       </section>
 
-      <p className="text-sm text-slate-700">
-        Approved by {correction.approved_by} on {formatWhen(correction.approved_at)}. A person
-        reviews every correction before it is sent.
+      <section aria-label="Official source">
+        <Card className="space-y-3">
+          <SectionTitle icon="shieldCheck">Official source</SectionTitle>
+          {correction.source ? (
+            <blockquote className="space-y-3 border-l-4 border-beacon pl-4">
+              <p className="font-display text-lg leading-snug">{correction.source.text}</p>
+              <footer className="text-sm text-muted">
+                <a
+                  className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-200 underline-offset-2 hover:decoration-brand"
+                  href={correction.source.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {correction.source.document_title}
+                  <Icon name="external" size={14} />
+                </a>{" "}
+                ({correction.source.publisher})
+              </footer>
+            </blockquote>
+          ) : (
+            <p className="text-muted">We found no official statement on this yet.</p>
+          )}
+        </Card>
+      </section>
+
+      <p className="flex items-start gap-2 text-sm text-muted">
+        <Icon name="user" size={18} className="mt-0.5 text-brand" />
+        <span>
+          Approved by {correction.approved_by} on {formatWhen(correction.approved_at)}. A person
+          reviews every correction before it is sent.
+        </span>
       </p>
 
       <VerificationGuide correction={correction} />

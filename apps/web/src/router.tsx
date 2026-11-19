@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import { AppLayout } from "./components/app-layout";
+import { AppLayout, PublicLayout } from "./components/app-layout";
 import { BroadcastBoardPage } from "./pages/broadcast-board-page";
 import { PublicCorrectionPage } from "./pages/public-correction-page";
 import { ReviewQueuePage } from "./pages/review-queue-page";
@@ -12,7 +12,10 @@ export const router = createBrowserRouter([
       { index: true, element: <SubmitClaimPage /> },
       { path: "review", element: <ReviewQueuePage /> },
       { path: "board", element: <BroadcastBoardPage /> },
-      { path: "c/:messageId", element: <PublicCorrectionPage /> },
     ],
+  },
+  {
+    element: <PublicLayout />,
+    children: [{ path: "c/:messageId", element: <PublicCorrectionPage /> }],
   },
 ]);
