@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Icon } from "../components/icons";
-import { WorkspaceHeader } from "../components/ui/surface";
+import { PageTitle } from "../components/ui/surface";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
 import { useSession } from "../lib/auth/session";
@@ -37,10 +37,7 @@ export function EvidenceLibraryPage() {
 
   return (
     <section className="space-y-5">
-      <WorkspaceHeader
-        title="Evidence library"
-        lead="Official source passages cited by current claims."
-      />
+      <PageTitle title="Evidence library" />
       <label className="relative block">
         <span className="sr-only">Search evidence</span>
         <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
