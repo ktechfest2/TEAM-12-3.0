@@ -161,7 +161,9 @@ export function SubscribeForm() {
                   <input
                     type="checkbox"
                     checked={languages.includes(option.value)}
-                    onChange={() => setLanguages((current) => toggleLanguage(current, option.value))}
+                    onChange={() =>
+                      setLanguages((current) => toggleLanguage(current, option.value))
+                    }
                   />
                   {option.label}
                 </label>
