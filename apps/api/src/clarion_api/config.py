@@ -21,7 +21,9 @@ class AppEnv(StrEnum):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=(".env", "../../.env"), extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=(".env", "../../.env"), extra="ignore", env_ignore_empty=True
+    )
 
     # runtime
     app_env: AppEnv = AppEnv.DEVELOPMENT

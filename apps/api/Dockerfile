@@ -12,7 +12,7 @@ COPY alembic.ini ./
 RUN uv sync --frozen --no-dev
 
 ENV PATH="/app/.venv/bin:$PATH"
-RUN useradd --create-home app
+RUN useradd --create-home app && mkdir -p /data/media && chown app:app /data/media
 USER app
 EXPOSE 8000
 CMD ["sh", "-c", "uvicorn clarion_api.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
