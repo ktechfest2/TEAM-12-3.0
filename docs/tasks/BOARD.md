@@ -11,6 +11,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Review
 
+- [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04) - claude
 - [T-09](T-09-public-correction-page.md) Public correction page (S, after T-04) - claude
 - [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04) - claude
 - [T-03](T-03-official-source-registry-loader.md) Official source registry loader (S, after T-02) - claude (criterion 3 needs a person)
@@ -24,7 +25,6 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 ## Ready
 
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13)
-- [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04)
 - [T-13](T-13-nigerian-language-speech-adapter.md) Nigerian language speech adapter (S, after T-01)
 - [T-14](T-14-sandbox-channels-sms-whatsapp-x-instagram.md) Sandbox channels: SMS, WhatsApp, X, Instagram (L, after T-04)
 - [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09)

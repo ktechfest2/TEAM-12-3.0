@@ -1298,6 +1298,62 @@
         ]
       }
     },
+    "/messages/{message_id}/deliveries/events": {
+      "get": {
+        "description": "Server sent events: `snapshot` (all deliveries), `delivery` (one changed), then `done`.",
+        "operationId": "streamDeliveryEvents",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "message_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Message Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {}
+            },
+            "description": "Server sent events"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Stream Deliveries",
+        "tags": [
+          "messages"
+        ]
+      }
+    },
     "/messages/{message_id}/localisations": {
       "put": {
         "operationId": "setLocalisation",
