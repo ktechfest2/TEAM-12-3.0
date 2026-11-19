@@ -1,6 +1,6 @@
 # T-05. S3 compatible object store adapter
 
-- Owner:
+- Owner: claude
 - Depends on: T-01
 - Estimate: S
 
