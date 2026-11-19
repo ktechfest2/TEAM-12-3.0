@@ -1,6 +1,6 @@
 # T-15. Demo script, demo data and recording
 
-- Owner:
+- Owner: claude
 - Depends on: T-06, T-08, T-09
 - Estimate: M
 
