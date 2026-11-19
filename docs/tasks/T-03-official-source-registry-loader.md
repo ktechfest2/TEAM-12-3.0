@@ -1,6 +1,6 @@
 # T-03. Official source registry loader
 
-- Owner:
+- Owner: claude
 - Depends on: T-02
 - Estimate: S
 
