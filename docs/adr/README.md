@@ -7,5 +7,6 @@
 | [0003](0003-three-verdicts-and-human-approval.md) | Three verdicts and mandatory human approval |
 | [0004](0004-typescript-5-9-for-codegen.md) | Pin TypeScript 5.9 for OpenAPI code generation |
 | [0005](0005-taskiq-for-background-jobs.md) | taskiq on Redis for background jobs |
+| [0006](0006-self-hosted-vps-deploy-behind-cloudflare.md) | Self hosted VPS deploy behind Cloudflare |
 
 New ADR: copy `0000-template.md` to the next number, or run `/adr <topic>` in Claude Code.
