@@ -25,7 +25,10 @@ const timeOfDay = new Intl.DateTimeFormat("en-NG", {
 const tileLook = {
   sent: { style: "border-confirmed/30 bg-confirmed-soft text-confirmed", icon: "checkCircle" },
   waiting: { style: "border-line bg-surface text-muted", icon: "wait" },
-  failed: { style: "border-contradicted/30 bg-contradicted-soft text-contradicted", icon: "xCircle" },
+  failed: {
+    style: "border-contradicted/30 bg-contradicted-soft text-contradicted",
+    icon: "xCircle",
+  },
   retracted: { style: "border-line-strong bg-sunken text-muted", icon: "undo" },
 } as const satisfies Record<string, { style: string; icon: IconName }>;
 
@@ -110,7 +113,10 @@ function Board({ message }: { message: Message }) {
             <caption className="sr-only">Delivery status by channel and language</caption>
             <thead>
               <tr>
-                <th scope="col" className="p-2 text-left text-xs font-bold uppercase tracking-wider text-muted">
+                <th
+                  scope="col"
+                  className="p-2 text-left text-xs font-bold uppercase tracking-wider text-muted"
+                >
                   Channel
                 </th>
                 {languages.map((language) => (
@@ -127,7 +133,10 @@ function Board({ message }: { message: Message }) {
             <tbody>
               {channels.map((channel) => (
                 <tr key={channel}>
-                  <th scope="row" className="whitespace-nowrap p-2 text-left font-semibold text-brand">
+                  <th
+                    scope="row"
+                    className="whitespace-nowrap p-2 text-left font-semibold text-brand"
+                  >
                     {channelLabel[channel]}
                   </th>
                   {languages.map((language) => (
@@ -154,9 +163,7 @@ export function BroadcastBoard() {
 
   const sealed = query.data.filter((m) => m.integrity_hash !== null);
   if (sealed.length === 0) {
-    return (
-      <Notice tone="empty">No approved corrections yet. Approve and seal one first.</Notice>
-    );
+    return <Notice tone="empty">No approved corrections yet. Approve and seal one first.</Notice>;
   }
   const selected = sealed.find((m) => m.id === chosen) ?? sealed[0];
   if (!selected) return null;

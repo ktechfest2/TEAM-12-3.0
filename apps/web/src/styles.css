@@ -38,10 +38,12 @@
   --color-unknown-soft: #eceef1;
 
   /* Type. System stacks keep the page fast on low bandwidth connections. */
-  --font-sans: ui-sans-serif, "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system,
-    Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
-    "Times New Roman", serif;
+  --font-sans:
+    ui-sans-serif, "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-display:
+    "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman",
+    serif;
   --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, monospace;
 
   --radius-control: 0.625rem;
@@ -88,8 +90,11 @@
     *,
     *::before,
     *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation timings */
       animation-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation timings */
       animation-iteration-count: 1 !important;
+      /* biome-ignore lint/complexity/noImportantStyles: reduced motion must override component animation timings */
       transition-duration: 0.01ms !important;
     }
   }
