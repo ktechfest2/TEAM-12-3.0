@@ -1,13 +1,15 @@
-import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Icon } from "../components/icons";
 import type { Verdict } from "../features/claims/verdict";
 import { FactCheckCard } from "../features/public/public-cards";
 import { demonstrationNotice, factChecks } from "../features/public/public-demo";
 
+const allTopics = "All topics";
+
 export function FactCheckListingPage() {
   const [query, setQuery] = useState("");
   const [verdict, setVerdict] = useState<"all" | Verdict>("all");
-  const [topic, setTopic] = useState("All");
+  const [topic, setTopic] = useState(allTopics);
 
   const results = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -18,7 +20,7 @@ export function FactCheckListingPage() {
           .toLowerCase()
           .includes(normalized);
       const matchesVerdict = verdict === "all" || factCheck.verdict === verdict;
-      const matchesTopic = topic === "All" || factCheck.topic === topic;
+      const matchesTopic = topic === allTopics || factCheck.topic === topic;
       return matchesQuery && matchesVerdict && matchesTopic;
     });
   }, [query, verdict, topic]);
@@ -39,7 +41,7 @@ export function FactCheckListingPage() {
       <div className="mt-8 grid gap-3 sm:grid-cols-[1fr_180px_180px]">
         <label className="relative">
           <span className="sr-only">Search fact-checks</span>
-          <Search size={18} className="absolute left-3 top-3.5 text-muted" aria-hidden="true" />
+          <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
           <input
             type="search"
             value={query}
@@ -68,7 +70,7 @@ export function FactCheckListingPage() {
             onChange={(event) => setTopic(event.target.value)}
             className="min-h-11 w-full rounded-[10px] border border-border bg-white px-3"
           >
-            <option>All</option>
+            <option>{allTopics}</option>
             <option>Voter registration</option>
             <option>PVC</option>
             <option>Voting procedures</option>
