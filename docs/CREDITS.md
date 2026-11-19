@@ -26,4 +26,4 @@ Seed passages paraphrase INEC statements as reported by Africa Check, News Centr
 
 ## Services
 
-Vercel, Render, Supabase, Telegram Bot API. Object storage is reached through the S3 protocol (AWS Signature Version 4, implemented in `adapters/storage/s3.py` with HTTPX and the standard library; checked against the published AWS test vectors).
+Vercel, Render, Supabase, Cloudflare (DNS and proxy), Caddy (host reverse proxy), Telegram Bot API. Container images for the self hosted deploy: pgvector/pgvector (PostgreSQL with pgvector), Redis, nginx, Node.js (build stage only). Object storage is reached through the S3 protocol (AWS Signature Version 4, implemented in `adapters/storage/s3.py` with HTTPX and the standard library; checked against the published AWS test vectors).

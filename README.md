@@ -14,7 +14,7 @@ Built by Team Triumph for the KTech Fest 3.0 hackathon, "Every Vote, Every Voice
 | `apps/web` | React dashboard, reviewer queue and public correction pages |
 | `contracts` | `openapi.json`, the single contract between API and web |
 | `docs` | Architecture, decisions, conventions, product docs, task board |
-| `infra` | Local services (Postgres with pgvector, Redis) and deployment notes |
+| `infra` | Local services (Postgres with pgvector, Redis), the self hosted VPS deploy (`infra/deploy`) and managed deployment notes |
 | `scripts` | Repository wide scripts, including `verify.sh` |
 
 ## Quick start
@@ -39,6 +39,21 @@ make verify
 
 Lint, format check, type check, tests and contract drift for both apps. CI runs the same script. Nothing is done until it passes.
 
+## Deploy
+
+Two options, both documented in [docs/deploy/](docs/deploy/README.md):
+
+- **Self hosted on a VPS behind Cloudflare** (no Render or Vercel account needed). One script provisions the whole stack and one command removes everything, stored media included:
+
+  ```bash
+  infra/deploy/clarion.sh --host <ssh-host> init     # then edit ~/.clarion-deploy/deploy.env on the server
+  infra/deploy/clarion.sh --host <ssh-host> up
+  infra/deploy/clarion.sh --host <ssh-host> destroy
+  ```
+
+  You supply only the hostname, the reviewer invite code, the language model and the channel settings. Database, queue, storage and signing secrets are generated. Details: [set up the server and Cloudflare](docs/deploy/vps-cloudflare.md), [operate it](docs/deploy/operations.md).
+- **Managed** on Render, Vercel and Supabase: see [infra/README.md](infra/README.md).
+
 ## Documentation
 
 - [Technical architecture](docs/TECHNICAL_ARCHITECTURE.md)
@@ -47,6 +62,7 @@ Lint, format check, type check, tests and contract drift for both apps. CI runs 
 - [Verification](docs/VERIFICATION.md)
 - [Architecture decisions](docs/adr/)
 - [Task board](docs/tasks/BOARD.md)
+- [Deploying](docs/deploy/README.md)
 
 ## Credits and declarations
 

@@ -1,4 +1,6 @@
-# Deploy runbook
+# Deploy runbook (managed: Render, Vercel, Supabase)
+
+No access to those accounts? Use the self hosted VPS deploy instead: [docs/deploy/](../deploy/README.md).
 
 1. **Supabase:** create project; Database > Extensions > enable `vector`; copy the pooled connection string and change its scheme to `postgresql+asyncpg://`. Storage > create bucket `clarion-media` (public read); create S3 access keys.
 2. **Render:** New > Blueprint > point at `infra/render.yaml`. Set every `sync: false` secret. Confirm the Key Value instance is attached as `REDIS_URL`.

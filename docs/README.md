@@ -10,3 +10,4 @@
 | [tasks/BOARD.md](tasks/BOARD.md) | Picking up work |
 | [product/](product/) | Problem brief, concept, demo script |
 | [runbooks/](runbooks/) | Deploying and operating |
+| [deploy/](deploy/) | Putting Clarion on a server (VPS and Cloudflare), operating it, removing it |
