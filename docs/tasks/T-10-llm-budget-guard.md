@@ -1,6 +1,6 @@
 # T-10. LLM budget guard
 
-- Owner:
+- Owner: claude
 - Depends on: T-01
 - Estimate: S
 

@@ -8,6 +8,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
+- [T-10](T-10-llm-budget-guard.md) LLM budget guard (S, after T-01) - claude
 
 ## Review
 
@@ -22,7 +23,6 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13)
 - [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04)
 - [T-09](T-09-public-correction-page.md) Public correction page (S, after T-04)
-- [T-10](T-10-llm-budget-guard.md) LLM budget guard (S, after T-01)
 - [T-11](T-11-reviewer-access.md) Reviewer access (S, after T-04)
 - [T-12](T-12-telegram-intake-and-join-subscriptions.md) Telegram intake and JOIN subscriptions (M, after T-04)
 - [T-13](T-13-nigerian-language-speech-adapter.md) Nigerian language speech adapter (S, after T-01)
