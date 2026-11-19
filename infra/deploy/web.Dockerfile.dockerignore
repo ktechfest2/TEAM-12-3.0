@@ -1,0 +1,5 @@
+*
+!apps/web
+!infra/deploy/nginx.conf
+apps/web/node_modules
+apps/web/dist
