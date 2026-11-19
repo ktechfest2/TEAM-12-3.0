@@ -295,6 +295,66 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/subscriptions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Start Subscription
+     * @description Text a 6 digit code to the number. Nothing is active until it is confirmed.
+     */
+    post: operations["startSubscription"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/subscriptions/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Confirm Subscription
+     * @description Confirm a code for a signup, a preference change or a removal.
+     */
+    post: operations["confirmSubscription"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/subscriptions/unsubscribe": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Start Unsubscribe
+     * @description Text a code to confirm removal, then confirm it with the confirm endpoint.
+     */
+    post: operations["startUnsubscribe"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/tools/sms-size": {
     parameters: {
       query?: never;
@@ -377,6 +437,30 @@ export interface components {
       text: string;
       verdict: components["schemas"]["Verdict"];
     };
+    /**
+     * CodeSentOut
+     * @description Same answer whether or not the number is already known, so it cannot be probed.
+     */
+    CodeSentOut: {
+      /**
+       * Status
+       * @default code_sent
+       * @constant
+       */
+      status: "code_sent";
+    };
+    /** ConfirmIn */
+    ConfirmIn: {
+      /** Code */
+      code: string;
+      /** Phone */
+      phone: string;
+    };
+    /**
+     * DeliveryMode
+     * @enum {string}
+     */
+    DeliveryMode: "instant" | "digest";
     /** DeliveryOut */
     DeliveryOut: {
       channel: components["schemas"]["ChannelKind"];
@@ -409,6 +493,11 @@ export interface components {
      * @enum {string}
      */
     DeliveryStatus: "queued" | "sent" | "failed" | "retracted";
+    /**
+     * DigestFrequency
+     * @enum {string}
+     */
+    DigestFrequency: "hourly" | "daily" | "weekly";
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
@@ -594,6 +683,20 @@ export interface components {
      * @enum {string}
      */
     SmsEncoding: "gsm7" | "ucs2";
+    /** SmsPreferencesIn */
+    SmsPreferencesIn: {
+      /** @default daily */
+      digest_frequency: components["schemas"]["DigestFrequency"];
+      /** Languages */
+      languages: components["schemas"]["Language"][];
+      /**
+       * Max Per Day
+       * @default 3
+       */
+      max_per_day: number;
+      /** @default instant */
+      mode: components["schemas"]["DeliveryMode"];
+    };
     /** SmsSizeIn */
     SmsSizeIn: {
       /** Text */
@@ -624,6 +727,31 @@ export interface components {
       text: string;
       /** Url */
       url: string;
+    };
+    /** SubscribeIn */
+    SubscribeIn: {
+      /** @default daily */
+      digest_frequency: components["schemas"]["DigestFrequency"];
+      /** Languages */
+      languages: components["schemas"]["Language"][];
+      /**
+       * Max Per Day
+       * @default 3
+       */
+      max_per_day: number;
+      /** @default instant */
+      mode: components["schemas"]["DeliveryMode"];
+      /** Phone */
+      phone: string;
+    };
+    /** SubscriptionConfirmedOut */
+    SubscriptionConfirmedOut: {
+      preferences?: components["schemas"]["SmsPreferencesIn"] | null;
+      /**
+       * Status
+       * @enum {string}
+       */
+      status: "active" | "removed";
     };
     /** TelegramChat */
     TelegramChat: {
@@ -665,6 +793,11 @@ export interface components {
        * @default bearer
        */
       token_type: string;
+    };
+    /** UnsubscribeIn */
+    UnsubscribeIn: {
+      /** Phone */
+      phone: string;
     };
     /** ValidationError */
     ValidationError: {
@@ -1256,6 +1389,105 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  startSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SubscribeIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CodeSentOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  confirmSubscription: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ConfirmIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SubscriptionConfirmedOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  startUnsubscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UnsubscribeIn"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CodeSentOut"];
+        };
       };
       /** @description Validation Error */
       422: {
