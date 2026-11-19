@@ -15,6 +15,7 @@ from clarion_api.main import create_app
 from tests.asgi_lifespan_shim import lifespan
 
 INVITE_CODE = "test-invite-code"
+WEBHOOK_SECRET = "test-webhook-secret"  # noqa: S105
 
 
 @dataclass
@@ -30,6 +31,7 @@ def settings() -> Settings:
         app_env=AppEnv.TEST,
         auth_reviewer_invite_code=SecretStr(INVITE_CODE),
         auth_jwt_secret=SecretStr("test-signing-secret"),
+        channel_telegram_webhook_secret=SecretStr(WEBHOOK_SECRET),
         _env_file=None,
     )
 
