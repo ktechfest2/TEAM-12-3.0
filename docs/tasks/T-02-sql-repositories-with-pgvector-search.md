@@ -1,6 +1,6 @@
 # T-02. SQL repositories with pgvector search
 
-- Owner:
+- Owner: claude
 - Depends on: T-01
 - Estimate: M
 
