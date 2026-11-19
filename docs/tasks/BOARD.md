@@ -8,10 +8,10 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
-- [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04) - claude
 
 ## Review
 
+- [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04) - claude
 - [T-03](T-03-official-source-registry-loader.md) Official source registry loader (S, after T-02) - claude (criterion 3 needs a person)
 - [T-05](T-05-s3-compatible-object-store-adapter.md) S3 compatible object store adapter (S, after T-01) - claude
 - [T-12](T-12-telegram-intake-and-join-subscriptions.md) Telegram intake and JOIN subscriptions (M, after T-04) - claude
