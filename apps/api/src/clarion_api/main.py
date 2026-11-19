@@ -11,7 +11,12 @@ from clarion_api import __version__
 from clarion_api.api.container import build_container, load_seed_sources
 from clarion_api.api.routes import router
 from clarion_api.config import Settings, get_settings
-from clarion_api.domain.errors import LlmBudgetExceededError, NotFoundError, NotPublishableError
+from clarion_api.domain.errors import (
+    LlmBudgetExceededError,
+    NotAuthorizedError,
+    NotFoundError,
+    NotPublishableError,
+)
 from clarion_api.observability import configure_logging, get_logger
 from clarion_api.worker.broker import broker
 from clarion_api.worker.runtime import use_container
@@ -51,6 +56,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.exception_handler(NotPublishableError)
     async def not_publishable(_: Request, exc: NotPublishableError) -> JSONResponse:
         return JSONResponse(status_code=409, content={"detail": str(exc)})
+
+    @app.exception_handler(NotAuthorizedError)
+    async def not_authorized(_: Request, exc: NotAuthorizedError) -> JSONResponse:
+        return JSONResponse(
+            status_code=401, content={"detail": str(exc)}, headers={"WWW-Authenticate": "Bearer"}
+        )
 
     @app.exception_handler(LlmBudgetExceededError)
     async def over_budget(_: Request, exc: LlmBudgetExceededError) -> JSONResponse:

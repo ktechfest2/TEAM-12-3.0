@@ -12,3 +12,7 @@ class NotFoundError(DomainError):
 
 class LlmBudgetExceededError(DomainError):
     """Raised before a language model call when the monthly spend cap is reached."""
+
+
+class NotAuthorizedError(DomainError):
+    """Raised when a request has no valid reviewer token or a wrong invite code."""

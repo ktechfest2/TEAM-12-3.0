@@ -240,21 +240,6 @@
         "title": "Language",
         "type": "string"
       },
-      "LocalisationApprovalIn": {
-        "properties": {
-          "approved_by": {
-            "maxLength": 120,
-            "minLength": 1,
-            "title": "Approved By",
-            "type": "string"
-          }
-        },
-        "required": [
-          "approved_by"
-        ],
-        "title": "LocalisationApprovalIn",
-        "type": "object"
-      },
       "LocalisationIn": {
         "properties": {
           "language": {
@@ -417,16 +402,9 @@
             "minLength": 3,
             "title": "Reason",
             "type": "string"
-          },
-          "reviewer_id": {
-            "maxLength": 120,
-            "minLength": 1,
-            "title": "Reviewer Id",
-            "type": "string"
           }
         },
         "required": [
-          "reviewer_id",
           "reason"
         ],
         "title": "RetractIn",
@@ -446,12 +424,6 @@
             ],
             "title": "Note"
           },
-          "reviewer_id": {
-            "maxLength": 120,
-            "minLength": 1,
-            "title": "Reviewer Id",
-            "type": "string"
-          },
           "status": {
             "$ref": "#/components/schemas/ReviewStatus"
           },
@@ -470,7 +442,6 @@
           }
         },
         "required": [
-          "reviewer_id",
           "status"
         ],
         "title": "ReviewIn",
@@ -604,6 +575,56 @@
         "title": "SourceOut",
         "type": "object"
       },
+      "TokenIn": {
+        "properties": {
+          "invite_code": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Invite Code",
+            "type": "string"
+          },
+          "reviewer_name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Reviewer Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "invite_code",
+          "reviewer_name"
+        ],
+        "title": "TokenIn",
+        "type": "object"
+      },
+      "TokenOut": {
+        "properties": {
+          "access_token": {
+            "title": "Access Token",
+            "type": "string"
+          },
+          "expires_in_seconds": {
+            "title": "Expires In Seconds",
+            "type": "integer"
+          },
+          "reviewer_name": {
+            "title": "Reviewer Name",
+            "type": "string"
+          },
+          "token_type": {
+            "default": "bearer",
+            "title": "Token Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token",
+          "expires_in_seconds",
+          "reviewer_name"
+        ],
+        "title": "TokenOut",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -662,6 +683,48 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/auth/tokens": {
+      "post": {
+        "description": "Exchange an invite code for a signed reviewer token.",
+        "operationId": "createToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Token",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/claims": {
       "post": {
         "operationId": "createClaim",
@@ -739,6 +802,22 @@
               "title": "Limit",
               "type": "integer"
             }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -774,6 +853,24 @@
       },
       "post": {
         "operationId": "createMessage",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -825,6 +922,22 @@
               "title": "Message Id",
               "type": "string"
             }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -867,6 +980,22 @@
               "format": "uuid",
               "title": "Message Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
             }
           }
         ],
@@ -925,6 +1054,22 @@
               "title": "Message Id",
               "type": "string"
             }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
           }
         ],
         "responses": {
@@ -971,6 +1116,22 @@
               "format": "uuid",
               "title": "Message Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
             }
           }
         ],
@@ -1033,18 +1194,24 @@
             "schema": {
               "$ref": "#/components/schemas/Language"
             }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LocalisationApprovalIn"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "content": {
@@ -1085,6 +1252,22 @@
               "format": "uuid",
               "title": "Message Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
             }
           }
         ],
@@ -1143,6 +1326,22 @@
               "title": "Message Id",
               "type": "string"
             }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
           }
         ],
         "requestBody": {
@@ -1195,6 +1394,22 @@
               "format": "uuid",
               "title": "Message Id",
               "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
             }
           }
         ],

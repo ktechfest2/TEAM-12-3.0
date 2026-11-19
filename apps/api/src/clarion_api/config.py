@@ -6,10 +6,12 @@ chosen by its *_PROVIDER value; code never branches on a vendor name elsewhere.
 
 from enum import StrEnum
 from functools import lru_cache
-from typing import Literal
+from typing import Literal, Self
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+DEFAULT_JWT_SECRET = "change-me-in-every-environment"  # noqa: S105 - placeholder, refused in production
 
 
 class AppEnv(StrEnum):
@@ -69,8 +71,19 @@ class Settings(BaseSettings):
     channel_whatsapp_phone_number_id: str | None = None
 
     # security
-    auth_jwt_secret: SecretStr = SecretStr("change-me-in-every-environment")
+    auth_jwt_secret: SecretStr = SecretStr(DEFAULT_JWT_SECRET)
     auth_reviewer_invite_code: SecretStr | None = None
+    auth_token_ttl_minutes: int = 720
+
+    @model_validator(mode="after")
+    def _require_real_secret_in_production(self) -> Self:
+        if (
+            self.app_env is AppEnv.PRODUCTION
+            and self.auth_jwt_secret.get_secret_value() == DEFAULT_JWT_SECRET
+        ):
+            msg = "AUTH_JWT_SECRET must be set to a private value when APP_ENV=production"
+            raise ValueError(msg)
+        return self
 
     @property
     def is_test(self) -> bool:

@@ -14,16 +14,14 @@ async def _message(client: httpx.AsyncClient) -> dict[str, object]:
 
 
 async def _approve(client: httpx.AsyncClient, message_id: object) -> None:
-    review = {"reviewer_id": "reviewer-1", "status": "approved"}
+    review = {"status": "approved"}
     assert (await client.post(f"/messages/{message_id}/reviews", json=review)).status_code == 201
 
 
 async def _approve_yoruba(client: httpx.AsyncClient, message_id: object) -> None:
     drafted = await client.put(f"/messages/{message_id}/localisations", json={"language": "yo"})
     assert drafted.json()["localisations"][0]["is_approved"] is False
-    approved = await client.post(
-        f"/messages/{message_id}/localisations/yo/approval", json={"approved_by": "native-yo"}
-    )
+    approved = await client.post(f"/messages/{message_id}/localisations/yo/approval")
     assert approved.json()["localisations"][0]["is_approved"] is True
 
 
@@ -64,7 +62,7 @@ async def test_approved_but_unsealed_message_is_not_broadcast(
 
 async def test_rejected_message_cannot_be_sealed(client: httpx.AsyncClient) -> None:
     message = await _message(client)
-    review = {"reviewer_id": "reviewer-1", "status": "rejected", "note": "weak match"}
+    review = {"status": "rejected", "note": "weak match"}
     await client.post(f"/messages/{message['id']}/reviews", json=review)
     assert (await client.post(f"/messages/{message['id']}/seal")).status_code == 409
 
@@ -110,7 +108,7 @@ async def test_editing_the_summary_after_approval_voids_the_seal(
     await client.post(f"/messages/{message['id']}/seal")
     edited = await client.post(
         f"/messages/{message['id']}/reviews",
-        json={"reviewer_id": "reviewer-2", "status": "approved", "summary": "A clearer summary."},
+        json={"status": "approved", "summary": "A clearer summary."},
     )
     assert edited.json()["integrity_hash"] is None
     assert (await client.post(f"/messages/{message['id']}/broadcast", json={})).status_code == 409
@@ -138,7 +136,7 @@ async def test_retraction_notifies_the_channel_and_marks_deliveries(
 
     response = await client.post(
         f"/messages/{message['id']}/retraction",
-        json={"reviewer_id": "reviewer-1", "reason": "The source was updated."},
+        json={"reason": "The source was updated."},
     )
     assert response.status_code == 200
     assert [d["status"] for d in response.json()] == ["retracted"]
