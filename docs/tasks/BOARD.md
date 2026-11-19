@@ -8,10 +8,10 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
-- [T-12](T-12-telegram-intake-and-join-subscriptions.md) Telegram intake and JOIN subscriptions (M, after T-04) - claude
 
 ## Review
 
+- [T-12](T-12-telegram-intake-and-join-subscriptions.md) Telegram intake and JOIN subscriptions (M, after T-04) - claude
 - [T-11](T-11-reviewer-access.md) Reviewer access (S, after T-04) - claude
 - [T-10](T-10-llm-budget-guard.md) LLM budget guard (S, after T-01) - claude
 - [T-04](T-04-message-review-and-broadcast-api.md) Message, review and broadcast API (L, after T-02) - claude
