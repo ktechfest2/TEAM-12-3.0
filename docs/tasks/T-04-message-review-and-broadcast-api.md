@@ -1,6 +1,6 @@
 # T-04. Message, review and broadcast API
 
-- Owner:
+- Owner: claude
 - Depends on: T-02
 - Estimate: L
 

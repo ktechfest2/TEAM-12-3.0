@@ -8,6 +8,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
+- [T-04](T-04-message-review-and-broadcast-api.md) Message, review and broadcast API (L, after T-02) - claude
 
 ## Review
 
@@ -16,7 +17,6 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 ## Ready
 
 - [T-03](T-03-official-source-registry-loader.md) Official source registry loader (S, after T-02)
-- [T-04](T-04-message-review-and-broadcast-api.md) Message, review and broadcast API (L, after T-02)
 - [T-05](T-05-s3-compatible-object-store-adapter.md) S3 compatible object store adapter (S, after T-01)
 - [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13)
