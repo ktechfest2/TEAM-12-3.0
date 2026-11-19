@@ -4,6 +4,7 @@ import { verdictAccent } from "../claims/verdict";
 import { VerdictBadge } from "../claims/verdict-badge";
 import { languageName } from "../review/review-rules";
 import { formatWhen, type PublicCorrection } from "./correction";
+import { ListenControl } from "./listen-control";
 import { VerificationGuide } from "./verification-guide";
 
 type Props = { correction: PublicCorrection };
@@ -26,15 +27,19 @@ export function CorrectionView({ correction }: Props) {
         <Card className="space-y-3">
           <h2 className="text-xl font-bold text-brand">What the official source says</h2>
           <p className="text-lg">{correction.summary}</p>
+          <ListenControl messageId={correction.message_id} language="en" />
           {correction.translations.length > 0 ? (
-            <ul className="space-y-2 border-t border-line pt-3">
+            <ul className="space-y-4 border-t border-line pt-3">
               {correction.translations.map((t) => (
-                <li key={t.language} className="flex gap-2">
-                  <Icon name="language" size={18} className="mt-1 text-brand" />
-                  <span>
-                    <span className="font-semibold text-brand">{languageName[t.language]}:</span>{" "}
-                    {t.text}
-                  </span>
+                <li key={t.language} className="space-y-2">
+                  <div className="flex gap-2">
+                    <Icon name="language" size={18} className="mt-1 text-brand" />
+                    <span>
+                      <span className="font-semibold text-brand">{languageName[t.language]}:</span>{" "}
+                      {t.text}
+                    </span>
+                  </div>
+                  <ListenControl messageId={correction.message_id} language={t.language} />
                 </li>
               ))}
             </ul>

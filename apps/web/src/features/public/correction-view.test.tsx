@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import type { PublicCorrection } from "./correction";
 import { CorrectionView } from "./correction-view";
@@ -45,6 +45,25 @@ describe("CorrectionView", () => {
     render(<CorrectionView correction={correction} />);
     expect(screen.getByText("Yoruba:")).toBeTruthy();
     expect(screen.getByText("yo text")).toBeTruthy();
+  });
+
+  it("lets a voter listen in English and in each approved language, only when they ask", () => {
+    render(<CorrectionView correction={correction} />);
+    expect(screen.queryByLabelText(/Voice note in/)).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Listen in Yoruba" }));
+    const player = screen.getByLabelText("Voice note in Yoruba");
+    expect(player.getAttribute("src")).toMatch(
+      /\/public\/corrections\/00000000-0000-0000-0000-0000000000a1\/voice\/yo$/,
+    );
+    expect(screen.getByRole("button", { name: "Listen in English" })).toBeTruthy();
+  });
+
+  it("says so plainly when the audio cannot be played", () => {
+    render(<CorrectionView correction={correction} />);
+    fireEvent.click(screen.getByRole("button", { name: "Listen in English" }));
+    fireEvent.error(screen.getByLabelText("Voice note in English"));
+    expect(screen.getByText("Audio is not available right now.")).toBeTruthy();
   });
 
   it("explains how to verify and publishes the exact record text", () => {

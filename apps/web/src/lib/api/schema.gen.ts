@@ -272,6 +272,29 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/public/corrections/{message_id}/voice/{language}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Get Public Voice Note
+     * @description No sign in. Speaks an approved, sealed correction in one of its approved languages.
+     *
+     *     The audio is made the first time someone asks and stored, so the speech service is
+     *     called at most once for each message and language. Anything not approved is a 404.
+     */
+    get: operations["getPublicVoiceNote"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/tools/sms-size": {
     parameters: {
       query?: never;
@@ -1203,6 +1226,36 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["PublicCorrectionOut"];
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  getPublicVoiceNote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        message_id: string;
+        language: components["schemas"]["Language"];
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Redirects to the voice note (OGG Opus). */
+      302: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       /** @description Validation Error */
       422: {
