@@ -148,6 +148,13 @@ const paths = {
       <path d="M6.5 10v4a2 2 0 0 0 2 2h6" />
     </>
   ),
+  volume: (
+    <>
+      <path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4H4Z" />
+      <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11" />
+    </>
+  ),
+  download: <path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 19.5h14" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof paths;

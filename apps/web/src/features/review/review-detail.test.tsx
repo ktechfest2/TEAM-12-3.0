@@ -12,6 +12,7 @@ vi.mock("./review-api", () => ({
   approveTranslation: vi.fn(),
   sealMessage: vi.fn(),
   broadcastMessage: vi.fn(),
+  renderRenditions: vi.fn(),
 }));
 
 import {

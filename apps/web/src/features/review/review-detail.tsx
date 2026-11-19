@@ -31,6 +31,7 @@ import {
   stageOf,
 } from "./review-rules";
 import { TranslationsPanel } from "./translations-panel";
+import { VoiceNotesPanel } from "./voice-notes-panel";
 
 type Props = { messageId: string };
 
@@ -233,6 +234,7 @@ export function ReviewDetail({ messageId }: Props) {
                   <Icon name="fingerprint" size={18} className="mt-0.5" />
                   Integrity hash: {message.integrity_hash}
                 </p>
+                <VoiceNotesPanel messageId={messageId} />
                 {broadcast.isSuccess ? (
                   <p className="flex items-center gap-2 font-semibold text-confirmed">
                     <Icon name="checkCircle" size={18} />
