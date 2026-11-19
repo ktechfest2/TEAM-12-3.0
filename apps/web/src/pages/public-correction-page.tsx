@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
+import { Loading, Notice } from "../components/ui/surface";
 import { fetchCorrection } from "../features/public/correction";
 import { CorrectionView } from "../features/public/correction-view";
 
@@ -12,10 +13,12 @@ export function PublicCorrectionPage() {
   });
 
   return (
-    <section className="space-y-4">
-      <h1 className="text-2xl font-bold">Official correction</h1>
-      {query.isPending ? <p className="text-muted">Loading...</p> : null}
-      {query.error ? <p role="alert">{query.error.message}</p> : null}
+    <section className="mx-auto max-w-2xl space-y-6">
+      <h1 className="text-sm font-bold uppercase tracking-wider text-beacon-ink">
+        Official correction
+      </h1>
+      {query.isPending ? <Loading /> : null}
+      {query.error ? <Notice tone="error">{query.error.message}</Notice> : null}
       {query.data ? <CorrectionView correction={query.data} /> : null}
     </section>
   );
