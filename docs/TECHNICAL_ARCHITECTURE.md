@@ -48,7 +48,7 @@ apps/api/src/clarion_api/
   domain/              entities, enums, publish rules. Pure Python. No I/O.
   services/            use cases: matching, localisation, rendering, integrity, broadcasting
   adapters/            vendor boundary: llm/, speech/, channels/, storage/ (Protocol + fake + real)
-  repositories/        persistence boundary: Protocol + memory (now) + sql (T-02)
+  repositories/        persistence boundary: Protocol + memory + sql (REPOSITORY_BACKEND)
   db/                  SQLAlchemy tables and session; used only by repositories/sql.py
   api/                 FastAPI routes, request/response schemas, dependency container
   worker/              taskiq broker and queued jobs
@@ -142,7 +142,7 @@ Web on Vercel (`apps/web/vercel.json`). API and worker on Render from one Docker
 
 ## 11. Known limits
 
-- Repositories are in memory until T-02; data resets on restart.
+- Repositories are in memory by default and reset on restart. Set `REPOSITORY_BACKEND=sql` for Postgres.
 - Only the Telegram channel adapter is real. SMS, WhatsApp, X and Instagram adapters are tasks.
 - Seed passages paraphrase official statements as reported by news and fact checking outlets. Replace with primary INEC text before any public demo.
 - Translation and voice quality must be judged by native speakers; nothing automated measures it.

@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
 
     # data, queue
+    repository_backend: Literal["memory", "sql"] = "memory"
     database_url: str = "postgresql+asyncpg://clarion:clarion@localhost:5432/clarion"
     redis_url: str = "redis://localhost:6379/0"
 

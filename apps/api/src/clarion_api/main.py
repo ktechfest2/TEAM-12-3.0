@@ -25,7 +25,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         seeded = await load_seed_sources(container)
         log.info("startup", env=settings.app_env.value, seeded_sources=seeded)
         yield
-        await container.http.aclose()
+        await container.aclose()
 
     app = FastAPI(title="Clarion API", version=__version__, lifespan=lifespan)
     app.add_middleware(

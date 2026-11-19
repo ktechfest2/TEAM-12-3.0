@@ -3,8 +3,7 @@ from collections.abc import Sequence
 from uuid import UUID
 
 from clarion_api.domain.models import Claim, SourcePassage
-
-MIN_SIMILARITY = 0.15
+from clarion_api.repositories.base import MIN_SIMILARITY
 
 
 def _cosine(a: Sequence[float], b: Sequence[float]) -> float:
