@@ -2,7 +2,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 UV := uv run
 
-.PHONY: help setup dev worker fmt lint typecheck test test-integration openapi db-migrate db-revision seed-sources verify clean
+.PHONY: help setup dev worker fmt lint typecheck test test-integration openapi db-migrate db-revision seed-sources demo-reset verify clean
 
 help: ## List commands
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
@@ -39,6 +39,10 @@ db-migrate: ## Apply migrations to DATABASE_URL
 seed-sources: ## Load official passages: make seed-sources FILE=passages.json
 	@test -n "$(FILE)" || { echo "usage: make seed-sources FILE=passages.json" >&2; exit 2; }
 	$(UV) python scripts/seed_sources.py "$(FILE)"
+
+demo-reset: ## Reset the demo workspace (sql backend only): make demo-reset CONFIRM=1
+	@test "$(CONFIRM)" = "1" || { echo "this deletes claims, messages, reviews, deliveries and subscribers; run: make demo-reset CONFIRM=1" >&2; exit 2; }
+	$(UV) python scripts/demo_reset.py --yes
 
 db-revision: ## New migration: make db-revision m="add x"
 	$(UV) alembic revision --autogenerate -m "$(m)"
