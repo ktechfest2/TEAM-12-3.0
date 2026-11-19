@@ -80,16 +80,21 @@ Scale: page title `text-4xl` to `text-5xl` (marketing page) or `text-3xl` to `te
 | Send, broadcast | `send`, `broadcast` |
 | Translation | `language` |
 | Waiting | `wait`, `clock` |
+| Navigation and pages | `dashboard`, `messages`, `workflow`, `archive`, `book`, `building`, `calendar`, `share`, `menu`, `close`, `arrowLeft`, `arrowRight`, `external` |
 
 ## Components
 
 In `src/components/ui/`: `Button` (primary, secondary, quiet; md and sm), `Card`, `PageHeader`, `SectionTitle`, `Pill`, `Notice` (error, info, empty), `Loading`, and `controlClass` for inputs. Feature code composes these; it does not restyle them.
 
+Colours are tokens from `src/styles.css` (`brand-*`, `confirmed`, `contradicted`, `unknown`, `surface`, `line`). There is no `misleading` colour: the verdict has three values.
+
 Verdict display is always `VerdictBadge` plus the `verdictAccent` stripe on cards. Do not hand build a verdict.
 
-## Layout
+## Layout and routes
 
-Page width `max-w-5xl`; public correction `max-w-2xl` so it reads on a phone. Page padding `px-4` on mobile, `px-6` from `sm`. Vertical rhythm in steps of `space-y-6` and `space-y-8`. Reviewer tools show the main nav; the public correction page (`/c/:id`) shows only the logo, because voters should not see reviewer tools.
+Two shells. The public shell (`PublicLayout`) holds `/` (homepage with the claim check), `/check`, `/guide` (how Clarion works), `/information`, `/fact-checks` and the public correction page `/c/:id`. The reviewer shell (`DashboardLayout`, under `/dashboard`) holds the overview, claims table, `verification` (review, per-language approval, seal, send), `evidence` and `board`. Old `/review` and `/board` redirect. The public header always links to the reviewer workspace, and the claim check, the approval rule and the fingerprint check are all visible on the page, never behind a tab.
+
+The fact-check and information pages currently show demonstration content and say so on the page. They must not be presented as real verdicts until they are fed from sealed corrections and the official source registry.
 
 ## Accessibility checklist
 
