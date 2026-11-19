@@ -11,6 +11,7 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Review
 
+- [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04) - claude
 - [T-03](T-03-official-source-registry-loader.md) Official source registry loader (S, after T-02) - claude (criterion 3 needs a person)
 - [T-05](T-05-s3-compatible-object-store-adapter.md) S3 compatible object store adapter (S, after T-01) - claude
 - [T-12](T-12-telegram-intake-and-join-subscriptions.md) Telegram intake and JOIN subscriptions (M, after T-04) - claude
@@ -21,7 +22,6 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## Ready
 
-- [T-06](T-06-review-queue-screen.md) Review queue screen (M, after T-04)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13)
 - [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04)
 - [T-09](T-09-public-correction-page.md) Public correction page (S, after T-04)

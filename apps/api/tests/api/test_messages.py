@@ -28,6 +28,7 @@ async def _approve_yoruba(client: httpx.AsyncClient, message_id: object) -> None
 async def test_message_is_drafted_from_claim_with_a_cited_source(client: httpx.AsyncClient) -> None:
     message = await _message(client)
     assert message["verdict"] == "contradicted"
+    assert message["claim_text"] == CLAIM
     assert message["source"] is not None
     assert message["review"] is None
     assert message["integrity_hash"] is None

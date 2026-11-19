@@ -7,7 +7,8 @@ from clarion_api.api.schemas import (
     ReviewOut,
     SourceOut,
 )
-from clarion_api.domain.models import Delivery, MasterMessage, SourcePassage
+from clarion_api.domain.enums import Language
+from clarion_api.domain.models import Claim, Delivery, MasterMessage, SourcePassage
 
 
 def source_out(passage: SourcePassage) -> SourceOut:
@@ -20,11 +21,13 @@ def source_out(passage: SourcePassage) -> SourceOut:
     )
 
 
-def message_out(message: MasterMessage) -> MessageOut:
+def message_out(message: MasterMessage, claim: Claim | None) -> MessageOut:
     review = message.review
     return MessageOut(
         id=message.id,
         claim_id=message.claim_id,
+        claim_text=claim.text if claim else "",
+        claim_language=claim.language if claim else Language.ENGLISH,
         verdict=message.verdict,
         summary=message.summary,
         confidence=message.confidence,

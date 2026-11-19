@@ -3,6 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
 
+from clarion_api.api.container import Container
 from clarion_api.api.deps import ContainerDep, ReviewerDep, get_reviewer
 from clarion_api.api.mappers import delivery_out, message_out
 from clarion_api.api.schemas import (
@@ -15,6 +16,7 @@ from clarion_api.api.schemas import (
     ReviewIn,
 )
 from clarion_api.domain.enums import Language
+from clarion_api.domain.models import MasterMessage
 from clarion_api.services import messages as workflow
 from clarion_api.worker.tasks import send_delivery
 
@@ -22,6 +24,11 @@ from clarion_api.worker.tasks import send_delivery
 router = APIRouter(prefix="/messages", tags=["messages"], dependencies=[Depends(get_reviewer)])
 
 LimitQuery = Annotated[int, Query(ge=1, le=200)]
+
+
+async def _out(container: Container, message: MasterMessage) -> MessageOut:
+    claim = await container.claims.get(message.claim_id)
+    return message_out(message, claim)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, operation_id="createMessage")
@@ -33,17 +40,19 @@ async def create_message(body: MessageCreateIn, container: ContainerDep) -> Mess
         messages=container.messages,
         llm=container.llm,
     )
-    return message_out(message)
+    return await _out(container, message)
 
 
 @router.get("", operation_id="listMessages")
 async def list_messages(container: ContainerDep, limit: LimitQuery = 50) -> list[MessageOut]:
-    return [message_out(m) for m in await container.messages.list_recent(limit=limit)]
+    recent = await container.messages.list_recent(limit=limit)
+    return [await _out(container, m) for m in recent]
 
 
 @router.get("/{message_id}", operation_id="getMessage")
 async def get_message(message_id: UUID, container: ContainerDep) -> MessageOut:
-    return message_out(await workflow.load_message(message_id, container.messages))
+    message = await workflow.load_message(message_id, container.messages)
+    return await _out(container, message)
 
 
 @router.post("/{message_id}/reviews", status_code=status.HTTP_201_CREATED, operation_id="addReview")
@@ -58,7 +67,7 @@ async def add_review(
         summary=body.summary,
         messages=container.messages,
     )
-    return message_out(message)
+    return await _out(container, message)
 
 
 @router.put("/{message_id}/localisations", operation_id="setLocalisation")
@@ -72,7 +81,7 @@ async def set_localisation(
         messages=container.messages,
         llm=container.llm,
     )
-    return message_out(message)
+    return await _out(container, message)
 
 
 @router.post("/{message_id}/localisations/{language}/approval", operation_id="approveLocalisation")
@@ -82,12 +91,13 @@ async def approve_localisation(
     message = await workflow.approve_localisation(
         message_id, language=language, approved_by=reviewer, messages=container.messages
     )
-    return message_out(message)
+    return await _out(container, message)
 
 
 @router.post("/{message_id}/seal", operation_id="sealMessage")
 async def seal_message(message_id: UUID, container: ContainerDep) -> MessageOut:
-    return message_out(await workflow.seal_message(message_id, messages=container.messages))
+    sealed = await workflow.seal_message(message_id, messages=container.messages)
+    return await _out(container, sealed)
 
 
 @router.post(

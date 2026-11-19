@@ -377,6 +377,9 @@ export interface components {
        * Format: uuid
        */
       claim_id: string;
+      claim_language: components["schemas"]["Language"];
+      /** Claim Text */
+      claim_text: string;
       /** Confidence */
       confidence: number;
       /**
