@@ -50,3 +50,14 @@ def test_invite_code_comparison() -> None:
 def test_production_refuses_the_placeholder_signing_secret() -> None:
     with pytest.raises(ValueError, match="AUTH_JWT_SECRET"):
         Settings(app_env=AppEnv.PRODUCTION, _env_file=None)  # type: ignore[call-arg]
+
+
+def test_empty_environment_values_count_as_not_set(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Compose passes every optional setting, empty when the deployer left it blank.
+    monkeypatch.setenv("CHANNEL_TELEGRAM_WEBHOOK_SECRET", "")
+    monkeypatch.setenv("AUTH_REVIEWER_INVITE_CODE", "")
+    monkeypatch.setenv("LLM_MODEL", "")
+    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    assert settings.channel_telegram_webhook_secret is None
+    assert settings.auth_reviewer_invite_code is None
+    assert settings.llm_model is None

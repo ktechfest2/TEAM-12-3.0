@@ -6,6 +6,10 @@ Local services and deployment configuration.
 
 `make services-up` starts Postgres 17 with pgvector and Redis 8 from `docker-compose.yml`. Data persists in the `pgdata` volume.
 
+## Self hosted alternative
+
+`infra/deploy/` runs the whole stack (Postgres with pgvector, Redis, API, worker, web) on one VPS behind Cloudflare, with one script to provision and remove it. See [docs/deploy/](../docs/deploy/README.md) and ADR 0006. The table below describes the managed option.
+
 ## Production mapping
 
 | Need | Generic interface | Hackathon choice | Swap without code changes to |

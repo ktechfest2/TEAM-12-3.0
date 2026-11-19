@@ -2,7 +2,7 @@
 SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 
-.PHONY: help setup dev fmt lint typecheck test contract verify services-up services-down db-migrate demo-reset clean
+.PHONY: help setup dev fmt lint typecheck test contract verify services-up services-down db-migrate demo-reset deploy clean
 
 help: ## List commands
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
@@ -49,6 +49,9 @@ db-migrate: ## Apply database migrations
 
 demo-reset: ## Reset the demo workspace to known data (needs REPOSITORY_BACKEND=sql, CONFIRM=1)
 	$(MAKE) -C apps/api demo-reset CONFIRM=$(CONFIRM)
+
+deploy: ## Self hosted deploy: make deploy HOST=<ssh host> CMD=up (init, up, status, logs, backup, destroy)
+	./infra/deploy/clarion.sh $(if $(HOST),--host $(HOST)) $(CMD) $(ARGS)
 
 clean: ## Remove caches and build output
 	$(MAKE) -C apps/api clean

@@ -8,9 +8,11 @@ Agents and people: follow "How to take a task" in the root `AGENTS.md`. Move a l
 
 ## In progress
 
+ - claude
 
 ## Review
 
+- [T-16](T-16-self-hosted-vps-deploy.md) Self hosted VPS deploy behind Cloudflare (L, after T-04) - claude (real DNS not tested)
 - [T-15](T-15-demo-script-demo-data-and-recording.md) Demo script, demo data and recording (M, after T-06, T-08, T-09) - claude (video needs a person)
 - [T-07](T-07-renderers-sms-text-voice-note-social-card-poster-qr.md) Renderers: SMS text, voice note, social card, poster, QR (L, after T-04, T-13) - claude
 - [T-08](T-08-live-broadcast-board.md) Live broadcast board (M, after T-04) - claude

@@ -1,0 +1,5 @@
+# Shell scripts and container files must keep LF line endings, even on Windows checkouts.
+*.sh text eol=lf
+infra/deploy/*.yaml text eol=lf
+infra/deploy/nginx.conf text eol=lf
+infra/deploy/*Dockerfile* text eol=lf
