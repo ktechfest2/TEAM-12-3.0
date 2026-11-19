@@ -31,6 +31,27 @@ export function PageHeader({
   );
 }
 
+/** Compact page title for the reviewer workspace: one h1, one optional line, one optional action. */
+export function WorkspaceHeader({
+  title,
+  lead,
+  aside,
+}: {
+  title: string;
+  lead?: ReactNode;
+  aside?: ReactNode;
+}) {
+  return (
+    <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{title}</h1>
+        {lead ? <p className="mt-1.5 max-w-2xl text-sm leading-6 text-secondary">{lead}</p> : null}
+      </div>
+      {aside ? <div className="shrink-0">{aside}</div> : null}
+    </header>
+  );
+}
+
 /** Small uppercase label above a block of content. */
 export function SectionTitle({ icon, children }: { icon?: IconName; children: ReactNode }) {
   return (

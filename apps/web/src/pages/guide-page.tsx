@@ -44,52 +44,76 @@ const verdicts: readonly { verdict: Verdict; meaning: string }[] = [
 
 export function GuidePage() {
   return (
-    <section className="mx-auto max-w-3xl px-5 py-12 sm:px-8 md:py-16">
-      <h1 className="text-3xl font-bold tracking-tight md:text-[40px]">How Clarion works</h1>
-      <p className="mt-3 text-base leading-7 text-secondary">
-        Clarion closes the gap between a rumour spreading and the official correction reaching the
-        voter. Every answer cites an official source and is approved by a person.
-      </p>
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-16">
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">How Clarion works</h1>
+        <p className="mt-3 text-base leading-7 text-secondary sm:text-lg">
+          Every answer cites an official source and is approved by a person before anyone receives
+          it.
+        </p>
+      </header>
 
-      <ol className="mt-10 space-y-6 border-l-2 border-brand-100 pl-6">
-        {steps.map((step, index) => (
-          <li key={step.title} className="relative">
-            <span className="absolute -left-[41px] grid size-7 place-items-center rounded-full bg-brand text-xs font-bold text-white">
-              {index + 1}
-            </span>
-            <h2 className="font-bold">{step.title}</h2>
-            <p className="mt-1 text-sm leading-6 text-secondary">{step.copy}</p>
-          </li>
-        ))}
-      </ol>
+      <section aria-labelledby="steps-title" className="mt-10 sm:mt-12">
+        <h2 id="steps-title" className="text-xs font-bold uppercase tracking-wider text-muted">
+          From rumour to correction
+        </h2>
+        <ol className="mt-4 divide-y divide-border rounded-card border border-border bg-white">
+          {steps.map((step, index) => (
+            <li key={step.title} className="flex gap-4 p-4 sm:p-5">
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-bold text-brand tabular-nums">
+                {index + 1}
+              </span>
+              <div className="min-w-0">
+                <h3 className="font-semibold leading-8">{step.title}</h3>
+                <p className="mt-0.5 text-sm leading-6 text-secondary">{step.copy}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-      <h2 className="mt-14 text-xl font-bold">The three answers</h2>
-      <ul className="mt-4 divide-y divide-border border-y border-border">
-        {verdicts.map((item) => (
-          <li key={item.verdict} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-4">
-            <span className="sm:w-72">
-              <VerdictBadge verdict={item.verdict} />
-            </span>
-            <p className="min-w-0 flex-1 text-sm leading-6 text-secondary">{item.meaning}</p>
-          </li>
-        ))}
-      </ul>
+      <section aria-labelledby="verdicts-title" className="mt-10 sm:mt-12">
+        <h2 id="verdicts-title" className="text-xs font-bold uppercase tracking-wider text-muted">
+          The three answers
+        </h2>
+        <ul className="mt-4 grid gap-3">
+          {verdicts.map((item) => (
+            <li
+              key={item.verdict}
+              className="rounded-card border border-border bg-white p-4 sm:flex sm:items-start sm:gap-5 sm:p-5"
+            >
+              <div className="sm:w-72 sm:shrink-0">
+                <VerdictBadge verdict={item.verdict} />
+              </div>
+              <p className="mt-3 text-sm leading-6 text-secondary sm:mt-1">{item.meaning}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      <h2 className="mt-14 text-xl font-bold">Check a correction yourself</h2>
-      <p className="mt-3 flex gap-3 text-sm leading-6 text-secondary">
-        <Icon name="fingerprint" size={20} className="mt-0.5 text-brand" />
-        <span>
+      <section
+        aria-labelledby="check-title"
+        className="mt-10 rounded-card border border-brand-200 bg-brand-50 p-5 sm:mt-12 sm:p-6"
+      >
+        <h2 id="check-title" className="flex items-center gap-2 text-lg font-bold text-brand">
+          <Icon name="fingerprint" size={22} />
+          Check a correction yourself
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-secondary">
           Every sent correction has its own public page. It shows the fingerprint, the previous
           correction's fingerprint and the exact record text. Run that text through SHA-256: if the
           result equals the fingerprint, nobody changed it after it was approved.
-        </span>
-      </p>
+        </p>
+      </section>
 
-      <div className="mt-10">
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row">
         <Button as="link" to="/check" icon="search">
           Verify a claim
         </Button>
+        <Button as="link" to="/subscribe" variant="outline">
+          Get text alerts
+        </Button>
       </div>
-    </section>
+    </div>
   );
 }

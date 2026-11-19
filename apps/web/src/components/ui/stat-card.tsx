@@ -9,17 +9,13 @@ type Props = {
 
 export function StatCard({ label, value, detail, icon }: Props) {
   return (
-    <article className="rounded-[14px] border border-border bg-white p-5 shadow-card">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-medium text-muted">{label}</p>
-          <p className="mt-2 text-3xl font-bold tabular-nums text-foreground">{value}</p>
-        </div>
-        <span className="grid size-10 place-items-center rounded-[10px] bg-brand-soft text-brand">
-          <Icon name={icon} size={19} />
-        </span>
-      </div>
-      {detail ? <p className="mt-3 text-xs leading-5 text-muted">{detail}</p> : null}
+    <article className="rounded-card border border-border bg-white p-4 shadow-card sm:p-5">
+      <p className="flex items-center gap-2 text-sm font-medium text-secondary">
+        <Icon name={icon} size={16} className="shrink-0 text-brand" />
+        <span className="truncate">{label}</span>
+      </p>
+      <p className="mt-2 text-2xl font-bold tabular-nums text-foreground sm:text-3xl">{value}</p>
+      {detail ? <p className="mt-1 text-xs leading-5 text-muted">{detail}</p> : null}
     </article>
   );
 }
