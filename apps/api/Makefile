@@ -2,7 +2,7 @@ SHELL := /usr/bin/env bash
 .DEFAULT_GOAL := help
 UV := uv run
 
-.PHONY: help setup dev worker fmt lint typecheck test test-integration openapi db-migrate db-revision verify clean
+.PHONY: help setup dev worker fmt lint typecheck test test-integration openapi db-migrate db-revision seed-sources verify clean
 
 help: ## List commands
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
@@ -35,6 +35,10 @@ openapi: ## Write ../../contracts/openapi.json
 
 db-migrate: ## Apply migrations to DATABASE_URL
 	$(UV) alembic upgrade head
+
+seed-sources: ## Load official passages: make seed-sources FILE=passages.json
+	@test -n "$(FILE)" || { echo "usage: make seed-sources FILE=passages.json" >&2; exit 2; }
+	$(UV) python scripts/seed_sources.py "$(FILE)"
 
 db-revision: ## New migration: make db-revision m="add x"
 	$(UV) alembic revision --autogenerate -m "$(m)"
