@@ -5,6 +5,7 @@ from clarion_api.api.mappers import source_out
 from clarion_api.api.schemas import ClaimIn, ClaimOut
 from clarion_api.domain.enums import ChannelKind
 from clarion_api.services.intake import submit_claim
+from clarion_api.services.messages import create_message
 
 router = APIRouter(prefix="/claims", tags=["claims"])
 
@@ -18,6 +19,14 @@ async def create_claim(body: ClaimIn, container: ContainerDep) -> ClaimOut:
         claims=container.claims,
         sources=container.sources,
         llm=container.llm,
+    )
+    await create_message(
+        claim.id,
+        claims=container.claims,
+        sources=container.sources,
+        messages=container.messages,
+        llm=container.llm,
+        result=result,
     )
     passage = await container.sources.get(result.passage_id) if result.passage_id else None
     return ClaimOut(
