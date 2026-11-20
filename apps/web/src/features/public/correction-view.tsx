@@ -56,7 +56,7 @@ export function CorrectionView({ correction }: Props) {
               <p className="text-lg">{correction.source.text}</p>
               <footer className="text-sm text-secondary">
                 <a
-                  className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
+                  className="inline-flex min-h-10 items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
                   href={correction.source.url}
                   target="_blank"
                   rel="noreferrer"

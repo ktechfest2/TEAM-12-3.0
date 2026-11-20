@@ -147,7 +147,7 @@ export function ReviewDetail({ messageId }: Props) {
                 <p className="text-lg">{message.source.text}</p>
                 <footer className="text-sm text-secondary">
                   <a
-                    className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
+                    className="inline-flex min-h-10 items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
                     href={message.source.url}
                     target="_blank"
                     rel="noreferrer"
@@ -235,7 +235,10 @@ export function ReviewDetail({ messageId }: Props) {
                     <Icon name="checkCircle" size={18} />
                     <span>
                       Sending started.{" "}
-                      <Link to="/dashboard/board" className="underline underline-offset-2">
+                      <Link
+                        to="/dashboard/board"
+                        className="inline-flex min-h-10 items-center underline underline-offset-2"
+                      >
                         Watch the broadcast board
                       </Link>
                     </span>

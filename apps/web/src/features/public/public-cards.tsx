@@ -9,7 +9,10 @@ export function InformationCard({ article }: { article: InformationArticle }) {
     <Card className="flex h-full flex-col">
       <p className="text-xs font-semibold text-brand">{article.category}</p>
       <h2 className="mt-2 text-lg font-bold">
-        <Link className="hover:text-brand" to={`/information/${article.slug}`}>
+        <Link
+          className="inline-flex min-h-10 items-center hover:text-brand"
+          to={`/information/${article.slug}`}
+        >
           {article.title}
         </Link>
       </h2>

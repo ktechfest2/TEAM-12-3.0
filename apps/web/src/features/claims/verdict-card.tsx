@@ -19,7 +19,7 @@ export function VerdictCard({ result }: Props) {
             <Icon name="shieldCheck" size={16} className="text-brand" />
             Source:{" "}
             <a
-              className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
+              className="inline-flex min-h-10 items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
               href={result.source.url}
               target="_blank"
               rel="noreferrer"
