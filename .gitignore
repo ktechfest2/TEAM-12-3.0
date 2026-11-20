@@ -30,3 +30,6 @@ apps/api/var/
 !.vscode/extensions.json
 !.vscode/settings.json
 scripts/remote.sh
+
+# design audit screenshots (markdown is committed, images are not)
+docs/design/audit/shots/
