@@ -3,7 +3,7 @@ import { type FormEvent, useState } from "react";
 import { Icon } from "../../components/icons";
 import { Button } from "../../components/ui/button";
 import { Card } from "../../components/ui/card";
-import { controlClass } from "../../components/ui/input";
+import { Input } from "../../components/ui/input";
 import { Notice } from "../../components/ui/notice";
 import { api } from "../../lib/api/client";
 import { saveSession } from "../../lib/auth/session";
@@ -31,35 +31,33 @@ export function LoginForm() {
   return (
     <Card className="max-w-md">
       <form onSubmit={onSubmit} className="space-y-4">
-        <p className="flex items-start gap-2 text-muted">
-          <Icon name="lock" size={20} className="mt-0.5 text-brand" />
+        <p className="flex items-start gap-2 text-secondary">
+          <Icon name="lock" size={20} className="mt-0.5 shrink-0 text-brand" />
           Only invited reviewers can approve and send corrections.
         </p>
         <div className="space-y-2">
           <label htmlFor="reviewer-name" className="block font-semibold">
             Your name
           </label>
-          <input
+          <Input
             id="reviewer-name"
             value={reviewerName}
             onChange={(e) => setReviewerName(e.target.value)}
             required
             autoComplete="name"
-            className={controlClass}
           />
         </div>
         <div className="space-y-2">
           <label htmlFor="invite-code" className="block font-semibold">
             Invite code
           </label>
-          <input
+          <Input
             id="invite-code"
             type="password"
             value={inviteCode}
             onChange={(e) => setInviteCode(e.target.value)}
             required
             autoComplete="off"
-            className={controlClass}
           />
         </div>
         <Button type="submit" disabled={mutation.isPending} className="w-full">

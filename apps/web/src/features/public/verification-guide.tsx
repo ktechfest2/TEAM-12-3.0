@@ -7,26 +7,26 @@ export function VerificationGuide({ correction }: Props) {
   return (
     <section
       aria-label="Integrity"
-      className="space-y-4 rounded-card border border-brand-line bg-brand-tint p-6 sm:p-6"
+      className="space-y-4 rounded-card border border-brand-line bg-brand-tint p-4 sm:p-6"
     >
       <h2 className="flex items-center gap-2 text-xl font-bold text-brand">
         <Icon name="fingerprint" size={22} />
         Check that this was not changed
       </h2>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-secondary">
         This correction has a fingerprint. If anyone changed even one letter after a reviewer
         approved it, the fingerprint would be different.
       </p>
       <dl className="space-y-3 text-sm">
         <div>
           <dt className="font-semibold">Fingerprint ({correction.hash_algorithm})</dt>
-          <dd className="mt-1 break-all rounded-control bg-canvas p-2 font-mono text-xs">
+          <dd className="mt-1 break-all rounded-control border border-border bg-surface p-2 font-mono text-xs">
             {correction.integrity_hash}
           </dd>
         </div>
         <div>
           <dt className="font-semibold">Previous correction's fingerprint</dt>
-          <dd className="mt-1 break-all rounded-control bg-canvas p-2 font-mono text-xs">
+          <dd className="mt-1 break-all rounded-control border border-border bg-surface p-2 font-mono text-xs">
             {correction.previous_hash ?? "none (this was the first)"}
           </dd>
         </div>
@@ -42,7 +42,7 @@ export function VerificationGuide({ correction }: Props) {
           : "Our server checked this record against its fingerprint: it does not match."}
       </p>
       <details className="text-sm">
-        <summary className="cursor-pointer font-semibold text-brand">
+        <summary className="flex min-h-10 cursor-pointer items-center font-semibold text-brand">
           How to check it yourself
         </summary>
         <ol className="mt-2 list-decimal space-y-1 pl-6">
@@ -54,7 +54,7 @@ export function VerificationGuide({ correction }: Props) {
           <li>Put sha256: in front of the result. It should equal the fingerprint above.</li>
         </ol>
         <figure aria-label="Record text" className="mt-3">
-          <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-control bg-canvas p-3 font-mono text-xs">
+          <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-control border border-border bg-surface p-3 font-mono text-xs">
             {correction.canonical_json}
           </pre>
         </figure>

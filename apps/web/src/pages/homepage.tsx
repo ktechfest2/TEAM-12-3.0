@@ -1,6 +1,7 @@
 import { Icon } from "../components/icons";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import { Container } from "../components/ui/container";
 import { ClaimForm } from "../features/claims/claim-form";
 import { FactCheckCard } from "../features/public/public-cards";
 import { demonstrationNotice, factChecks } from "../features/public/public-demo";
@@ -20,48 +21,48 @@ export function Homepage() {
   return (
     <>
       <section className="border-b border-border bg-canvas">
-        <div className="mx-auto grid max-w-page gap-12 px-6 py-16 sm:px-8 md:grid-cols-[1.1fr_.9fr] md:items-center md:py-16">
-          <div>
-            <h1 className="max-w-[640px] text-[34px] leading-[1.1] font-bold tracking-tight text-foreground md:text-[48px]">
+        <Container className="grid gap-8 py-12 md:grid-cols-[1.1fr_.9fr] md:items-center md:gap-12 md:py-16">
+          <div className="space-y-4">
+            <h1 className="max-w-xl text-3xl font-bold text-foreground md:text-4xl">
               Is that election message true? Check it against the official source.
             </h1>
-            <p className="mt-4 max-w-[520px] text-base leading-7 text-secondary">
+            <p className="max-w-xl text-lg text-secondary">
               Every answer cites an official statement and is approved by a person before it is
               sent.
             </p>
-            <Button as="link" to="/guide" variant="quiet" className="mt-4 -ml-4">
+            <Button as="link" to="/guide" variant="quiet" className="-ml-4">
               How Clarion works <Icon name="arrowRight" size={16} />
             </Button>
           </div>
-          <Card className="p-6 md:p-6">
+          <Card>
             <h2 className="text-lg font-bold">Check a message you received</h2>
             <p className="mb-4 mt-1 text-sm text-secondary">
               Nothing is sent to anyone. You only get an answer.
             </p>
             <ClaimForm />
           </Card>
-        </div>
+        </Container>
       </section>
 
-      <section className="mx-auto max-w-page px-6 py-16 sm:px-8">
+      <Container className="py-12 md:py-16">
         <h2 className="text-2xl font-bold">From rumour to correction</h2>
         <ol className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           {steps.map(([title, copy], index) => (
             <li key={title} className="border-t-2 border-brand pt-4">
               <span className="text-sm font-bold text-brand">{index + 1}</span>
               <h3 className="mt-1 font-bold">{title}</h3>
-              <p className="mt-2 text-sm leading-6 text-secondary">{copy}</p>
+              <p className="mt-2 text-sm text-secondary">{copy}</p>
             </li>
           ))}
         </ol>
-      </section>
+      </Container>
 
       <section className="border-t border-border bg-canvas">
-        <div className="mx-auto max-w-page px-6 py-16 sm:px-8">
+        <Container className="py-12 md:py-16">
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold">Recent fact-checks</h2>
-              <p className="mt-2 text-sm text-muted">{demonstrationNotice}</p>
+              <p className="mt-2 text-sm text-secondary">{demonstrationNotice}</p>
             </div>
             <Button as="link" to="/fact-checks" variant="quiet" className="hidden sm:inline-flex">
               View all <Icon name="arrowRight" size={16} />
@@ -72,7 +73,10 @@ export function Homepage() {
               <FactCheckCard key={factCheck.slug} factCheck={factCheck} />
             ))}
           </div>
-        </div>
+          <Button as="link" to="/fact-checks" variant="quiet" className="mt-4 -ml-4 sm:hidden">
+            View all <Icon name="arrowRight" size={16} />
+          </Button>
+        </Container>
       </section>
     </>
   );

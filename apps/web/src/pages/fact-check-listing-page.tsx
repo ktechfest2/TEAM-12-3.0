@@ -1,5 +1,9 @@
 import { useMemo, useState } from "react";
 import { Icon } from "../components/icons";
+import { Container } from "../components/ui/container";
+import { Input, Select } from "../components/ui/input";
+import { Notice } from "../components/ui/notice";
+import { PageHeader } from "../components/ui/page-header";
 import type { Verdict } from "../features/claims/verdict";
 import { FactCheckCard } from "../features/public/public-cards";
 import { demonstrationNotice, factChecks } from "../features/public/public-demo";
@@ -26,73 +30,76 @@ export function FactCheckListingPage() {
   }, [query, verdict, topic]);
 
   return (
-    <section className="mx-auto max-w-page px-6 py-12 sm:px-8 md:py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-        Verified checks
-      </p>
-      <h1 className="mt-3 text-3xl font-bold md:text-[40px]">Fact-checks</h1>
-      <p className="mt-3 max-w-2xl text-base leading-7 text-secondary">
-        Read clearly cited outcomes and the evidence behind published corrections.
-      </p>
-      <p className="mt-4 rounded-control border border-border bg-canvas px-4 py-3 text-xs leading-5 text-secondary">
-        {demonstrationNotice}
-      </p>
+    <Container className="space-y-8 py-12 md:py-16">
+      <div className="space-y-4">
+        <PageHeader
+          title="Fact-checks"
+          lead="Read clearly cited outcomes and the evidence behind published corrections."
+        />
+        <p className="text-sm text-secondary">{demonstrationNotice}</p>
+      </div>
 
-      <div className="mt-8 grid gap-3 sm:grid-cols-[1fr_180px_180px]">
-        <label className="relative">
-          <span className="sr-only">Search fact-checks</span>
-          <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
-          <input
+      <div className="grid gap-3 sm:grid-cols-[1fr_11rem_11rem]">
+        <div className="relative">
+          <label htmlFor="search-fact-checks" className="sr-only">
+            Search fact-checks
+          </label>
+          <Icon name="search" size={18} className="absolute left-3 top-3 text-muted" />
+          <Input
+            id="search-fact-checks"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search fact-checks"
-            className="min-h-11 w-full rounded-control border border-border pl-12 pr-3"
+            className="pl-10"
           />
-        </label>
-        <label>
-          <span className="sr-only">Filter by verdict</span>
-          <select
+        </div>
+        <div>
+          <label htmlFor="filter-by-verdict" className="sr-only">
+            Filter by verdict
+          </label>
+          <Select
+            id="filter-by-verdict"
             value={verdict}
             onChange={(event) => setVerdict(event.target.value as "all" | Verdict)}
-            className="min-h-11 w-full rounded-control border border-border bg-surface px-3"
           >
             <option value="all">All verdicts</option>
             <option value="confirmed">Confirmed</option>
             <option value="contradicted">Contradicted</option>
             <option value="no_official_statement">No official statement</option>
-          </select>
-        </label>
-        <label>
-          <span className="sr-only">Filter by topic</span>
-          <select
+          </Select>
+        </div>
+        <div>
+          <label htmlFor="filter-by-topic" className="sr-only">
+            Filter by topic
+          </label>
+          <Select
+            id="filter-by-topic"
             value={topic}
             onChange={(event) => setTopic(event.target.value)}
-            className="min-h-11 w-full rounded-control border border-border bg-surface px-3"
           >
             <option>{allTopics}</option>
             <option>Voter registration</option>
             <option>PVC</option>
             <option>Voting procedures</option>
-          </select>
-        </label>
+          </Select>
+        </div>
       </div>
 
-      <p className="mt-6 text-sm text-muted" role="status">
-        {results.length} {results.length === 1 ? "fact-check" : "fact-checks"}
-      </p>
-      {results.length > 0 ? (
-        <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {results.map((factCheck) => (
-            <FactCheckCard key={factCheck.slug} factCheck={factCheck} />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-4 rounded-card border border-border bg-canvas p-8 text-center">
-          <h2 className="font-bold">No fact-checks found</h2>
-          <p className="mt-2 text-sm text-muted">Try a different search or filter.</p>
-        </div>
-      )}
-    </section>
+      <div className="space-y-4">
+        <p className="text-sm text-muted" role="status">
+          {results.length} {results.length === 1 ? "fact-check" : "fact-checks"}
+        </p>
+        {results.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {results.map((factCheck) => (
+              <FactCheckCard key={factCheck.slug} factCheck={factCheck} />
+            ))}
+          </div>
+        ) : (
+          <Notice tone="empty">No fact-checks found. Try a different search or filter.</Notice>
+        )}
+      </div>
+    </Container>
   );
 }

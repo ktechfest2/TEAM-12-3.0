@@ -1,7 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { type FormEvent, useState } from "react";
 import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import { Input, Select } from "../../components/ui/input";
+import { Notice } from "../../components/ui/notice";
 import { api } from "../../lib/api/client";
 import {
   clampMaxPerDay,
@@ -71,7 +72,7 @@ export function SubscribeForm() {
       <div role="status" className="space-y-3">
         <h2 className="text-xl font-bold">You are subscribed</h2>
         <p className="text-secondary">{describeChoice({ mode, frequency, maxPerDay })}</p>
-        <p className="text-sm text-muted">
+        <p className="text-sm text-secondary">
           To change this, fill the form in again with the same number. To stop, use "Stop texts"
           below.
         </p>
@@ -118,7 +119,7 @@ export function SubscribeForm() {
             Back
           </Button>
         </div>
-        {confirm.error ? <p role="alert">{confirm.error.message}</p> : null}
+        {confirm.error ? <Notice tone="error">{confirm.error.message}</Notice> : null}
       </form>
     );
   }
@@ -148,7 +149,7 @@ export function SubscribeForm() {
         <>
           <fieldset>
             <legend className="mb-1 font-semibold">Languages</legend>
-            <p className="mb-2 text-sm text-muted">
+            <p className="mb-2 text-sm text-secondary">
               Pick the ones you read. If a correction is not ready in your first choice, we try the
               next.
             </p>
@@ -160,6 +161,7 @@ export function SubscribeForm() {
                 >
                   <input
                     type="checkbox"
+                    className="size-5 accent-brand"
                     checked={languages.includes(option.value)}
                     onChange={() =>
                       setLanguages((current) => toggleLanguage(current, option.value))
@@ -176,6 +178,7 @@ export function SubscribeForm() {
             <div className="grid gap-2">
               <label className="flex min-h-11 items-center gap-2">
                 <input
+                  className="size-5 accent-brand"
                   type="radio"
                   name="mode"
                   checked={mode === "instant"}
@@ -185,6 +188,7 @@ export function SubscribeForm() {
               </label>
               <label className="flex min-h-11 items-center gap-2">
                 <input
+                  className="size-5 accent-brand"
                   type="radio"
                   name="mode"
                   checked={mode === "digest"}
@@ -198,18 +202,17 @@ export function SubscribeForm() {
                 <label htmlFor="frequency" className="mb-1 block text-sm font-semibold">
                   Send the bundle
                 </label>
-                <select
+                <Select
                   id="frequency"
                   value={frequency}
                   onChange={(event) => setFrequency(event.target.value as Frequency)}
-                  className="min-h-11 w-full rounded-control border border-border bg-surface px-3"
                 >
                   {FREQUENCY_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
                   ))}
-                </select>
+                </Select>
               </div>
             ) : null}
           </fieldset>
@@ -226,13 +229,13 @@ export function SubscribeForm() {
               value={maxPerDay}
               onChange={(event) => setMaxPerDay(clampMaxPerDay(Number(event.target.value)))}
             />
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm text-secondary">
               Never more than this, even if many corrections go out. Extra ones wait for the next
               day.
             </p>
           </div>
 
-          <p className="rounded-control bg-canvas p-3 text-sm text-secondary">
+          <p className="text-sm font-semibold text-foreground">
             You will get: {describeChoice({ mode, frequency, maxPerDay })}
           </p>
         </>
@@ -245,15 +248,11 @@ export function SubscribeForm() {
         >
           {requestCode.isPending ? "Sending code..." : "Text me a code"}
         </Button>
-        <button
-          type="button"
-          className="text-sm text-secondary underline"
-          onClick={() => setRemoving((current) => !current)}
-        >
+        <Button type="button" variant="quiet" onClick={() => setRemoving((current) => !current)}>
           {removing ? "Back to subscribing" : "Stop texts"}
-        </button>
+        </Button>
       </div>
-      {requestCode.error ? <p role="alert">{requestCode.error.message}</p> : null}
+      {requestCode.error ? <Notice tone="error">{requestCode.error.message}</Notice> : null}
     </form>
   );
 }

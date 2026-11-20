@@ -2,16 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
 import { Icon } from "../components/icons";
-import { Loading } from "../components/ui/notice";
+import { Card } from "../components/ui/card";
+import { Input, Select } from "../components/ui/input";
+import { Loading, Notice } from "../components/ui/notice";
 import { PageTitle } from "../components/ui/page-header";
 import { LoginForm } from "../features/auth/login-form";
 import { VerdictBadge } from "../features/claims/verdict-badge";
 import { listMessages } from "../features/review/review-api";
 import { stageLabel, stageOf } from "../features/review/review-rules";
 import { useSession } from "../lib/auth/session";
-
-const fieldClass =
-  "min-h-11 w-full rounded-control border border-border bg-surface text-sm focus:border-brand";
 
 function submittedOn(iso: string): string {
   return new Date(iso).toLocaleDateString("en-NG");
@@ -47,23 +46,28 @@ export function ClaimsTablePage() {
       <PageTitle title="Claims" />
 
       <div className="flex flex-col gap-3 sm:flex-row">
-        <label className="relative flex-1">
-          <span className="sr-only">Search claims</span>
-          <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
-          <input
+        <div className="relative flex-1">
+          <label htmlFor="search-claims" className="sr-only">
+            Search claims
+          </label>
+          <Icon name="search" size={18} className="absolute left-3 top-3 text-muted" />
+          <Input
+            id="search-claims"
             type="search"
             value={queryText}
             onChange={(event) => setQueryText(event.target.value)}
             placeholder="Search claim text"
-            className={`${fieldClass} pl-12 pr-3`}
+            className="pl-10"
           />
-        </label>
-        <label className="sm:w-52">
-          <span className="sr-only">Filter by stage</span>
-          <select
+        </div>
+        <div className="sm:w-52">
+          <label htmlFor="filter-by-stage" className="sr-only">
+            Filter by stage
+          </label>
+          <Select
+            id="filter-by-stage"
             value={stage}
             onChange={(event) => setStage(event.target.value)}
-            className={`${fieldClass} px-3`}
           >
             <option value="all">All stages</option>
             <option value="draft">Needs review</option>
@@ -71,12 +75,12 @@ export function ClaimsTablePage() {
             <option value="rejected">Rejected</option>
             <option value="escalated">Escalated</option>
             <option value="sealed">Sealed</option>
-          </select>
-        </label>
+          </Select>
+        </div>
       </div>
 
       {query.isPending ? <Loading>Loading claims...</Loading> : null}
-      {query.error ? <p role="alert">{query.error.message}</p> : null}
+      {query.error ? <Notice tone="error">{query.error.message}</Notice> : null}
 
       {query.data ? (
         <>
@@ -84,10 +88,7 @@ export function ClaimsTablePage() {
             {results.length} {results.length === 1 ? "claim" : "claims"}
           </p>
           {results.length === 0 ? (
-            <div className="rounded-card border border-border bg-surface px-6 py-12 text-center">
-              <h2 className="font-bold">No claims found</h2>
-              <p className="mt-1 text-sm text-muted">Try another search or stage.</p>
-            </div>
+            <Notice tone="empty">No claims found. Try another search or stage.</Notice>
           ) : (
             <>
               {/* Small screens: one card per claim, no sideways scrolling. */}
@@ -98,9 +99,7 @@ export function ClaimsTablePage() {
                       to={`/dashboard/verification/${message.id}`}
                       className="block rounded-card border border-border bg-surface p-4 shadow-card hover:border-border-strong"
                     >
-                      <p className="line-clamp-3 text-sm font-semibold leading-6">
-                        {message.claim_text}
-                      </p>
+                      <p className="line-clamp-3 text-sm font-semibold">{message.claim_text}</p>
                       <div className="mt-3">
                         <VerdictBadge verdict={message.verdict} />
                       </div>
@@ -109,7 +108,7 @@ export function ClaimsTablePage() {
                           {stageLabel[stageOf(message)]} · {submittedOn(message.created_at)}
                         </span>
                         <span className="flex items-center gap-1 font-semibold text-brand">
-                          Review <Icon name="arrowRight" size={14} />
+                          Review <Icon name="arrowRight" size={16} />
                         </span>
                       </p>
                     </Link>
@@ -117,9 +116,9 @@ export function ClaimsTablePage() {
                 ))}
               </ul>
 
-              <div className="hidden overflow-hidden rounded-card border border-border bg-surface shadow-card md:block">
+              <Card padding="none" className="hidden overflow-hidden md:block">
                 <table className="w-full table-fixed text-left">
-                  <thead className="border-b border-border bg-canvas text-xs text-muted">
+                  <thead className="border-b border-border bg-canvas text-xs text-secondary">
                     <tr>
                       <th className="px-6 py-3 font-semibold">Claim</th>
                       <th className="w-72 px-4 py-3 font-semibold">Verdict</th>
@@ -132,10 +131,8 @@ export function ClaimsTablePage() {
                     {results.map((message) => (
                       <tr key={message.id} className="text-sm hover:bg-canvas">
                         <td className="px-6 py-4">
-                          <p className="line-clamp-2 font-semibold leading-6">
-                            {message.claim_text}
-                          </p>
-                          <p className="mt-0.5 text-xs text-muted">
+                          <p className="line-clamp-2 font-semibold">{message.claim_text}</p>
+                          <p className="mt-1 text-xs text-muted">
                             {stageLabel[stageOf(message)]} ·{" "}
                             <span className="tabular-nums">{submittedOn(message.created_at)}</span>
                           </p>
@@ -146,7 +143,7 @@ export function ClaimsTablePage() {
                         <td className="px-4 py-4 text-right">
                           <Link
                             to={`/dashboard/verification/${message.id}`}
-                            className="inline-flex min-h-11 items-center font-semibold text-brand"
+                            className="inline-flex min-h-10 items-center font-semibold text-brand"
                           >
                             Review
                           </Link>
@@ -155,7 +152,7 @@ export function ClaimsTablePage() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </Card>
             </>
           )}
         </>

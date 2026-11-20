@@ -33,7 +33,7 @@ export function VoiceNotesPanel({ messageId }: { messageId: string }) {
         <Icon name="volume" size={18} className="text-brand" />
         Voice notes and shareable files
       </h4>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-secondary">
         Voters who cannot read, or have little data, get the same approved words as audio. Listen to
         each language before you send.
       </p>
@@ -67,7 +67,9 @@ export function VoiceNotesPanel({ messageId }: { messageId: string }) {
                 className="mt-2 w-full"
               />
               {smsFor(voice.language) ? (
-                <p className="mt-2 text-xs text-muted">Text message: {smsFor(voice.language)}</p>
+                <p className="mt-2 text-xs text-secondary">
+                  Text message: {smsFor(voice.language)}
+                </p>
               ) : null}
             </li>
           ))}

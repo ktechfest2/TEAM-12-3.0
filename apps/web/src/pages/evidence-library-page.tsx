@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Icon } from "../components/icons";
+import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { Loading, Notice } from "../components/ui/notice";
 import { PageTitle } from "../components/ui/page-header";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
@@ -32,58 +35,54 @@ export function EvidenceLibraryPage() {
   }, [query.data, queryText]);
 
   if (!session) return <LoginForm />;
-  if (query.isPending) return <p className="text-muted">Loading evidence...</p>;
-  if (query.error) return <p role="alert">{query.error.message}</p>;
+  if (query.isPending) return <Loading>Loading evidence...</Loading>;
+  if (query.error) return <Notice tone="error">{query.error.message}</Notice>;
 
   return (
     <section className="space-y-4">
       <PageTitle title="Evidence library" />
-      <label className="relative block">
-        <span className="sr-only">Search evidence</span>
-        <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
-        <input
+      <div className="relative block">
+        <label htmlFor="search-evidence" className="sr-only">
+          Search evidence
+        </label>
+        <Icon name="search" size={18} className="absolute left-3 top-3 text-muted" />
+        <Input
+          id="search-evidence"
           type="search"
           value={queryText}
           onChange={(event) => setQueryText(event.target.value)}
           placeholder="Search title, publisher or passage"
-          className="min-h-11 w-full rounded-control border border-border bg-surface pl-12 pr-3 text-sm focus:border-brand"
+          className="pl-10"
         />
-      </label>
+      </div>
 
       <p className="text-sm text-muted" role="status">
         {sources.length} {sources.length === 1 ? "source" : "sources"}
       </p>
       {sources.length === 0 ? (
-        <div className="rounded-card border border-border bg-surface px-6 py-12 text-center">
-          <Icon name="archive" size={24} className="mx-auto text-muted" />
-          <h2 className="mt-3 font-bold">No evidence found</h2>
-          <p className="mt-1 text-sm text-muted">
-            Sources appear here after a claim has a matching official passage.
-          </p>
-        </div>
+        <Notice tone="empty">
+          No evidence found. Sources appear here after a claim has a matching official passage.
+        </Notice>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {sources.map((source) => (
-            <article
-              key={source.url}
-              className="flex flex-col rounded-card border border-border bg-surface p-4 shadow-card sm:p-6"
-            >
+            <Card key={source.url} className="flex flex-col">
               <p className="text-xs font-semibold uppercase tracking-wider text-brand">
                 {source.publisher}
               </p>
-              <h2 className="mt-2 font-bold leading-6">{source.document_title}</h2>
-              <blockquote className="mt-3 line-clamp-5 border-l-2 border-brand-line pl-3 text-sm leading-6 text-secondary">
+              <h2 className="mt-2 font-bold">{source.document_title}</h2>
+              <blockquote className="mt-3 line-clamp-5 border-l-2 border-brand-line pl-3 text-sm text-secondary">
                 {source.text}
               </blockquote>
               <a
                 href={source.url}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-auto flex min-h-11 items-center gap-2 pt-3 text-sm font-semibold text-brand"
+                className="mt-auto flex min-h-10 items-center gap-2 pt-3 text-sm font-semibold text-brand"
               >
-                Open official source <Icon name="external" size={15} />
+                Open official source <Icon name="external" size={16} />
               </a>
-            </article>
+            </Card>
           ))}
         </div>
       )}

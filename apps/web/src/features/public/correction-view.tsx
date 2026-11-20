@@ -13,11 +13,11 @@ type Props = { correction: PublicCorrection };
 export function CorrectionView({ correction }: Props) {
   return (
     <article className="space-y-6">
-      <div className="overflow-hidden rounded-card border border-border bg-canvas shadow-lift">
+      <div className="overflow-hidden rounded-card border border-border bg-surface shadow-lift">
         <div className={`h-1.5 ${verdictAccent[correction.verdict]}`} />
-        <header className="space-y-4 p-6 sm:p-6">
-          <p className="text-sm font-semibold text-muted">The message people are sharing</p>
-          <blockquote className="text-2xl leading-snug text-foreground">
+        <header className="space-y-4 p-4 sm:p-6">
+          <p className="text-sm font-semibold text-secondary">The message people are sharing</p>
+          <blockquote className="text-2xl font-semibold text-foreground">
             {correction.claim_text}
           </blockquote>
           <VerdictBadge verdict={correction.verdict} large />
@@ -30,11 +30,11 @@ export function CorrectionView({ correction }: Props) {
           <p className="text-lg">{correction.summary}</p>
           <ListenControl messageId={correction.message_id} language="en" />
           {correction.translations.length > 0 ? (
-            <ul className="space-y-4 border-t border-border pt-3">
+            <ul className="space-y-4 border-t border-border pt-4">
               {correction.translations.map((t) => (
                 <li key={t.language} className="space-y-2">
                   <div className="flex gap-2">
-                    <Icon name="language" size={18} className="mt-1 text-brand" />
+                    <Icon name="language" size={18} className="mt-1 shrink-0 text-brand" />
                     <span>
                       <span className="font-semibold text-brand">{languageName[t.language]}:</span>{" "}
                       {t.text}
@@ -53,8 +53,8 @@ export function CorrectionView({ correction }: Props) {
           <SectionTitle icon="shieldCheck">Official source</SectionTitle>
           {correction.source ? (
             <blockquote className="space-y-3 border-l-4 border-brand pl-4">
-              <p className="text-lg leading-snug">{correction.source.text}</p>
-              <footer className="text-sm text-muted">
+              <p className="text-lg">{correction.source.text}</p>
+              <footer className="text-sm text-secondary">
                 <a
                   className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
                   href={correction.source.url}
@@ -68,13 +68,13 @@ export function CorrectionView({ correction }: Props) {
               </footer>
             </blockquote>
           ) : (
-            <p className="text-muted">We found no official statement on this yet.</p>
+            <p className="text-secondary">We found no official statement on this yet.</p>
           )}
         </Card>
       </section>
 
-      <p className="flex items-start gap-2 text-sm text-muted">
-        <Icon name="user" size={18} className="mt-0.5 text-brand" />
+      <p className="flex items-start gap-2 text-sm text-secondary">
+        <Icon name="shieldCheck" size={18} className="mt-0.5 shrink-0 text-brand" />
         <span>
           Approved by {correction.approved_by} on {formatWhen(correction.approved_at)}. A person
           reviews every correction before it is sent.

@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { Icon } from "../components/icons";
-import { Loading } from "../components/ui/notice";
+import { Card } from "../components/ui/card";
+import { Loading, Notice } from "../components/ui/notice";
 import { PageTitle } from "../components/ui/page-header";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
@@ -24,19 +25,16 @@ export function VerificationPage() {
     <section className="space-y-6">
       <PageTitle title="Verification" />
 
-      <p className="flex gap-2 text-sm leading-6 text-secondary">
+      <p className="flex gap-2 text-sm text-secondary">
         <Icon name="shieldCheck" size={18} className="mt-0.5 shrink-0 text-brand" />
         Nothing is sent until a reviewer approves every language and seals it.
       </p>
 
       {queue.isPending ? <Loading>Loading claims...</Loading> : null}
-      {queue.error ? <p role="alert">{queue.error.message}</p> : null}
+      {queue.error ? <Notice tone="error">{queue.error.message}</Notice> : null}
 
       {queue.data && queue.data.length === 0 ? (
-        <div className="rounded-card border border-border bg-surface px-6 py-12 text-center">
-          <h2 className="font-bold">No claims are waiting</h2>
-          <p className="mt-1 text-sm text-muted">New submissions will appear here.</p>
-        </div>
+        <Notice tone="empty">No claims are waiting. New submissions will appear here.</Notice>
       ) : null}
 
       {queue.data && queue.data.length > 0 ? (
@@ -44,11 +42,11 @@ export function VerificationPage() {
           {/* Below xl the list and the detail take turns, so neither is squeezed. */}
           <aside
             aria-label="Claims"
-            className={`h-fit rounded-card border border-border bg-surface p-2 xl:sticky xl:top-6 ${
+            className={`h-fit rounded-card border border-border bg-surface p-2 xl:sticky xl:top-8 ${
               messageId ? "hidden xl:block" : ""
             }`}
           >
-            <h2 className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted">
+            <h2 className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-muted">
               Claims · {queue.data.length}
             </h2>
             <ul className="grid gap-0.5 xl:max-h-[calc(100vh-12rem)] xl:overflow-y-auto">
@@ -66,7 +64,7 @@ export function VerificationPage() {
                       <span className="line-clamp-2 text-sm font-semibold xl:line-clamp-1">
                         {message.claim_text}
                       </span>
-                      <span className="mt-0.5 block text-xs text-muted">
+                      <span className="mt-1 block text-xs text-muted">
                         {stageLabel[stageOf(message)]}
                       </span>
                     </Link>
@@ -80,17 +78,17 @@ export function VerificationPage() {
             <div className="min-w-0 space-y-3">
               <Link
                 to="/dashboard/verification"
-                className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand xl:hidden"
+                className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-brand xl:hidden"
               >
                 <Icon name="arrowLeft" size={16} /> All claims
               </Link>
-              <div className="rounded-card border border-border bg-surface p-4 sm:p-6">
+              <Card>
                 <ReviewDetail key={messageId} messageId={messageId} />
-              </div>
+              </Card>
             </div>
           ) : (
-            <div className="hidden min-h-64 place-items-center rounded-card border border-dashed border-border-strong bg-surface p-6 text-center text-sm text-muted xl:grid">
-              Choose a claim to review it.
+            <div className="hidden xl:block">
+              <Notice tone="empty">Choose a claim to review it.</Notice>
             </div>
           )}
         </div>

@@ -32,12 +32,12 @@ function TranslationRow({
   const name = languageName[language];
 
   return (
-    <li className="rounded-control border border-border bg-canvas p-4">
+    <li className="rounded-control border border-border p-4">
       <div className="flex items-center justify-between gap-2">
         <h4 className="font-semibold text-brand">{name}</h4>
         <span
           className={`inline-flex items-center gap-2 text-sm font-semibold ${
-            saved?.is_approved ? "text-confirmed" : "text-muted"
+            saved?.is_approved ? "text-confirmed" : "text-secondary"
           }`}
         >
           <Icon name={saved?.is_approved ? "checkCircle" : "clock"} size={16} />
@@ -95,9 +95,9 @@ function TranslationRow({
 
 export function TranslationsPanel(props: Props) {
   return (
-    <section aria-label="Translations" className="space-y-3">
+    <section aria-label="Translations" className="space-y-3 border-t border-border pt-6">
       <SectionTitle icon="language">Translations</SectionTitle>
-      <p className="text-sm text-muted">
+      <p className="text-sm text-secondary">
         A native speaker must approve each language before the correction can be approved.
       </p>
       <ul className="grid gap-3 sm:grid-cols-2">

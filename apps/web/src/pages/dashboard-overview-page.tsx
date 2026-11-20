@@ -1,7 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import { Icon } from "../components/icons";
+import { Card } from "../components/ui/card";
+import { Notice } from "../components/ui/notice";
 import { PageTitle } from "../components/ui/page-header";
+import { Skeleton } from "../components/ui/skeleton";
 import { StatCard } from "../components/ui/stat-card";
 import { LoginForm } from "../features/auth/login-form";
 import { VerdictBadge } from "../features/claims/verdict-badge";
@@ -31,16 +34,16 @@ export function DashboardOverviewPage() {
     return (
       <section aria-busy="true" className="space-y-6">
         <PageTitle title="Overview" />
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[1, 2, 3, 4].map((item) => (
-            <div key={item} className="h-24 animate-pulse rounded-card bg-surface sm:h-28" />
+            <Skeleton key={item} className="h-24" />
           ))}
         </div>
       </section>
     );
   }
 
-  if (query.error) return <p role="alert">{query.error.message}</p>;
+  if (query.error) return <Notice tone="error">{query.error.message}</Notice>;
 
   const messages = query.data;
   const draft = messages.filter((message) => stageOf(message) === "draft").length;
@@ -51,7 +54,7 @@ export function DashboardOverviewPage() {
     <section className="space-y-6">
       <PageTitle title="Overview" />
 
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Total claims" value={messages.length} icon="messages" />
         <Link
           to="/dashboard/verification"
@@ -63,8 +66,8 @@ export function DashboardOverviewPage() {
         <StatCard label="Sealed" value={sealed} icon="lock" />
       </div>
 
-      <div className="rounded-card border border-border bg-surface shadow-card">
-        <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-2 sm:px-6">
+      <Card padding="none">
+        <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-1 sm:px-6">
           <h2 className="font-bold">Recent claims</h2>
           <Link
             to="/dashboard/claims"
@@ -74,9 +77,9 @@ export function DashboardOverviewPage() {
           </Link>
         </div>
         {messages.length === 0 ? (
-          <p role="status" className="px-6 py-12 text-center text-sm text-muted">
-            No claims yet. New submissions will appear here.
-          </p>
+          <div className="p-4 sm:p-6">
+            <Notice tone="empty">No claims yet. New submissions will appear here.</Notice>
+          </div>
         ) : (
           <ul className="divide-y divide-border">
             {messages.slice(0, 5).map((message) => (
@@ -89,7 +92,7 @@ export function DashboardOverviewPage() {
                     <p className="line-clamp-2 text-sm font-semibold sm:line-clamp-1">
                       {message.claim_text}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted">{stageLabel[stageOf(message)]}</p>
+                    <p className="mt-1 text-xs text-muted">{stageLabel[stageOf(message)]}</p>
                   </div>
                   <span className="shrink-0">
                     <VerdictBadge verdict={message.verdict} />
@@ -99,7 +102,7 @@ export function DashboardOverviewPage() {
             ))}
           </ul>
         )}
-      </div>
+      </Card>
     </section>
   );
 }

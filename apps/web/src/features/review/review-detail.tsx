@@ -103,12 +103,12 @@ export function ReviewDetail({ messageId }: Props) {
           <SectionTitle>Claim</SectionTitle>
           <Pill tone={stageTone[stage]}>{stageLabel[stage]}</Pill>
         </div>
-        <h2 className="text-2xl font-bold leading-snug text-foreground">{message.claim_text}</h2>
+        <h2 className="text-2xl font-bold text-foreground">{message.claim_text}</h2>
       </header>
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-8 border-t border-border pt-6 lg:grid-cols-2">
         <section aria-label="Draft answer">
-          <Card className="h-full space-y-3">
+          <div className="space-y-3">
             <SectionTitle icon="user">Draft answer</SectionTitle>
             <VerdictBadge verdict={message.verdict} />
             <label htmlFor="summary" className="block text-sm font-semibold">
@@ -131,21 +131,21 @@ export function ReviewDetail({ messageId }: Props) {
                 >
                   Save answer
                 </Button>
-                <p className="text-sm text-muted">
+                <p className="text-sm text-secondary">
                   Saving a new answer removes existing translations.
                 </p>
               </div>
             ) : null}
-          </Card>
+          </div>
         </section>
 
         <section aria-label="Official source">
-          <Card className="h-full space-y-3">
+          <div className="space-y-3">
             <SectionTitle icon="shieldCheck">Official source</SectionTitle>
             {message.source ? (
               <blockquote className="space-y-3 border-l-4 border-brand pl-4">
-                <p className="text-lg leading-snug">{message.source.text}</p>
-                <footer className="text-sm text-muted">
+                <p className="text-lg">{message.source.text}</p>
+                <footer className="text-sm text-secondary">
                   <a
                     className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
                     href={message.source.url}
@@ -153,18 +153,18 @@ export function ReviewDetail({ messageId }: Props) {
                     rel="noreferrer"
                   >
                     {message.source.document_title}
-                    <Icon name="external" size={14} />
+                    <Icon name="external" size={16} />
                   </a>{" "}
                   ({message.source.publisher})
                 </footer>
               </blockquote>
             ) : (
-              <p className="text-muted">
+              <p className="text-secondary">
                 No official passage was found. The answer can only say that there is no official
                 statement.
               </p>
             )}
-          </Card>
+          </div>
         </section>
       </div>
 
@@ -177,8 +177,8 @@ export function ReviewDetail({ messageId }: Props) {
         onApprove={(language) => approveLanguage.mutate(language)}
       />
 
-      <section aria-label="Decision">
-        <Card className="space-y-4">
+      <section aria-label="Decision" className="border-t border-border pt-6">
+        <div className="space-y-4">
           <SectionTitle icon="check">Decision</SectionTitle>
           <div className="space-y-2">
             <label htmlFor="note" className="block text-sm font-semibold">
@@ -199,25 +199,25 @@ export function ReviewDetail({ messageId }: Props) {
             >
               Approve
             </Button>
-            <Button variant="secondary" disabled={busy} onClick={() => decide.mutate("escalated")}>
+            <Button variant="outline" disabled={busy} onClick={() => decide.mutate("escalated")}>
               Escalate
             </Button>
-            <Button variant="secondary" disabled={busy} onClick={() => decide.mutate("rejected")}>
+            <Button variant="outline" disabled={busy} onClick={() => decide.mutate("rejected")}>
               Reject
             </Button>
           </div>
           {missing.length > 0 ? (
-            <p className="text-sm text-muted">
+            <p className="text-sm text-secondary">
               Approve is available after these languages are approved:{" "}
               {missing.map((language) => languageName[language]).join(", ")}.
             </p>
           ) : null}
-        </Card>
+        </div>
       </section>
 
       {stage === "approved" || stage === "sealed" ? (
         <section aria-label="Send">
-          <Card className="space-y-4 border-brand-line bg-brand-tint">
+          <Card elevation="flat" className="space-y-4 border-brand-line bg-brand-tint">
             <SectionTitle icon="send">Send</SectionTitle>
             {stage === "approved" ? (
               <Button variant="secondary" icon="lock" disabled={busy} onClick={() => seal.mutate()}>

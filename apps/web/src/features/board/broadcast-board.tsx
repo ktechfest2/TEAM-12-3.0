@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Icon, type IconName } from "../../components/icons";
-import { controlClass } from "../../components/ui/input";
+import { Card } from "../../components/ui/card";
+import { Select } from "../../components/ui/input";
 import { Loading, Notice } from "../../components/ui/notice";
 import { listMessages } from "../review/review-api";
 import { languageName, type Message } from "../review/review-rules";
@@ -77,7 +78,7 @@ function Board({ message }: { message: Message }) {
   return (
     <div className="space-y-4">
       <div
-        className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 rounded-card bg-brand p-6 text-on-brand shadow-lift"
+        className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4 rounded-card bg-brand p-4 sm:p-6 text-on-brand shadow-lift"
         aria-live="polite"
       >
         <div>
@@ -85,7 +86,7 @@ function Board({ message }: { message: Message }) {
             <Icon name="clock" size={16} />
             Correction gap
           </p>
-          <p className="text-4xl font-bold tabular-nums sm:text-4xl" data-testid="elapsed">
+          <p className="text-3xl font-bold tabular-nums sm:text-4xl" data-testid="elapsed">
             {formatElapsed(elapsed.ms)}
           </p>
           <p className="text-brand-line">
@@ -94,7 +95,7 @@ function Board({ message }: { message: Message }) {
               : "since a reviewer approved it"}
           </p>
         </div>
-        <p className="rounded-full bg-surface/10 px-4 py-2 font-semibold tabular-nums">
+        <p className="rounded-full bg-on-brand/10 px-4 py-2 font-semibold tabular-nums">
           {sentCount(deliveries)} of {deliveries.length} sent
         </p>
       </div>
@@ -106,7 +107,7 @@ function Board({ message }: { message: Message }) {
           <Notice tone="empty">Nothing has been sent yet. Tiles appear when sending starts.</Notice>
         )
       ) : (
-        <div className="overflow-x-auto rounded-card border border-border bg-canvas p-3 shadow-card">
+        <Card padding="none" className="overflow-x-auto p-2">
           <table className="w-full border-separate border-spacing-1">
             <caption className="sr-only">Delivery status by channel and language</caption>
             <thead>
@@ -144,7 +145,7 @@ function Board({ message }: { message: Message }) {
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
       )}
 
       {error ? <Notice tone="error">{error}</Notice> : null}
@@ -172,18 +173,18 @@ export function BroadcastBoard() {
         <label htmlFor="correction" className="block text-sm font-semibold">
           Correction
         </label>
-        <select
+        <Select
           id="correction"
           value={selected.id}
           onChange={(e) => setChosen(e.target.value)}
-          className={`${controlClass} mt-2 max-w-xl`}
+          className="mt-2 max-w-xl"
         >
           {sealed.map((m) => (
             <option key={m.id} value={m.id}>
               {m.claim_text}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
       <Board key={selected.id} message={selected} />
     </div>

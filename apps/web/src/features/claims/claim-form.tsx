@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { type FormEvent, useState } from "react";
 import { Button } from "../../components/ui/button";
+import { Select } from "../../components/ui/input";
+import { Notice } from "../../components/ui/notice";
 import { Textarea } from "../../components/ui/textarea";
 import { api } from "../../lib/api/client";
 import type { components } from "../../lib/api/schema.gen";
@@ -43,23 +45,22 @@ export function ClaimForm() {
         <label htmlFor="claim-language" className="block text-sm font-semibold">
           Claim language
         </label>
-        <select
+        <Select
           id="claim-language"
           value={language}
           onChange={(event) => setLanguage(event.target.value as ClaimLanguage)}
-          className="min-h-11 w-full rounded-control border border-border bg-surface px-3"
         >
           <option value="en">English</option>
           <option value="yo">Yoruba</option>
           <option value="ha">Hausa</option>
           <option value="ig">Igbo</option>
           <option value="pcm">Nigerian Pidgin</option>
-        </select>
+        </Select>
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? "Checking..." : "Check claim"}
         </Button>
       </form>
-      {mutation.error ? <p role="alert">{mutation.error.message}</p> : null}
+      {mutation.error ? <Notice tone="error">{mutation.error.message}</Notice> : null}
       {mutation.data ? <VerdictCard result={mutation.data} /> : null}
     </div>
   );

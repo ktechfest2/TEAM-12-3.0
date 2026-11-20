@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Icon } from "../components/icons";
+import { Container } from "../components/ui/container";
+import { Input, Select } from "../components/ui/input";
+import { Notice } from "../components/ui/notice";
+import { PageHeader } from "../components/ui/page-header";
 import { InformationCard } from "../features/public/public-cards";
 import { demonstrationNotice, informationArticles } from "../features/public/public-demo";
 
@@ -40,59 +44,61 @@ export function InformationHubPage() {
   };
 
   return (
-    <section className="mx-auto max-w-page px-6 py-12 sm:px-8 md:py-16">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-        Election guidance
-      </p>
-      <h1 className="mt-3 text-3xl font-bold md:text-[40px]">Election information hub</h1>
-      <p className="mt-3 max-w-2xl text-base leading-7 text-secondary">
-        Find practical guidance and verified pathways to official election information.
-      </p>
-      <p className="mt-4 rounded-control border border-border bg-canvas px-4 py-3 text-xs leading-5 text-secondary">
-        {demonstrationNotice}
-      </p>
+    <Container className="space-y-8 py-12 md:py-16">
+      <div className="space-y-4">
+        <PageHeader
+          title="Election information hub"
+          lead="Find practical guidance and verified pathways to official election information."
+        />
+        <p className="text-sm text-secondary">{demonstrationNotice}</p>
+      </div>
 
-      <div className="mt-8 flex flex-col gap-3 md:flex-row">
-        <label className="relative flex-1">
-          <span className="sr-only">Search election information</span>
-          <Icon name="search" size={18} className="absolute left-3 top-3.5 text-muted" />
-          <input
+      <div className="flex flex-col gap-3 md:flex-row">
+        <div className="relative flex-1">
+          <label htmlFor="search-election-information" className="sr-only">
+            Search election information
+          </label>
+          <Icon name="search" size={18} className="absolute left-3 top-3 text-muted" />
+          <Input
+            id="search-election-information"
             type="search"
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Search election information"
-            className="min-h-11 w-full rounded-control border border-border pl-12 pr-3"
+            className="pl-10"
           />
-        </label>
-        <label>
-          <span className="sr-only">Filter by category</span>
-          <select
+        </div>
+        <div>
+          <label htmlFor="filter-by-category" className="sr-only">
+            Filter by category
+          </label>
+          <Select
+            id="filter-by-category"
             value={category}
             onChange={(event) => setCategory(event.target.value as (typeof categories)[number])}
-            className="min-h-11 w-full rounded-control border border-border bg-surface px-3 md:w-56"
+            className="md:w-56"
           >
             {categories.map((item) => (
               <option key={item}>{item}</option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </div>
       </div>
 
-      <p className="mt-6 text-sm text-muted" role="status">
-        {results.length} {results.length === 1 ? "guide" : "guides"}
-      </p>
-      {results.length > 0 ? (
-        <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {results.map((article) => (
-            <InformationCard key={article.slug} article={article} />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-4 rounded-card border border-border bg-canvas p-8 text-center">
-          <h2 className="font-bold">No information found</h2>
-          <p className="mt-2 text-sm text-muted">Try a different search or category.</p>
-        </div>
-      )}
-    </section>
+      <div className="space-y-4">
+        <p className="text-sm text-muted" role="status">
+          {results.length} {results.length === 1 ? "guide" : "guides"}
+        </p>
+        {results.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {results.map((article) => (
+              <InformationCard key={article.slug} article={article} />
+            ))}
+          </div>
+        ) : (
+          <Notice tone="empty">No information found. Try a different search or category.</Notice>
+        )}
+      </div>
+    </Container>
   );
 }

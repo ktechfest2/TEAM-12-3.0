@@ -1,8 +1,13 @@
 import { Link, useParams } from "react-router";
 import { Icon } from "../components/icons";
 import { Card } from "../components/ui/card";
+import { Container } from "../components/ui/container";
+import { PageHeader } from "../components/ui/page-header";
 import { InformationCard } from "../features/public/public-cards";
 import { demonstrationNotice, informationArticles } from "../features/public/public-demo";
+
+const backLink =
+  "inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-secondary hover:text-brand";
 
 export function InformationDetailPage() {
   const { slug } = useParams();
@@ -10,77 +15,69 @@ export function InformationDetailPage() {
 
   if (!article) {
     return (
-      <section className="mx-auto max-w-page px-6 py-16 sm:px-8">
+      <Container className="space-y-4 py-12 md:py-16">
         <h1 className="text-2xl font-bold">Information not found</h1>
-        <Link to="/information" className="mt-4 inline-flex min-h-11 items-center text-brand">
-          <Icon name="arrowLeft" size={16} className="mr-2" /> Back to election information
+        <Link to="/information" className={backLink}>
+          <Icon name="arrowLeft" size={16} /> Back to election information
         </Link>
-      </section>
+      </Container>
     );
   }
 
   const related = informationArticles.filter((item) => item.slug !== article.slug).slice(0, 2);
 
   return (
-    <article className="mx-auto max-w-page px-6 py-12 sm:px-8 md:py-16">
-      <Link
-        to="/information"
-        className="inline-flex min-h-11 items-center text-sm font-semibold text-secondary hover:text-brand"
-      >
-        <Icon name="arrowLeft" size={16} className="mr-2" /> Election information
+    <Container as="article" className="space-y-8 py-12 md:py-16">
+      <Link to="/information" className={backLink}>
+        <Icon name="arrowLeft" size={16} /> Election information
       </Link>
-      <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_280px]">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-            {article.category}
-          </p>
-          <h1 className="mt-3 max-w-3xl text-3xl font-bold leading-tight md:text-[44px]">
-            {article.title}
-          </h1>
-          <p className="mt-4 text-lg leading-8 text-secondary">{article.summary}</p>
-          <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted">
-            <span className="flex items-center gap-2">
-              <Icon name="calendar" size={15} /> Updated {article.updatedAt}
-            </span>
-            <span className="flex items-center gap-2">
-              <Icon name="building" size={15} /> {article.sourceName}
-            </span>
+      <div className="grid gap-8 lg:grid-cols-[1fr_20rem]">
+        <div className="space-y-6">
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-brand">{article.category}</p>
+            <PageHeader title={article.title} lead={article.summary} />
+            <div className="flex flex-wrap gap-4 text-xs text-muted">
+              <span className="flex items-center gap-2">
+                <Icon name="calendar" size={16} /> Updated {article.updatedAt}
+              </span>
+              <span className="flex items-center gap-2">
+                <Icon name="building" size={16} /> {article.sourceName}
+              </span>
+            </div>
+            <p className="text-sm text-secondary">{demonstrationNotice}</p>
           </div>
-          <p className="mt-6 rounded-control border border-border bg-canvas px-4 py-3 text-xs leading-5 text-secondary">
-            {demonstrationNotice}
-          </p>
-          <Card className="mt-8 p-6 md:p-8">
+          <Card>
             <h2 className="text-xl font-bold">What to do</h2>
             <ol className="mt-4 grid gap-4">
               {article.content.map((paragraph, index) => (
-                <li key={paragraph} className="flex gap-4 text-sm leading-7 text-secondary">
-                  <span className="grid size-7 shrink-0 place-items-center rounded-full bg-brand-soft text-xs font-bold text-brand">
+                <li key={paragraph} className="flex gap-4 text-sm text-secondary">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-soft text-xs font-bold text-brand">
                     {index + 1}
                   </span>
-                  {paragraph}
+                  <span className="pt-1">{paragraph}</span>
                 </li>
               ))}
             </ol>
           </Card>
         </div>
-        <aside className="h-fit rounded-card border border-border p-6">
+        <Card elevation="flat" className="h-fit">
           <h2 className="font-bold">Official source</h2>
-          <p className="mt-2 text-sm leading-6 text-muted">{article.sourceName}</p>
-          <span className="mt-4 flex min-h-11 items-center gap-2 text-sm font-semibold text-brand">
-            Source link unavailable <Icon name="external" size={15} />
-          </span>
-        </aside>
+          <p className="mt-2 text-sm text-secondary">{article.sourceName}</p>
+          <p className="mt-4 flex items-center gap-2 text-sm text-muted">
+            Source link unavailable <Icon name="external" size={16} />
+          </p>
+        </Card>
       </div>
       {related.length > 0 ? (
-        <section className="mt-16">
+        <section className="space-y-4 pt-4">
           <h2 className="text-2xl font-bold">Related information</h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {related.map((item) => (
               <InformationCard key={item.slug} article={item} />
             ))}
           </div>
         </section>
       ) : null}
-    </article>
+    </Container>
   );
 }
