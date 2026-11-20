@@ -13,7 +13,13 @@
   <a href="#run-it-on-your-laptop">Run it locally</a> ·
   <a href="docs/product/demo-script.md">Demo script</a> ·
   <a href="docs/TECHNICAL_ARCHITECTURE.md">Architecture</a> ·
+  <a href="docs/SYSTEM_SKETCH.md">System sketch</a> ·
   <a href="docs/deploy/README.md">Deploy</a>
+</p>
+
+<p align="center">
+  <strong>Live app:</strong> <a href="https://clarion.triumphsystems.tech">https://clarion.triumphsystems.tech</a><br>
+  <strong>To test:</strong> sign in as a reviewer with code <code>953082</code>
 </p>
 
 ---
