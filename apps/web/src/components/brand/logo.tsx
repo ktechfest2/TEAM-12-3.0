@@ -15,11 +15,11 @@ export function LogoMark({ size = 32, className }: MarkProps) {
       <path
         d="M22.36 9.64A9 9 0 1 0 22.36 22.36"
         fill="none"
-        stroke="var(--color-paper)"
+        stroke="var(--color-surface)"
         strokeWidth="3.5"
         strokeLinecap="round"
       />
-      <circle cx="23.5" cy="16" r="2.6" fill="var(--color-beacon)" />
+      <circle cx="23.5" cy="16" r="2.6" fill="var(--color-brand-line)" />
     </svg>
   );
 }
@@ -27,9 +27,9 @@ export function LogoMark({ size = 32, className }: MarkProps) {
 /** Mark plus wordmark. The wordmark is real text so it scales and is read aloud. */
 export function Logo({ size = 32 }: { size?: number }) {
   return (
-    <span className="inline-flex items-center gap-2.5">
+    <span className="inline-flex items-center gap-3">
       <LogoMark size={size} />
-      <span className="font-display text-xl font-bold tracking-tight text-brand">Clarion</span>
+      <span className="text-xl font-bold tracking-tight text-brand">Clarion</span>
     </span>
   );
 }

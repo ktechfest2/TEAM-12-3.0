@@ -3,14 +3,11 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { Icon } from "../../components/icons";
 import { Button } from "../../components/ui/button";
-import {
-  Card,
-  controlClass,
-  Loading,
-  Notice,
-  Pill,
-  SectionTitle,
-} from "../../components/ui/surface";
+import { Card } from "../../components/ui/card";
+import { controlClass } from "../../components/ui/input";
+import { Loading, Notice } from "../../components/ui/notice";
+import { Pill } from "../../components/ui/pill";
+import { SectionTitle } from "../../components/ui/section-title";
 import { VerdictBadge } from "../claims/verdict-badge";
 import {
   addReview,
@@ -106,9 +103,7 @@ export function ReviewDetail({ messageId }: Props) {
           <SectionTitle>Claim</SectionTitle>
           <Pill tone={stageTone[stage]}>{stageLabel[stage]}</Pill>
         </div>
-        <h2 className="font-display text-2xl font-bold leading-snug text-ink">
-          {message.claim_text}
-        </h2>
+        <h2 className="text-2xl font-bold leading-snug text-foreground">{message.claim_text}</h2>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -148,11 +143,11 @@ export function ReviewDetail({ messageId }: Props) {
           <Card className="h-full space-y-3">
             <SectionTitle icon="shieldCheck">Official source</SectionTitle>
             {message.source ? (
-              <blockquote className="space-y-3 border-l-4 border-beacon pl-4">
-                <p className="font-display text-lg leading-snug">{message.source.text}</p>
+              <blockquote className="space-y-3 border-l-4 border-brand pl-4">
+                <p className="text-lg leading-snug">{message.source.text}</p>
                 <footer className="text-sm text-muted">
                   <a
-                    className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-200 underline-offset-2 hover:decoration-brand"
+                    className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
                     href={message.source.url}
                     target="_blank"
                     rel="noreferrer"
@@ -185,7 +180,7 @@ export function ReviewDetail({ messageId }: Props) {
       <section aria-label="Decision">
         <Card className="space-y-4">
           <SectionTitle icon="check">Decision</SectionTitle>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <label htmlFor="note" className="block text-sm font-semibold">
               Note (optional)
             </label>
@@ -222,7 +217,7 @@ export function ReviewDetail({ messageId }: Props) {
 
       {stage === "approved" || stage === "sealed" ? (
         <section aria-label="Send">
-          <Card className="space-y-4 border-brand-200 bg-brand-50">
+          <Card className="space-y-4 border-brand-line bg-brand-tint">
             <SectionTitle icon="send">Send</SectionTitle>
             {stage === "approved" ? (
               <Button variant="secondary" icon="lock" disabled={busy} onClick={() => seal.mutate()}>

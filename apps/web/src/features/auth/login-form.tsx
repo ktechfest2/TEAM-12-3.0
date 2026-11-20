@@ -2,7 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import { type FormEvent, useState } from "react";
 import { Icon } from "../../components/icons";
 import { Button } from "../../components/ui/button";
-import { Card, controlClass, Notice } from "../../components/ui/surface";
+import { Card } from "../../components/ui/card";
+import { controlClass } from "../../components/ui/input";
+import { Notice } from "../../components/ui/notice";
 import { api } from "../../lib/api/client";
 import { saveSession } from "../../lib/auth/session";
 
@@ -28,12 +30,12 @@ export function LoginForm() {
 
   return (
     <Card className="max-w-md">
-      <form onSubmit={onSubmit} className="space-y-5">
+      <form onSubmit={onSubmit} className="space-y-4">
         <p className="flex items-start gap-2 text-muted">
           <Icon name="lock" size={20} className="mt-0.5 text-brand" />
           Only invited reviewers can approve and send corrections.
         </p>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label htmlFor="reviewer-name" className="block font-semibold">
             Your name
           </label>
@@ -46,7 +48,7 @@ export function LoginForm() {
             className={controlClass}
           />
         </div>
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           <label htmlFor="invite-code" className="block font-semibold">
             Invite code
           </label>

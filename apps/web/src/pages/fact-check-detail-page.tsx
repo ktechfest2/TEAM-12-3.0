@@ -11,7 +11,7 @@ export function FactCheckDetailPage() {
 
   if (!factCheck) {
     return (
-      <section className="mx-auto max-w-[1200px] px-5 py-16 sm:px-8">
+      <section className="mx-auto max-w-page px-6 py-16 sm:px-8">
         <h1 className="text-2xl font-bold">Fact-check not found</h1>
         <Link to="/fact-checks" className="mt-4 inline-flex min-h-11 items-center text-brand">
           <Icon name="arrowLeft" size={16} className="mr-2" /> Back to fact-checks
@@ -31,7 +31,7 @@ export function FactCheckDetailPage() {
   };
 
   return (
-    <article className="mx-auto max-w-[1200px] px-5 py-10 sm:px-8 md:py-14">
+    <article className="mx-auto max-w-page px-6 py-12 sm:px-8 md:py-16">
       <div className="flex items-center justify-between gap-4">
         <Link
           to="/fact-checks"
@@ -42,7 +42,7 @@ export function FactCheckDetailPage() {
         <button
           type="button"
           onClick={() => void share()}
-          className="flex min-h-11 items-center gap-2 rounded-[10px] border border-border px-3 text-sm font-semibold hover:bg-surface"
+          className="flex min-h-11 items-center gap-2 rounded-control border border-border px-3 text-sm font-semibold hover:bg-canvas"
         >
           <Icon name="share" size={16} /> Share
         </button>
@@ -50,12 +50,12 @@ export function FactCheckDetailPage() {
 
       <header className="mt-6 max-w-4xl">
         <VerdictBadge verdict={factCheck.verdict} />
-        <h1 className="mt-5 text-3xl font-bold leading-tight md:text-[44px]">{factCheck.title}</h1>
+        <h1 className="mt-4 text-3xl font-bold leading-tight md:text-[44px]">{factCheck.title}</h1>
         <p className="mt-4 text-lg leading-8 text-secondary">{factCheck.summary}</p>
-        <time className="mt-5 block text-sm text-muted">Published {factCheck.publishedAt}</time>
+        <time className="mt-4 block text-sm text-muted">Published {factCheck.publishedAt}</time>
       </header>
 
-      <p className="mt-6 rounded-[10px] border border-border bg-surface px-4 py-3 text-xs leading-5 text-secondary">
+      <p className="mt-6 rounded-control border border-border bg-canvas px-4 py-3 text-xs leading-5 text-secondary">
         {demonstrationNotice}
       </p>
 
@@ -65,7 +65,7 @@ export function FactCheckDetailPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
               Original claim
             </p>
-            <blockquote className="mt-3 border-l-4 border-brand pl-4 text-lg font-medium leading-7">
+            <blockquote className="mt-3 border-l-4 border-brand pl-4 text-lg font-semibold leading-7">
               {factCheck.originalClaim}
             </blockquote>
           </Card>
@@ -81,9 +81,9 @@ export function FactCheckDetailPage() {
             </ul>
           </Card>
         </div>
-        <aside className="h-fit rounded-[14px] border border-border p-5">
+        <aside className="h-fit rounded-card border border-border p-6">
           <h2 className="font-bold">Evidence and sources</h2>
-          <div className="mt-4 flex gap-3 rounded-[10px] bg-surface p-3">
+          <div className="mt-4 flex gap-3 rounded-control bg-canvas p-3">
             <Icon name="building" size={18} className="shrink-0 text-brand" />
             <div>
               <p className="text-sm font-semibold">Official source passage</p>
@@ -96,9 +96,9 @@ export function FactCheckDetailPage() {
       </div>
 
       {related.length > 0 ? (
-        <section className="mt-14">
+        <section className="mt-16">
           <h2 className="text-2xl font-bold">Related fact-checks</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
             {related.map((item) => (
               <FactCheckCard key={item.slug} factCheck={item} />
             ))}

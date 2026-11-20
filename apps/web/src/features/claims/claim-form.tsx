@@ -47,7 +47,7 @@ export function ClaimForm() {
           id="claim-language"
           value={language}
           onChange={(event) => setLanguage(event.target.value as ClaimLanguage)}
-          className="min-h-11 w-full rounded-[10px] border border-border bg-white px-3"
+          className="min-h-11 w-full rounded-control border border-border bg-surface px-3"
         >
           <option value="en">English</option>
           <option value="yo">Yoruba</option>

@@ -14,12 +14,13 @@ export const verdictLabel: Record<Verdict, string> = {
 export const verdictTone: Record<Verdict, string> = {
   confirmed: "border-confirmed/30 bg-confirmed-soft text-confirmed",
   contradicted: "border-contradicted/30 bg-contradicted-soft text-contradicted",
-  no_official_statement: "border-unknown/30 bg-unknown-soft text-unknown",
+  no_official_statement:
+    "border-no-official-statement/30 bg-no-official-statement-soft text-no-official-statement",
 };
 
 /** Accent used for the stripe on a verdict card. */
 export const verdictAccent: Record<Verdict, string> = {
   confirmed: "bg-confirmed",
   contradicted: "bg-contradicted",
-  no_official_statement: "bg-unknown",
+  no_official_statement: "bg-no-official-statement",
 };

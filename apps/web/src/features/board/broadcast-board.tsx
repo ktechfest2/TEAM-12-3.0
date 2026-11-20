@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Icon, type IconName } from "../../components/icons";
-import { controlClass, Loading, Notice } from "../../components/ui/surface";
+import { controlClass } from "../../components/ui/input";
+import { Loading, Notice } from "../../components/ui/notice";
 import { listMessages } from "../review/review-api";
 import { languageName, type Message } from "../review/review-rules";
 import {
@@ -24,16 +25,16 @@ const timeOfDay = new Intl.DateTimeFormat("en-NG", {
 
 const tileLook = {
   sent: { style: "border-confirmed/30 bg-confirmed-soft text-confirmed", icon: "checkCircle" },
-  waiting: { style: "border-line bg-surface text-muted", icon: "wait" },
+  waiting: { style: "border-border bg-canvas text-muted", icon: "wait" },
   failed: {
     style: "border-contradicted/30 bg-contradicted-soft text-contradicted",
     icon: "xCircle",
   },
-  retracted: { style: "border-line-strong bg-sunken text-muted", icon: "undo" },
+  retracted: { style: "border-border-strong bg-sunken text-muted", icon: "undo" },
 } as const satisfies Record<string, { style: string; icon: IconName }>;
 
 function Tile({ delivery }: { delivery: Delivery | undefined }) {
-  if (!delivery) return <td className="rounded-control bg-sunken p-2 text-center text-faint">-</td>;
+  if (!delivery) return <td className="rounded-control bg-sunken p-2 text-center text-muted">-</td>;
   const state = tileState(delivery);
   const look = tileLook[state];
   const label = {
@@ -44,10 +45,10 @@ function Tile({ delivery }: { delivery: Delivery | undefined }) {
   }[state];
   return (
     <td
-      className={`rounded-control border p-2.5 text-center text-sm font-semibold ${look.style}`}
+      className={`rounded-control border p-3 text-center text-sm font-semibold ${look.style}`}
       data-state={state}
     >
-      <span className="inline-flex items-center justify-center gap-1.5">
+      <span className="inline-flex items-center justify-center gap-2">
         <Icon name={look.icon} size={16} />
         {label}
       </span>
@@ -74,29 +75,26 @@ function Board({ message }: { message: Message }) {
   const languages = languagesIn(deliveries);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div
-        className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 rounded-card bg-brand p-6 text-paper shadow-lift"
+        className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 rounded-card bg-brand p-6 text-on-brand shadow-lift"
         aria-live="polite"
       >
         <div>
-          <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-beacon">
+          <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-brand-line">
             <Icon name="clock" size={16} />
             Correction gap
           </p>
-          <p
-            className="font-display text-5xl font-bold tabular-nums sm:text-6xl"
-            data-testid="elapsed"
-          >
+          <p className="text-4xl font-bold tabular-nums sm:text-4xl" data-testid="elapsed">
             {formatElapsed(elapsed.ms)}
           </p>
-          <p className="text-brand-200">
+          <p className="text-brand-line">
             {elapsed.final
               ? "from approval until every channel was sent"
               : "since a reviewer approved it"}
           </p>
         </div>
-        <p className="rounded-full bg-paper/10 px-4 py-1.5 font-semibold tabular-nums">
+        <p className="rounded-full bg-surface/10 px-4 py-2 font-semibold tabular-nums">
           {sentCount(deliveries)} of {deliveries.length} sent
         </p>
       </div>
@@ -108,7 +106,7 @@ function Board({ message }: { message: Message }) {
           <Notice tone="empty">Nothing has been sent yet. Tiles appear when sending starts.</Notice>
         )
       ) : (
-        <div className="overflow-x-auto rounded-card border border-line bg-surface p-3 shadow-card">
+        <div className="overflow-x-auto rounded-card border border-border bg-canvas p-3 shadow-card">
           <table className="w-full border-separate border-spacing-1">
             <caption className="sr-only">Delivery status by channel and language</caption>
             <thead>
@@ -178,7 +176,7 @@ export function BroadcastBoard() {
           id="correction"
           value={selected.id}
           onChange={(e) => setChosen(e.target.value)}
-          className={`${controlClass} mt-1.5 max-w-xl`}
+          className={`${controlClass} mt-2 max-w-xl`}
         >
           {sealed.map((m) => (
             <option key={m.id} value={m.id}>

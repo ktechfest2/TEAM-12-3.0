@@ -44,7 +44,7 @@ const verdicts: readonly { verdict: Verdict; meaning: string }[] = [
 
 export function GuidePage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 md:py-16">
+    <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 md:py-16">
       <header>
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">How Clarion works</h1>
         <p className="mt-3 text-base leading-7 text-secondary sm:text-lg">
@@ -53,13 +53,13 @@ export function GuidePage() {
         </p>
       </header>
 
-      <section aria-labelledby="steps-title" className="mt-10 sm:mt-12">
+      <section aria-labelledby="steps-title" className="mt-12 sm:mt-12">
         <h2 id="steps-title" className="text-xs font-bold uppercase tracking-wider text-muted">
           From rumour to correction
         </h2>
-        <ol className="mt-4 divide-y divide-border rounded-card border border-border bg-white">
+        <ol className="mt-4 divide-y divide-border rounded-card border border-border bg-surface">
           {steps.map((step, index) => (
-            <li key={step.title} className="flex gap-4 p-4 sm:p-5">
+            <li key={step.title} className="flex gap-4 p-4 sm:p-6">
               <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-bold text-brand tabular-nums">
                 {index + 1}
               </span>
@@ -72,7 +72,7 @@ export function GuidePage() {
         </ol>
       </section>
 
-      <section aria-labelledby="verdicts-title" className="mt-10 sm:mt-12">
+      <section aria-labelledby="verdicts-title" className="mt-12 sm:mt-12">
         <h2 id="verdicts-title" className="text-xs font-bold uppercase tracking-wider text-muted">
           The three answers
         </h2>
@@ -80,7 +80,7 @@ export function GuidePage() {
           {verdicts.map((item) => (
             <li
               key={item.verdict}
-              className="rounded-card border border-border bg-white p-4 sm:flex sm:items-start sm:gap-5 sm:p-5"
+              className="rounded-card border border-border bg-surface p-4 sm:flex sm:items-start sm:gap-4 sm:p-6"
             >
               <div className="sm:w-72 sm:shrink-0">
                 <VerdictBadge verdict={item.verdict} />
@@ -93,7 +93,7 @@ export function GuidePage() {
 
       <section
         aria-labelledby="check-title"
-        className="mt-10 rounded-card border border-brand-200 bg-brand-50 p-5 sm:mt-12 sm:p-6"
+        className="mt-12 rounded-card border border-brand-line bg-brand-tint p-6 sm:mt-12 sm:p-6"
       >
         <h2 id="check-title" className="flex items-center gap-2 text-lg font-bold text-brand">
           <Icon name="fingerprint" size={22} />
@@ -106,7 +106,7 @@ export function GuidePage() {
         </p>
       </section>
 
-      <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-12 flex flex-col gap-3 sm:flex-row">
         <Button as="link" to="/check" icon="search">
           Verify a claim
         </Button>

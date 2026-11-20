@@ -14,32 +14,32 @@ const navigation = [
 export function PublicLayout() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="min-h-screen bg-white text-foreground">
+    <div className="min-h-screen bg-surface text-foreground">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-control focus:bg-white focus:px-4 focus:py-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-control focus:bg-surface focus:px-4 focus:py-2"
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 border-b border-border bg-white/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
         <nav
-          className="mx-auto flex h-[72px] max-w-[1200px] items-center justify-between px-5 sm:px-8"
+          className="mx-auto flex h-[72px] max-w-page items-center justify-between px-6 sm:px-8"
           aria-label="Primary navigation"
         >
           <NavLink
             to="/"
-            className="flex min-h-11 items-center gap-2.5"
+            className="flex min-h-11 items-center gap-3"
             onClick={() => setOpen(false)}
           >
             <Logo />
           </NavLink>
 
-          <div className="hidden items-center gap-7 lg:flex">
+          <div className="hidden items-center gap-8 lg:flex">
             {navigation.map((link) => (
               <NavLink
                 key={link.label}
                 to={link.to}
-                className="flex min-h-11 items-center text-sm font-medium text-secondary hover:text-brand"
+                className="flex min-h-11 items-center text-sm font-semibold text-secondary hover:text-brand"
               >
                 {link.label}
               </NavLink>
@@ -47,7 +47,7 @@ export function PublicLayout() {
           </div>
 
           <div className="hidden items-center gap-3 sm:flex">
-            <Button as="link" to="/dashboard" variant="ghost" icon="user">
+            <Button as="link" to="/dashboard" variant="quiet" icon="user">
               Reviewer workspace
             </Button>
             <Button as="link" to="/check" variant="primary">
@@ -57,7 +57,7 @@ export function PublicLayout() {
 
           <button
             type="button"
-            className="grid size-11 place-items-center rounded-md border border-border lg:hidden"
+            className="grid size-11 place-items-center rounded-control border border-border lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-navigation"
             aria-label={open ? "Close navigation" : "Open navigation"}
@@ -70,15 +70,15 @@ export function PublicLayout() {
         {open ? (
           <div
             id="mobile-navigation"
-            className="border-t border-border bg-white px-5 py-4 lg:hidden"
+            className="border-t border-border bg-surface px-6 py-4 lg:hidden"
           >
-            <div className="mx-auto grid max-w-[1200px] gap-1">
+            <div className="mx-auto grid max-w-page gap-1">
               {navigation.map((link) => (
                 <NavLink
                   key={link.label}
                   to={link.to}
                   onClick={() => setOpen(false)}
-                  className="flex min-h-11 items-center rounded-md px-3 text-sm font-semibold text-secondary hover:bg-surface"
+                  className="flex min-h-11 items-center rounded-control px-3 text-sm font-semibold text-secondary hover:bg-canvas"
                 >
                   {link.label}
                 </NavLink>
@@ -86,7 +86,7 @@ export function PublicLayout() {
               <NavLink
                 to="/dashboard"
                 onClick={() => setOpen(false)}
-                className="flex min-h-11 items-center rounded-md px-3 text-sm font-semibold text-brand hover:bg-brand-soft"
+                className="flex min-h-11 items-center rounded-control px-3 text-sm font-semibold text-brand hover:bg-brand-soft"
               >
                 Reviewer workspace
               </NavLink>
@@ -99,8 +99,8 @@ export function PublicLayout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-border bg-surface">
-        <div className="mx-auto grid max-w-[1200px] gap-8 px-5 py-10 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+      <footer className="border-t border-border bg-canvas">
+        <div className="mx-auto grid max-w-page gap-8 px-6 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Logo size={28} />
             <p className="mt-3 max-w-sm text-sm leading-6 text-muted">

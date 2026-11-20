@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Icon } from "../components/icons";
-import { PageTitle } from "../components/ui/surface";
+import { PageTitle } from "../components/ui/page-header";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
 import { useSession } from "../lib/auth/session";
@@ -36,7 +36,7 @@ export function EvidenceLibraryPage() {
   if (query.error) return <p role="alert">{query.error.message}</p>;
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-4">
       <PageTitle title="Evidence library" />
       <label className="relative block">
         <span className="sr-only">Search evidence</span>
@@ -46,7 +46,7 @@ export function EvidenceLibraryPage() {
           value={queryText}
           onChange={(event) => setQueryText(event.target.value)}
           placeholder="Search title, publisher or passage"
-          className="min-h-11 w-full rounded-control border border-border bg-white pl-10 pr-3 text-sm focus:border-brand"
+          className="min-h-11 w-full rounded-control border border-border bg-surface pl-12 pr-3 text-sm focus:border-brand"
         />
       </label>
 
@@ -54,7 +54,7 @@ export function EvidenceLibraryPage() {
         {sources.length} {sources.length === 1 ? "source" : "sources"}
       </p>
       {sources.length === 0 ? (
-        <div className="rounded-card border border-border bg-white px-6 py-10 text-center">
+        <div className="rounded-card border border-border bg-surface px-6 py-12 text-center">
           <Icon name="archive" size={24} className="mx-auto text-muted" />
           <h2 className="mt-3 font-bold">No evidence found</h2>
           <p className="mt-1 text-sm text-muted">
@@ -66,20 +66,20 @@ export function EvidenceLibraryPage() {
           {sources.map((source) => (
             <article
               key={source.url}
-              className="flex flex-col rounded-card border border-border bg-white p-4 shadow-card sm:p-5"
+              className="flex flex-col rounded-card border border-border bg-surface p-4 shadow-card sm:p-6"
             >
               <p className="text-xs font-semibold uppercase tracking-wider text-brand">
                 {source.publisher}
               </p>
-              <h2 className="mt-1.5 font-bold leading-6">{source.document_title}</h2>
-              <blockquote className="mt-3 line-clamp-5 border-l-2 border-brand-200 pl-3 text-sm leading-6 text-secondary">
+              <h2 className="mt-2 font-bold leading-6">{source.document_title}</h2>
+              <blockquote className="mt-3 line-clamp-5 border-l-2 border-brand-line pl-3 text-sm leading-6 text-secondary">
                 {source.text}
               </blockquote>
               <a
                 href={source.url}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-auto flex min-h-11 items-center gap-1.5 pt-3 text-sm font-semibold text-brand"
+                className="mt-auto flex min-h-11 items-center gap-2 pt-3 text-sm font-semibold text-brand"
               >
                 Open official source <Icon name="external" size={15} />
               </a>

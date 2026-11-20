@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Icon } from "../../components/icons";
 import { Button } from "../../components/ui/button";
-import { Notice } from "../../components/ui/surface";
+import { Notice } from "../../components/ui/notice";
 import { renderRenditions } from "./review-api";
 import { languageName, type Rendition } from "./review-rules";
 
@@ -55,7 +55,7 @@ export function VoiceNotesPanel({ messageId }: { messageId: string }) {
           {voices.map((voice) => (
             <li
               key={voice.language}
-              className="rounded-control border border-brand-200 bg-white p-3"
+              className="rounded-control border border-brand-line bg-surface p-3"
             >
               <p className="text-sm font-semibold">{languageName[voice.language]}</p>
               {/* biome-ignore lint/a11y/useMediaCaption: the same words are printed below as the text message */}
@@ -82,7 +82,7 @@ export function VoiceNotesPanel({ messageId }: { messageId: string }) {
                 href={file.url}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex min-h-10 items-center gap-2 rounded-control border border-line-strong bg-white px-3 text-sm font-semibold text-brand hover:bg-brand-50"
+                className="inline-flex min-h-10 items-center gap-2 rounded-control border border-border-strong bg-surface px-3 text-sm font-semibold text-brand hover:bg-brand-tint"
               >
                 <Icon name="download" size={16} />
                 {file.label}

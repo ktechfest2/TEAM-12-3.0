@@ -1,4 +1,4 @@
-import { PageTitle } from "../components/ui/surface";
+import { PageTitle } from "../components/ui/page-header";
 import { LoginForm } from "../features/auth/login-form";
 import { BroadcastBoard } from "../features/board/broadcast-board";
 import { useSession } from "../lib/auth/session";

@@ -114,7 +114,7 @@ export function SubscribeForm() {
           <Button type="submit" disabled={confirm.isPending}>
             {confirm.isPending ? "Checking..." : removing ? "Remove my number" : "Confirm"}
           </Button>
-          <Button type="button" variant="ghost" onClick={() => setStep("details")}>
+          <Button type="button" variant="quiet" onClick={() => setStep("details")}>
             Back
           </Button>
         </div>
@@ -156,7 +156,7 @@ export function SubscribeForm() {
               {LANGUAGE_OPTIONS.map((option) => (
                 <label
                   key={option.value}
-                  className="flex min-h-11 items-center gap-2 rounded-[10px] border border-border bg-white px-3"
+                  className="flex min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-3"
                 >
                   <input
                     type="checkbox"
@@ -202,7 +202,7 @@ export function SubscribeForm() {
                   id="frequency"
                   value={frequency}
                   onChange={(event) => setFrequency(event.target.value as Frequency)}
-                  className="min-h-11 w-full rounded-[10px] border border-border bg-white px-3"
+                  className="min-h-11 w-full rounded-control border border-border bg-surface px-3"
                 >
                   {FREQUENCY_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -232,7 +232,7 @@ export function SubscribeForm() {
             </p>
           </div>
 
-          <p className="rounded-[10px] bg-surface p-3 text-sm text-secondary">
+          <p className="rounded-control bg-canvas p-3 text-sm text-secondary">
             You will get: {describeChoice({ mode, frequency, maxPerDay })}
           </p>
         </>

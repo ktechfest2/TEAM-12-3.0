@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Loading, Notice, Pill } from "../../components/ui/surface";
+import { Loading, Notice } from "../../components/ui/notice";
+import { Pill } from "../../components/ui/pill";
 import { verdictLabel } from "../claims/verdict";
 import { listMessages } from "./review-api";
 import { stageLabel, stageOf } from "./review-rules";
@@ -9,7 +10,7 @@ type Props = { selectedId: string | null; onSelect: (id: string) => void };
 const verdictDot = {
   confirmed: "bg-confirmed",
   contradicted: "bg-contradicted",
-  no_official_statement: "bg-unknown",
+  no_official_statement: "bg-no-official-statement",
 } as const;
 
 export function ReviewQueue({ selectedId, onSelect }: Props) {
@@ -32,13 +33,13 @@ export function ReviewQueue({ selectedId, onSelect }: Props) {
               type="button"
               onClick={() => onSelect(message.id)}
               aria-current={selected ? "true" : undefined}
-              className={`w-full rounded-control border p-3.5 text-left transition-colors ${
+              className={`w-full rounded-control border p-4 text-left transition-colors ${
                 selected
-                  ? "border-brand bg-brand-50 shadow-card"
-                  : "border-line bg-surface hover:border-line-strong hover:bg-sunken"
+                  ? "border-brand bg-brand-tint shadow-card"
+                  : "border-border bg-canvas hover:border-border-strong hover:bg-sunken"
               }`}
             >
-              <span className="line-clamp-3 block font-semibold text-ink">
+              <span className="line-clamp-3 block font-semibold text-foreground">
                 {message.claim_text}
               </span>
               <span className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">

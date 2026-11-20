@@ -3,7 +3,8 @@ import { NavLink } from "react-router";
 import { Icon, type IconName } from "../icons";
 
 type CommonProps = {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "quiet" | "destructive";
+  /** primary: the one main action. secondary: soft green. outline: neutral. quiet: text only. */
+  variant?: "primary" | "secondary" | "outline" | "quiet";
   size?: "sm" | "md";
   className?: string;
   children: ReactNode;
@@ -18,28 +19,32 @@ type LinkProps = CommonProps & {
   to: string;
 };
 
+const variants = {
+  primary: "border-brand bg-brand text-on-brand hover:bg-brand-hover",
+  secondary:
+    "border-brand-soft bg-brand-soft text-brand hover:border-brand-line hover:bg-brand-line",
+  outline: "border-border-strong bg-surface text-foreground hover:bg-canvas",
+  quiet: "border-transparent bg-transparent text-brand hover:bg-brand-soft",
+} as const;
+
+const sizes = {
+  sm: "min-h-10 px-3 text-sm",
+  md: "min-h-11 px-4 text-sm",
+} as const;
+
+const disabled =
+  "disabled:cursor-not-allowed disabled:border-border disabled:bg-sunken disabled:text-muted";
+
 export function Button(props: ButtonProps | LinkProps) {
   const variant = props.variant ?? "primary";
   const size = props.size ?? "md";
-  const styles = {
-    primary: "border-brand bg-brand text-white hover:bg-brand-hover",
-    secondary: "border-brand-soft bg-brand-soft text-brand hover:bg-brand-100",
-    outline: "border-border-strong bg-white text-foreground hover:bg-surface",
-    ghost: "border-transparent bg-transparent text-secondary hover:bg-surface",
-    destructive: "border-contradicted bg-contradicted text-white hover:opacity-90",
-    quiet: "border-transparent bg-transparent text-brand hover:bg-brand-soft",
-  }[variant];
-  const sizes = {
-    sm: "min-h-11 px-3 text-sm",
-    md: "min-h-11 px-4 text-sm",
-  }[size];
-  const className = `inline-flex items-center justify-center gap-2 rounded-[10px] border font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${sizes} ${styles} ${props.className ?? ""}`;
+  const className = `inline-flex items-center justify-center gap-2 rounded-control border font-semibold transition-colors ${disabled} ${sizes[size]} ${variants[variant]} ${props.className ?? ""}`;
+  const iconSize = size === "sm" ? 16 : 18;
 
   if ("as" in props && props.as === "link") {
-    const icon = props.icon;
     return (
       <NavLink to={props.to} className={className}>
-        {icon ? <Icon name={icon} size={size === "sm" ? 16 : 18} /> : null}
+        {props.icon ? <Icon name={props.icon} size={iconSize} /> : null}
         {props.children}
       </NavLink>
     );
@@ -55,7 +60,7 @@ export function Button(props: ButtonProps | LinkProps) {
   } = props;
   return (
     <button type="button" {...buttonProps} className={className}>
-      {icon ? <Icon name={icon} size={size === "sm" ? 16 : 18} /> : null}
+      {icon ? <Icon name={icon} size={iconSize} /> : null}
       {children}
     </button>
   );

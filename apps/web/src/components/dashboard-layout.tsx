@@ -22,14 +22,14 @@ function ReviewerChip({ compact = false }: { compact?: boolean }) {
         <Icon name="user" size={16} />
       </span>
       {compact ? null : (
-        <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
+        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
           {session.reviewerName}
         </span>
       )}
       <button
         type="button"
         onClick={clearSession}
-        className="grid size-10 shrink-0 place-items-center rounded-control text-muted hover:bg-surface hover:text-foreground"
+        className="grid size-10 shrink-0 place-items-center rounded-control text-muted hover:bg-canvas hover:text-foreground"
       >
         <Icon name="logout" size={18} label="Sign out" />
       </button>
@@ -39,10 +39,10 @@ function ReviewerChip({ compact = false }: { compact?: boolean }) {
 
 export function DashboardLayout() {
   return (
-    <div className="min-h-screen bg-surface text-foreground lg:grid lg:grid-cols-[232px_minmax(0,1fr)]">
-      <aside className="sticky top-0 z-20 border-b border-border bg-white lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
-        <div className="flex h-14 items-center justify-between gap-3 px-4 lg:h-16 lg:px-5">
-          <NavLink to="/" className="flex items-center gap-2.5 font-bold">
+    <div className="min-h-screen bg-canvas text-foreground lg:grid lg:grid-cols-[232px_minmax(0,1fr)]">
+      <aside className="sticky top-0 z-20 border-b border-border bg-surface lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
+        <div className="flex h-14 items-center justify-between gap-3 px-4 lg:h-16 lg:px-6">
+          <NavLink to="/" className="flex items-center gap-3 font-bold">
             <Logo />
           </NavLink>
           <div className="lg:hidden">
@@ -59,10 +59,10 @@ export function DashboardLayout() {
               to={link.to}
               end={link.end}
               className={({ isActive }) =>
-                `flex min-h-11 shrink-0 items-center gap-2.5 whitespace-nowrap border-b-2 px-3 text-sm font-medium transition-colors lg:rounded-control lg:border-b-0 ${
+                `flex min-h-11 shrink-0 items-center gap-3 whitespace-nowrap border-b-2 px-3 text-sm font-semibold transition-colors lg:rounded-control lg:border-b-0 ${
                   isActive
                     ? "border-brand text-brand lg:bg-brand-soft"
-                    : "border-transparent text-secondary hover:text-foreground lg:hover:bg-surface"
+                    : "border-transparent text-secondary hover:text-foreground lg:hover:bg-canvas"
                 }`
               }
             >
@@ -75,7 +75,7 @@ export function DashboardLayout() {
           <ReviewerChip />
         </div>
       </aside>
-      <main className="mx-auto w-full max-w-[1120px] min-w-0 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <main className="mx-auto w-full max-w-workspace min-w-0 px-4 py-6 sm:px-6 lg:px-12 lg:py-12">
         <Outlet />
       </main>
     </div>

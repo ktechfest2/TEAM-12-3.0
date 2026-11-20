@@ -7,7 +7,7 @@ export function VerificationGuide({ correction }: Props) {
   return (
     <section
       aria-label="Integrity"
-      className="space-y-4 rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6"
+      className="space-y-4 rounded-card border border-brand-line bg-brand-tint p-6 sm:p-6"
     >
       <h2 className="flex items-center gap-2 text-xl font-bold text-brand">
         <Icon name="fingerprint" size={22} />
@@ -20,13 +20,13 @@ export function VerificationGuide({ correction }: Props) {
       <dl className="space-y-3 text-sm">
         <div>
           <dt className="font-semibold">Fingerprint ({correction.hash_algorithm})</dt>
-          <dd className="mt-1 break-all rounded-control bg-surface p-2 font-mono text-xs">
+          <dd className="mt-1 break-all rounded-control bg-canvas p-2 font-mono text-xs">
             {correction.integrity_hash}
           </dd>
         </div>
         <div>
           <dt className="font-semibold">Previous correction's fingerprint</dt>
-          <dd className="mt-1 break-all rounded-control bg-surface p-2 font-mono text-xs">
+          <dd className="mt-1 break-all rounded-control bg-canvas p-2 font-mono text-xs">
             {correction.previous_hash ?? "none (this was the first)"}
           </dd>
         </div>
@@ -45,7 +45,7 @@ export function VerificationGuide({ correction }: Props) {
         <summary className="cursor-pointer font-semibold text-brand">
           How to check it yourself
         </summary>
-        <ol className="mt-2 list-decimal space-y-1 pl-5">
+        <ol className="mt-2 list-decimal space-y-1 pl-6">
           <li>Copy the record text below exactly, with no extra spaces or lines.</li>
           <li>
             Run it through SHA-256, for example <code>printf '%s' "..." | sha256sum</code> on a
@@ -54,7 +54,7 @@ export function VerificationGuide({ correction }: Props) {
           <li>Put sha256: in front of the result. It should equal the fingerprint above.</li>
         </ol>
         <figure aria-label="Record text" className="mt-3">
-          <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-control bg-surface p-3 font-mono text-xs">
+          <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-all rounded-control bg-canvas p-3 font-mono text-xs">
             {correction.canonical_json}
           </pre>
         </figure>

@@ -40,7 +40,7 @@ export function InformationHubPage() {
   };
 
   return (
-    <section className="mx-auto max-w-[1200px] px-5 py-10 sm:px-8 md:py-14">
+    <section className="mx-auto max-w-page px-6 py-12 sm:px-8 md:py-16">
       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
         Election guidance
       </p>
@@ -48,7 +48,7 @@ export function InformationHubPage() {
       <p className="mt-3 max-w-2xl text-base leading-7 text-secondary">
         Find practical guidance and verified pathways to official election information.
       </p>
-      <p className="mt-4 rounded-[10px] border border-border bg-surface px-4 py-3 text-xs leading-5 text-secondary">
+      <p className="mt-4 rounded-control border border-border bg-canvas px-4 py-3 text-xs leading-5 text-secondary">
         {demonstrationNotice}
       </p>
 
@@ -61,7 +61,7 @@ export function InformationHubPage() {
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
             placeholder="Search election information"
-            className="min-h-11 w-full rounded-[10px] border border-border pl-10 pr-3"
+            className="min-h-11 w-full rounded-control border border-border pl-12 pr-3"
           />
         </label>
         <label>
@@ -69,7 +69,7 @@ export function InformationHubPage() {
           <select
             value={category}
             onChange={(event) => setCategory(event.target.value as (typeof categories)[number])}
-            className="min-h-11 w-full rounded-[10px] border border-border bg-white px-3 md:w-56"
+            className="min-h-11 w-full rounded-control border border-border bg-surface px-3 md:w-56"
           >
             {categories.map((item) => (
               <option key={item}>{item}</option>
@@ -88,7 +88,7 @@ export function InformationHubPage() {
           ))}
         </div>
       ) : (
-        <div className="mt-4 rounded-[14px] border border-border bg-surface p-8 text-center">
+        <div className="mt-4 rounded-card border border-border bg-canvas p-8 text-center">
           <h2 className="font-bold">No information found</h2>
           <p className="mt-2 text-sm text-muted">Try a different search or category.</p>
         </div>

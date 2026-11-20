@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router";
 import { Icon } from "../components/icons";
-import { Loading, PageTitle } from "../components/ui/surface";
+import { Loading } from "../components/ui/notice";
+import { PageTitle } from "../components/ui/page-header";
 import { LoginForm } from "../features/auth/login-form";
 import { listMessages } from "../features/review/review-api";
 import { ReviewDetail } from "../features/review/review-detail";
@@ -32,18 +33,18 @@ export function VerificationPage() {
       {queue.error ? <p role="alert">{queue.error.message}</p> : null}
 
       {queue.data && queue.data.length === 0 ? (
-        <div className="rounded-card border border-border bg-white px-6 py-10 text-center">
+        <div className="rounded-card border border-border bg-surface px-6 py-12 text-center">
           <h2 className="font-bold">No claims are waiting</h2>
           <p className="mt-1 text-sm text-muted">New submissions will appear here.</p>
         </div>
       ) : null}
 
       {queue.data && queue.data.length > 0 ? (
-        <div className="grid gap-5 xl:grid-cols-[280px_minmax(0,1fr)]">
+        <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
           {/* Below xl the list and the detail take turns, so neither is squeezed. */}
           <aside
             aria-label="Claims"
-            className={`h-fit rounded-card border border-border bg-white p-2 xl:sticky xl:top-6 ${
+            className={`h-fit rounded-card border border-border bg-surface p-2 xl:sticky xl:top-6 ${
               messageId ? "hidden xl:block" : ""
             }`}
           >
@@ -58,8 +59,8 @@ export function VerificationPage() {
                     <Link
                       to={`/dashboard/verification/${message.id}`}
                       aria-current={current ? "true" : undefined}
-                      className={`block min-h-14 rounded-control px-3 py-2.5 ${
-                        current ? "bg-brand-soft" : "hover:bg-surface"
+                      className={`block min-h-14 rounded-control px-3 py-3 ${
+                        current ? "bg-brand-soft" : "hover:bg-canvas"
                       }`}
                     >
                       <span className="line-clamp-2 text-sm font-semibold xl:line-clamp-1">
@@ -79,16 +80,16 @@ export function VerificationPage() {
             <div className="min-w-0 space-y-3">
               <Link
                 to="/dashboard/verification"
-                className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-brand xl:hidden"
+                className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-brand xl:hidden"
               >
                 <Icon name="arrowLeft" size={16} /> All claims
               </Link>
-              <div className="rounded-card border border-border bg-white p-4 sm:p-6">
+              <div className="rounded-card border border-border bg-surface p-4 sm:p-6">
                 <ReviewDetail key={messageId} messageId={messageId} />
               </div>
             </div>
           ) : (
-            <div className="hidden min-h-64 place-items-center rounded-card border border-dashed border-border-strong bg-white p-6 text-center text-sm text-muted xl:grid">
+            <div className="hidden min-h-64 place-items-center rounded-card border border-dashed border-border-strong bg-surface p-6 text-center text-sm text-muted xl:grid">
               Choose a claim to review it.
             </div>
           )}

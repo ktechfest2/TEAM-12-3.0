@@ -4,8 +4,8 @@ import { ClaimForm } from "../features/claims/claim-form";
 
 export function SubmitClaimPage() {
   return (
-    <section className="bg-surface">
-      <div className="mx-auto max-w-[1200px] px-5 py-10 sm:px-8 md:py-16">
+    <section className="bg-canvas">
+      <div className="mx-auto max-w-page px-6 py-12 sm:px-8 md:py-16">
         <div className="mx-auto max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
             Claim verification
@@ -18,11 +18,11 @@ export function SubmitClaimPage() {
             source passages.
           </p>
         </div>
-        <div className="mx-auto mt-8 grid max-w-3xl gap-5">
-          <Card className="p-5 md:p-7">
+        <div className="mx-auto mt-8 grid max-w-3xl gap-4">
+          <Card className="p-6 md:p-8">
             <ClaimForm />
           </Card>
-          <div className="flex gap-3 rounded-[14px] border border-border bg-white p-4 text-sm leading-6 text-secondary">
+          <div className="flex gap-3 rounded-card border border-border bg-surface p-4 text-sm leading-6 text-secondary">
             <Icon name="shieldCheck" size={18} className="mt-0.5 shrink-0 text-brand" />
             <p>
               A result is not a final verdict until it cites an official source. Do not share a

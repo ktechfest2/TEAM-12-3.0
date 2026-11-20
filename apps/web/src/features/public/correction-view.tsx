@@ -1,5 +1,6 @@
 import { Icon } from "../../components/icons";
-import { Card, SectionTitle } from "../../components/ui/surface";
+import { Card } from "../../components/ui/card";
+import { SectionTitle } from "../../components/ui/section-title";
 import { verdictAccent } from "../claims/verdict";
 import { VerdictBadge } from "../claims/verdict-badge";
 import { languageName } from "../review/review-rules";
@@ -12,11 +13,11 @@ type Props = { correction: PublicCorrection };
 export function CorrectionView({ correction }: Props) {
   return (
     <article className="space-y-6">
-      <div className="overflow-hidden rounded-card border border-line bg-surface shadow-lift">
+      <div className="overflow-hidden rounded-card border border-border bg-canvas shadow-lift">
         <div className={`h-1.5 ${verdictAccent[correction.verdict]}`} />
-        <header className="space-y-4 p-5 sm:p-6">
+        <header className="space-y-4 p-6 sm:p-6">
           <p className="text-sm font-semibold text-muted">The message people are sharing</p>
-          <blockquote className="font-display text-2xl leading-snug text-ink">
+          <blockquote className="text-2xl leading-snug text-foreground">
             {correction.claim_text}
           </blockquote>
           <VerdictBadge verdict={correction.verdict} large />
@@ -29,7 +30,7 @@ export function CorrectionView({ correction }: Props) {
           <p className="text-lg">{correction.summary}</p>
           <ListenControl messageId={correction.message_id} language="en" />
           {correction.translations.length > 0 ? (
-            <ul className="space-y-4 border-t border-line pt-3">
+            <ul className="space-y-4 border-t border-border pt-3">
               {correction.translations.map((t) => (
                 <li key={t.language} className="space-y-2">
                   <div className="flex gap-2">
@@ -51,11 +52,11 @@ export function CorrectionView({ correction }: Props) {
         <Card className="space-y-3">
           <SectionTitle icon="shieldCheck">Official source</SectionTitle>
           {correction.source ? (
-            <blockquote className="space-y-3 border-l-4 border-beacon pl-4">
-              <p className="font-display text-lg leading-snug">{correction.source.text}</p>
+            <blockquote className="space-y-3 border-l-4 border-brand pl-4">
+              <p className="text-lg leading-snug">{correction.source.text}</p>
               <footer className="text-sm text-muted">
                 <a
-                  className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-200 underline-offset-2 hover:decoration-brand"
+                  className="inline-flex items-center gap-1 font-semibold text-brand underline decoration-brand-line underline-offset-2 hover:decoration-brand"
                   href={correction.source.url}
                   target="_blank"
                   rel="noreferrer"

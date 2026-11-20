@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Icon } from "../../components/icons";
 import { Button } from "../../components/ui/button";
-import { controlClass, SectionTitle } from "../../components/ui/surface";
+import { controlClass } from "../../components/ui/input";
+import { SectionTitle } from "../../components/ui/section-title";
 import {
   type Language,
   languageName,
@@ -31,11 +32,11 @@ function TranslationRow({
   const name = languageName[language];
 
   return (
-    <li className="rounded-control border border-line bg-surface p-4">
+    <li className="rounded-control border border-border bg-canvas p-4">
       <div className="flex items-center justify-between gap-2">
         <h4 className="font-semibold text-brand">{name}</h4>
         <span
-          className={`inline-flex items-center gap-1.5 text-sm font-semibold ${
+          className={`inline-flex items-center gap-2 text-sm font-semibold ${
             saved?.is_approved ? "text-confirmed" : "text-muted"
           }`}
         >
