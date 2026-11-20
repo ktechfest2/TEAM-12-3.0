@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router";
 import { clearSession, useSession } from "../lib/auth/session";
 import { Logo } from "./brand/logo";
 import { Icon, type IconName } from "./icons";
+import { Container } from "./ui/container";
 
 const dashboardLinks = [
   { to: "/dashboard", label: "Overview", icon: "dashboard", end: true },
@@ -40,9 +41,9 @@ function ReviewerChip({ compact = false }: { compact?: boolean }) {
 export function DashboardLayout() {
   return (
     <div className="min-h-screen bg-canvas text-foreground lg:grid lg:grid-cols-[232px_minmax(0,1fr)]">
-      <aside className="sticky top-0 z-20 border-b border-border bg-surface lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
+      <aside className="z-20 lg:sticky lg:top-0 border-b border-border bg-surface lg:flex lg:h-screen lg:flex-col lg:border-r lg:border-b-0">
         <div className="flex h-14 items-center justify-between gap-3 px-4 lg:h-16 lg:px-6">
-          <NavLink to="/" className="flex items-center gap-3 font-bold">
+          <NavLink to="/" className="flex min-h-10 items-center">
             <Logo />
           </NavLink>
           <div className="lg:hidden">
@@ -50,7 +51,7 @@ export function DashboardLayout() {
           </div>
         </div>
         <nav
-          className="-mb-px flex gap-1 overflow-x-auto px-2 lg:mb-0 lg:grid lg:gap-0.5 lg:overflow-visible lg:px-3 lg:py-2"
+          className="grid grid-cols-5 border-t border-border lg:mb-0 lg:grid-cols-1 lg:gap-1 lg:border-t-0 lg:px-3 lg:py-2"
           aria-label="Dashboard navigation"
         >
           {dashboardLinks.map((link) => (
@@ -59,7 +60,7 @@ export function DashboardLayout() {
               to={link.to}
               end={link.end}
               className={({ isActive }) =>
-                `flex min-h-11 shrink-0 items-center gap-3 whitespace-nowrap border-b-2 px-3 text-sm font-semibold transition-colors lg:rounded-control lg:border-b-0 ${
+                `flex min-h-14 min-w-0 flex-col items-center justify-center gap-1 border-t-2 px-1 text-xs font-semibold transition-colors lg:min-h-11 lg:flex-row lg:justify-start lg:gap-3 lg:rounded-control lg:border-t-0 lg:px-3 lg:text-sm ${
                   isActive
                     ? "border-brand text-brand lg:bg-brand-soft"
                     : "border-transparent text-secondary hover:text-foreground lg:hover:bg-canvas"
@@ -75,8 +76,10 @@ export function DashboardLayout() {
           <ReviewerChip />
         </div>
       </aside>
-      <main className="mx-auto w-full max-w-workspace min-w-0 px-4 py-6 sm:px-6 lg:px-12 lg:py-12">
-        <Outlet />
+      <main className="min-w-0">
+        <Container width="workspace" className="py-6 lg:py-8">
+          <Outlet />
+        </Container>
       </main>
     </div>
   );

@@ -5,6 +5,7 @@ type ContainerProps = {
   /** page: 1200 px marketing and listings. prose: 768 px forms and reading. workspace: 1120 px reviewer pages. */
   width?: "page" | "prose" | "workspace";
   className?: string;
+  as?: "div" | "article" | "section";
 };
 
 const widths = {
@@ -14,10 +15,15 @@ const widths = {
 } as const;
 
 /** Centres content and sets the page gutters: 16 px, 24 px from `sm`, 32 px from `lg`. */
-export function Container({ children, width = "page", className = "" }: ContainerProps) {
+export function Container({
+  children,
+  width = "page",
+  className = "",
+  as: Tag = "div",
+}: ContainerProps) {
   return (
-    <div className={`mx-auto w-full min-w-0 px-4 sm:px-6 lg:px-8 ${widths[width]} ${className}`}>
+    <Tag className={`mx-auto w-full min-w-0 px-4 sm:px-6 lg:px-8 ${widths[width]} ${className}`}>
       {children}
-    </div>
+    </Tag>
   );
 }

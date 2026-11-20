@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router";
 import { Logo } from "./brand/logo";
 import { Icon } from "./icons";
 import { Button } from "./ui/button";
+import { Container } from "./ui/container";
 
 const navigation = [
   { to: "/information", label: "Election information" },
@@ -11,19 +12,42 @@ const navigation = [
   { to: "/subscribe", label: "Text alerts" },
 ] as const;
 
+function FooterLinks({
+  title,
+  links,
+}: {
+  title: string;
+  links: readonly { to: string; label: string }[];
+}) {
+  return (
+    <nav aria-label={title} className="text-sm text-secondary">
+      <p className="font-semibold text-foreground">{title}</p>
+      <ul className="mt-1">
+        {links.map((link) => (
+          <li key={link.to}>
+            <NavLink to={link.to} className="flex min-h-10 items-center hover:text-brand">
+              {link.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
 export function PublicLayout() {
   const [open, setOpen] = useState(false);
   return (
     <div className="min-h-screen bg-surface text-foreground">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-control focus:bg-surface focus:px-4 focus:py-2"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-control focus:border focus:border-border-strong focus:bg-surface focus:px-4 focus:py-2"
       >
         Skip to content
       </a>
       <header className="sticky top-0 z-40 border-b border-border bg-surface/95 backdrop-blur">
         <nav
-          className="mx-auto flex h-[72px] max-w-page items-center justify-between px-6 sm:px-8"
+          className="mx-auto flex h-16 w-full max-w-page items-center justify-between px-4 sm:px-6 lg:px-8"
           aria-label="Primary navigation"
         >
           <NavLink
@@ -57,7 +81,7 @@ export function PublicLayout() {
 
           <button
             type="button"
-            className="grid size-11 place-items-center rounded-control border border-border lg:hidden"
+            className="grid size-11 place-items-center rounded-control border border-border-strong lg:hidden"
             aria-expanded={open}
             aria-controls="mobile-navigation"
             aria-label={open ? "Close navigation" : "Open navigation"}
@@ -70,7 +94,7 @@ export function PublicLayout() {
         {open ? (
           <div
             id="mobile-navigation"
-            className="border-t border-border bg-surface px-6 py-4 lg:hidden"
+            className="border-t border-border bg-surface px-4 py-4 sm:px-6 lg:hidden"
           >
             <div className="mx-auto grid max-w-page gap-1">
               {navigation.map((link) => (
@@ -100,41 +124,31 @@ export function PublicLayout() {
       </main>
 
       <footer className="border-t border-border bg-canvas">
-        <div className="mx-auto grid max-w-page gap-8 px-6 py-12 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
+        <Container className="grid gap-8 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Logo size={28} />
-            <p className="mt-3 max-w-sm text-sm leading-6 text-muted">
+            <p className="mt-3 max-w-sm text-sm text-secondary">
               Official election information and verified corrections for every voter.
             </p>
           </div>
-          <div className="grid gap-2 text-sm text-secondary">
-            <span className="font-semibold text-foreground">For voters</span>
-            <NavLink to="/check" className="hover:text-brand">
-              Verify a claim
-            </NavLink>
-            <NavLink to="/fact-checks" className="hover:text-brand">
-              Fact-checks
-            </NavLink>
-            <NavLink to="/subscribe" className="hover:text-brand">
-              Get text alerts
-            </NavLink>
-            <NavLink to="/guide" className="hover:text-brand">
-              How Clarion works
-            </NavLink>
-          </div>
-          <div className="grid gap-2 text-sm text-secondary">
-            <span className="font-semibold text-foreground">For reviewers</span>
-            <NavLink to="/dashboard/verification" className="hover:text-brand">
-              Review and approve
-            </NavLink>
-            <NavLink to="/dashboard/board" className="hover:text-brand">
-              Broadcast board
-            </NavLink>
-            <NavLink to="/dashboard/evidence" className="hover:text-brand">
-              Evidence library
-            </NavLink>
-          </div>
-        </div>
+          <FooterLinks
+            title="For voters"
+            links={[
+              { to: "/check", label: "Verify a claim" },
+              { to: "/fact-checks", label: "Fact-checks" },
+              { to: "/subscribe", label: "Get text alerts" },
+              { to: "/guide", label: "How Clarion works" },
+            ]}
+          />
+          <FooterLinks
+            title="For reviewers"
+            links={[
+              { to: "/dashboard/verification", label: "Review and approve" },
+              { to: "/dashboard/board", label: "Broadcast board" },
+              { to: "/dashboard/evidence", label: "Evidence library" },
+            ]}
+          />
+        </Container>
       </footer>
     </div>
   );
